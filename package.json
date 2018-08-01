@@ -10,7 +10,7 @@
     "trace": "tsc --traceResolution",
     "test": "jest",
     "test:cov": "jest --coverage",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest -o --expand --notify --watch"
   },
   "devDependencies": {
     "@types/ramda": "0.25.35",
