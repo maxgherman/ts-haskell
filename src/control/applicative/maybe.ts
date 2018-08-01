@@ -25,3 +25,7 @@ const lift = <A, B>(fab: MaybeF<Application<A, B>>, fa: MaybeF<A>): MaybeF<B> =>
 }
 
 export const applicative = appBase(functor, { pure, lift }) as IMaybeApplicative;
+
+applicative.lift(Maybe.just((x: string) => x.toUpperCase()), Maybe.just(2));
+
+

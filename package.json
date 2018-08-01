@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "clean": "rimraf lib/*",
+    "clean:pl": "rimraf lib/playground.js",
     "prebuild": "npm run clean",
-    "build": "tsc",
+    "build": "tsc; npm run clean:pl",
     "trace": "tsc --traceResolution",
     "test": "jest",
     "test:cov": "jest --coverage",
