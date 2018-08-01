@@ -1,0 +1,15 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "node": "current"
+      }
+    }]
+  ],
+  "plugins": [
+        ["babel-plugin-webpack-alias", {
+            "config": ".babelrc.config.js",
+            "findConfig": true
+        }]
+    ]
+}

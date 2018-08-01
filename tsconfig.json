@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "esnext",
+        "outDir": "lib",
+        "baseUrl": ".",
+        "paths": {
+            "@common/*": [
+                "src/common/*"
+            ],
+            "@data/*": [
+                "src/data/*"
+            ],
+            "@control/*": [
+                "src/control/*"
+            ]
+        }
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
