@@ -1,4 +1,4 @@
-import { functor as baseFunctor } from '@control/functor/reader';
+import { functor as baseFunctor } from '@control/functor/plain-reader';
 import { identity, partial, compose } from "ramda";
 
 const functor = baseFunctor();

@@ -1,11 +1,11 @@
 import { identity, compose } from 'ramda';
 import { Box, functor as baseFunctor, IFunctor, Application } from '@common/types';
 
-export class IsReader {}
+export class IsPlainReader {}
 
-export type ReaderF<T1, T2> = Box<IsReader, T1> & Application<T1, T2>;
+export type ReaderF<T1, T2> = Box<IsPlainReader, T1> & Application<T1, T2>;
 
-export interface IReaderFunctor<T> extends IFunctor<IsReader> {
+export interface IPlainReaderFunctor<T> extends IFunctor<IsPlainReader> {
     fmap: <A, B>(f: (a: A) => B, fa: ReaderF<T, A>) => ReaderF<T, B>;
     '<$>': <A, B>(f: (a: A) => B, fa: ReaderF<T, A>) => ReaderF<T, B>,
     '<$': <A, B>(a: A, fb: ReaderF<T, B>) => ReaderF<T, A>,
@@ -14,10 +14,10 @@ export interface IReaderFunctor<T> extends IFunctor<IsReader> {
 }
 
 const fmap = <R, A, B>(f: (a: A) => B, fa: ReaderF<R, A>): ReaderF<R, B> => {
-    f = f || (identity as (a: A) => B);
+    f = f || (identity as Application<A, B>);
     fa = fa || (identity as ReaderF<R, A>);
     
     return compose(f, fa);
 };
 
-export const functor = <T>(): IReaderFunctor<T> => baseFunctor<IsReader>({ fmap }) as IReaderFunctor<T>;
+export const functor = <T>(): IPlainReaderFunctor<T> => baseFunctor<IsPlainReader>({ fmap }) as IPlainReaderFunctor<T>;
