@@ -1,5 +1,5 @@
 import { IApplicative, Application, Application2, applicative as appBase } from '@common/types';
-import { Maybe, Just } from '@data/maybe';
+import { Maybe } from '@data/maybe';
 import { MaybeF, IsMaybe, functor } from '@control/functor/maybe';
 
 export interface IMaybeApplicative extends IApplicative<IsMaybe> {
@@ -21,11 +21,7 @@ const lift = <A, B>(fab: MaybeF<Application<A, B>>, fa: MaybeF<A>): MaybeF<B> =>
     fab = fab || Maybe.nothing();
     fa = fa || Maybe.nothing();
 
-    return fab.isNothing ? Maybe.nothing() : functor.fmap((fab as Just<Application<A, B>>).value, fa);
+    return fab.isNothing ? Maybe.nothing() : functor.fmap(fab.value, fa);
 }
 
 export const applicative = appBase(functor, { pure, lift }) as IMaybeApplicative;
-
-applicative.lift(Maybe.just((x: string) => x.toUpperCase()), Maybe.just(2));
-
-

@@ -1,10 +1,10 @@
 import { identity } from 'ramda';
 import { Box, functor as baseFunctor, IFunctor } from '@common/types';
-import { Maybe, MaybeType, Just } from '@data/maybe';
+import { Maybe } from '@data/maybe';
 
 export class IsMaybe {}
 
-export type MaybeF<T> = Box<IsMaybe, T> & MaybeType<T>;
+export type MaybeF<T> = Box<IsMaybe, T> & Maybe<T>;
 
 export interface IMaybeFunctor extends IFunctor<IsMaybe> {
     fmap: <A, B>(f: (a: A) => B, fa: MaybeF<A>) => MaybeF<B>;
@@ -18,7 +18,7 @@ const fmap = <A, B>(f: (a: A) => B, fa: MaybeF<A>): MaybeF<B> => {
     f = f || (identity as (a: A) => B);
     fa = fa || Maybe.nothing();
 
-    return fa.isNothing ? Maybe.nothing() : Maybe.from(f((fa as Just<A>).value)); 
+    return fa.isNothing ? Maybe.nothing() : Maybe.from(f(fa.value)); 
 }
 
 export const functor = baseFunctor<IsMaybe>({ fmap }) as IMaybeFunctor;

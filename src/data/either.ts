@@ -1,56 +1,38 @@
 
-export interface Left<T> {
-    isLeft: boolean;
-    isRight: boolean;
-    value: T;
-}
+ export class Either<TLeft, TRight> {
+    private _leftValue: TLeft;
+    private _rightValue: TRight;
 
-export interface Right<T> {
-    isLeft: boolean;
-    isRight: boolean;
-    value: T;
-}
-
-const createLeft = <R>(value: R): Left<R> => {
-    return {
-        get isLeft() {
-            return true;
-        },
-
-        get isRight() {
-            return false;
-        },
-
-        get value() {
-            return value;
-        }
-    } as Left<R>;
-}
-
-const createRight = <R>(value: R): Right<R> => {
-    return {
-        get isLeft() {
-            return false;
-        },
-
-        get isRight() {
-            return true;
-        },
-
-        get value() {
-            return value;
-        }
-    } as Left<R>;
-}
-
-export type EitherType<T1, T2> = Left<T1> | Right<T2>
-
-export class Either {
-    public static left<R>(value: R): Left<R> {
-        return createLeft(value);
+    private _isLeft: boolean;
+    private _isRight: boolean;
+    
+    private constructor() { }
+    
+    public static left<TLeft, TRight>(value: TLeft): Either<TLeft, TRight> {
+        const result = new Either<TLeft, TRight>();
+        result._leftValue = value;
+        result._isLeft = true;
+        result._isRight = false;
+        return result;
     }
 
-    public static right<R>(value: R): Right<R> {
-        return createRight(value);
-    }    
+    public static right<TLeft, TRight>(value: TRight): Either<TLeft, TRight> {
+        const result = new Either<TLeft, TRight>();
+        result._rightValue = value;
+        result._isLeft = false;
+        result._isRight = true;
+        return result;
+    }
+
+    public get isLeft() : boolean {
+        return this._isLeft;
+    }
+
+    public get isRight() : boolean {
+        return this._isRight;
+    }
+
+    public get value() : TLeft | TRight {
+        return this._isLeft ? this._leftValue : this._rightValue;
+    }
 }

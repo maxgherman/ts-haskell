@@ -6,6 +6,7 @@ import { functor as eif } from '@control/functor/either';
 import { applicative as pla } from '@control/applicative/plain-array';
 import { applicative as baa } from '@control/applicative/boxed-array';
 import { applicative as mba } from '@control/applicative/maybe';
+import { applicative as eia } from '@control/applicative/either';
 
 import { BoxedArray } from '@data/boxed-array';
 import { Maybe } from '@data/maybe';
@@ -23,6 +24,10 @@ pla.lift([x => x + 1], [1, 2, 3]);
 
 baa.lift(BoxedArray.from([x => x + 1]), BoxedArray.from([1, 2, 3]));
 
-mba.lift(Maybe.just(x => ({ a: x.b + 1})), Maybe.from({a: 1}));
+mba.lift(Maybe.just((x: { a: number}) => ({ a: x.a + 1})), Maybe.from({a: 1}));
 
-//mba.
+// mba.lift(Maybe.just((x: number) => x + 1), Maybe.from('2'));
+
+eia<string>().lift(Either.right((x: { a: number}) => ({ a: x.a + 1})), Either.right({a  : 1}));
+
+// eia<string>().lift(Either.right((x: number) => x + 1), Either.right('2'));
