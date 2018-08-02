@@ -1,4 +1,4 @@
-import { IApplicative, Application, Application2, applicative as appBase } from '@common/types';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types';
 import { Maybe } from '@data/maybe';
 import { MaybeF, IsMaybe, functor } from '@control/functor/maybe';
 
@@ -11,6 +11,11 @@ export interface IMaybeApplicative extends IApplicative<IsMaybe> {
     pure<A>(a:A): MaybeF<A>;
     lift<A, B>(fab: MaybeF<Application<A, B>>, fa: MaybeF<A>): MaybeF<B>;
     liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: MaybeF<A>, fb: MaybeF<A>): MaybeF<A>;
+    '*>'<A, B, C>(fa: MaybeF<A>, fb: MaybeF<B>): MaybeF<C>;
+    '<*'<A, B, C>(fa: MaybeF<A>, fb: MaybeF<B>): MaybeF<C>;
+    '<**>'<A, B>(fa: MaybeF<A>, fab: MaybeF<Application<A, B>>): MaybeF<B>;
+    liftA<A, B>(f: Application<A, B>, fa: MaybeF<A>): MaybeF<B>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: MaybeF<A>, fb: MaybeF<B>, fc: MaybeF<C>): MaybeF<D>; 
 }
 
 const pure = <A>(a: A): MaybeF<A> => {

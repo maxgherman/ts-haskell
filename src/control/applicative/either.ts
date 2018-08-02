@@ -1,5 +1,5 @@
 import { identity } from 'ramda';
-import { IApplicative, Application, Application2, applicative as appBase } from '@common/types';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types';
 import { Either } from '@data/either';
 import { IsEither, EitherF, functor, IEitherFunctor } from '@control/functor/either';
 
@@ -12,6 +12,11 @@ export interface IEitherApplicative<T> extends IApplicative<IsEither> {
     pure<A>(a:A): EitherF<T, A>;
     lift<A, B>(fab: EitherF<T, Application<A, B>>, fa: EitherF<T, A>): EitherF<T, B>;
     liftA2<A, B, C>(abc: Application2<A, B, C>, fa: EitherF<T, A>, fb: EitherF<T, A>): EitherF<T, A>;
+    '*>'<A, B, C>(fa: EitherF<T, A>, fb: EitherF<T, B>): EitherF<T, C>;
+    '<*'<A, B, C>(fa: EitherF<T, A>, fb: EitherF<T, B>): EitherF<T, C>;
+    '<**>'<A, B>(fa: EitherF<T, A>, fab: EitherF<T, Application<A, B>>): EitherF<T, B>;
+    liftA<A, B>(f: Application<A, B>, fa: EitherF<T, A>): EitherF<T, B>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: EitherF<T, A>, fb: EitherF<T, B>, fc: EitherF<T, C>): EitherF<T, D>; 
 }
 
 const pure = <R,A>(a: A): EitherF<R, A> => {

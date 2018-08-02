@@ -1,5 +1,5 @@
 import { identity } from 'ramda';
-import { IApplicative, Application, Application2, applicative as appBase } from '@common/types';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types';
 import { BoxedArray } from '@data/boxed-array';
 import { IsBoxedArray, functor, BoxedArrayF } from '@control/functor/boxed-array';
 
@@ -12,10 +12,15 @@ export interface IBoxedArrayApplicative extends IApplicative<IsBoxedArray> {
     pure<A>(a:A): BoxedArrayF<A>;
     lift<A, B>(fab: BoxedArrayF<Application<A, B>>, fa: BoxedArrayF<A>): BoxedArrayF<B>;
     liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: BoxedArrayF<A>, fb: BoxedArrayF<A>): BoxedArrayF<A>;
+    '*>'<A, B, C>(fa: BoxedArrayF<A>, fb: BoxedArrayF<B>): BoxedArrayF<C>;
+    '<*'<A, B, C>(fa: BoxedArrayF<A>, fb: BoxedArrayF<B>): BoxedArrayF<C>;
+    '<**>'<A, B>(fa: BoxedArrayF<A>, fab: BoxedArrayF<Application<A, B>>): BoxedArrayF<B>;
+    liftA<A, B>(f: Application<A, B>, fa: BoxedArrayF<A>): BoxedArrayF<B>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: BoxedArrayF<A>, fb: BoxedArrayF<B>, fc: BoxedArrayF<C>): BoxedArrayF<D>; 
 }
 
 const pure = <A>(a:A): BoxedArrayF<A> => {
-        return BoxedArray.from([a]);
+    return BoxedArray.from([a]);
 }
 
 const lift = <A, B>(fab: BoxedArrayF<Application<A, B>>, fa: BoxedArrayF<A>): BoxedArrayF<B> => {

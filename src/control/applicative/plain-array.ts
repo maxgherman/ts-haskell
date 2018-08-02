@@ -1,5 +1,5 @@
 import { identity } from 'ramda';
-import { IApplicative, Application, Application2, applicative as appBase } from '@common/types';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types';
 import { ArrayF, IsPlainArray, functor  } from '@control/functor/plain-array';
 
 export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
@@ -11,6 +11,11 @@ export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
     pure<A>(a:A): ArrayF<A>;
     lift<A, B>(fab: ArrayF<Application<A, B>>, fa: ArrayF<A>): ArrayF<B>;
     liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<A>;
+    '*>'<A, B, C>(fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<C>;
+    '<*'<A, B, C>(fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<C>;
+    '<**>'<A, B>(fa: ArrayF<A>, fab: ArrayF<Application<A, B>>): ArrayF<B>;
+    liftA<A, B>(f: Application<A, B>, fa: ArrayF<A>): ArrayF<B>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: ArrayF<A>, fb: ArrayF<B>, fc: ArrayF<C>): ArrayF<D>; 
 }
 
 const pure = <A>(a: A): ArrayF<A> => {
