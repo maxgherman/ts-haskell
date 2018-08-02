@@ -2,6 +2,7 @@ import { functor as plf } from '@control/functor/plain-array';
 import { functor as baf } from '@control/functor/boxed-array';
 import { functor as mbf } from '@control/functor/maybe';
 import { functor as eif } from '@control/functor/either';
+import { functor as ref } from '@control/functor/reader';
 
 import { applicative as pla } from '@control/applicative/plain-array';
 import { applicative as baa } from '@control/applicative/boxed-array';
@@ -19,6 +20,8 @@ baf.fmap(x => ({ a: x.a + 1}), BoxedArray.from([{a:1}, {a:2}, {a:3}]));
 mbf.fmap(x => ({ a: x.a + 1}), Maybe.just({a:1}));
 
 eif<string>().fmap(x => ({ a: x.a + 1}), Either.right({a:1}));
+
+ref<number>().fmap((x: number) => x + 1, (x) => x * 2);
 
 pla.lift([x => x + 1], [1, 2, 3]);
 
