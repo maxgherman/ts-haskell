@@ -153,7 +153,7 @@ describe('PlainArray applicative', () => {
 
         it('with compose', () => {
             const w = [4, -5, 6];
-            const lift = applicative.lift.bind(applicative);
+            const lift = applicative.lift;
           
             const result1 = compose(
                 flip(lift)(w),

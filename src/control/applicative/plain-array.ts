@@ -10,7 +10,7 @@ export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
     '<&>': <A, B>(fa: ArrayF<A>, f: (a: A) => B) => ArrayF<B>;
     pure<A>(a:A): ArrayF<A>;
     lift<A, B>(fab: ArrayF<Application<A, B>>, fa: ArrayF<A>): ArrayF<B>;
-    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<A>;
+    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<C>;
     '*>'<A, B, C>(fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<C>;
     '<*'<A, B, C>(fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<C>;
     '<**>'<A, B>(fa: ArrayF<A>, fab: ArrayF<Application<A, B>>): ArrayF<B>;

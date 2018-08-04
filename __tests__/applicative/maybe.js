@@ -179,7 +179,7 @@ describe('Maybe Applicative',() => {
 
         it('with compose', () => {
             const w = Maybe.from(-5);
-            const lift = applicative.lift.bind(applicative);
+            const lift = applicative.lift;
           
             const result1 = compose(
                 flip(lift)(w),

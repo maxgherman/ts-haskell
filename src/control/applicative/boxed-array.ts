@@ -11,7 +11,7 @@ export interface IBoxedArrayApplicative extends IApplicative<IsBoxedArray> {
     '<&>': <A, B>(fa: BoxedArrayF<A>, f: (a: A) => B) => BoxedArrayF<B>;
     pure<A>(a:A): BoxedArrayF<A>;
     lift<A, B>(fab: BoxedArrayF<Application<A, B>>, fa: BoxedArrayF<A>): BoxedArrayF<B>;
-    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: BoxedArrayF<A>, fb: BoxedArrayF<A>): BoxedArrayF<A>;
+    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: BoxedArrayF<A>, fb: BoxedArrayF<B>): BoxedArrayF<C>;
     '*>'<A, B, C>(fa: BoxedArrayF<A>, fb: BoxedArrayF<B>): BoxedArrayF<C>;
     '<*'<A, B, C>(fa: BoxedArrayF<A>, fb: BoxedArrayF<B>): BoxedArrayF<C>;
     '<**>'<A, B>(fa: BoxedArrayF<A>, fab: BoxedArrayF<Application<A, B>>): BoxedArrayF<B>;

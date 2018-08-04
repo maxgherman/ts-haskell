@@ -11,7 +11,7 @@ export interface IEitherApplicative<T> extends IApplicative<IsEither> {
     '<&>': <A, B>(fa: EitherF<T, A>, f: (a: A) => B) => EitherF<T, B>;
     pure<A>(a:A): EitherF<T, A>;
     lift<A, B>(fab: EitherF<T, Application<A, B>>, fa: EitherF<T, A>): EitherF<T, B>;
-    liftA2<A, B, C>(abc: Application2<A, B, C>, fa: EitherF<T, A>, fb: EitherF<T, A>): EitherF<T, A>;
+    liftA2<A, B, C>(abc: Application2<A, B, C>, fa: EitherF<T, A>, fb: EitherF<T, B>): EitherF<T, C>;
     '*>'<A, B, C>(fa: EitherF<T, A>, fb: EitherF<T, B>): EitherF<T, C>;
     '<*'<A, B, C>(fa: EitherF<T, A>, fb: EitherF<T, B>): EitherF<T, C>;
     '<**>'<A, B>(fa: EitherF<T, A>, fab: EitherF<T, Application<A, B>>): EitherF<T, B>;

@@ -156,7 +156,7 @@ describe('BoxedArray Applicative',() => {
 
         it('with compose', () => {
             const w = BoxedArray.from([4, -5, 6]);
-            const lift = applicative.lift.bind(applicative);
+            const lift = applicative.lift;
           
             const result1 = compose(
                 flip(lift)(w),

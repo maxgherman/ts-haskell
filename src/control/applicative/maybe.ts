@@ -10,7 +10,7 @@ export interface IMaybeApplicative extends IApplicative<IsMaybe> {
     '<&>': <A, B>(fa: MaybeF<A>, f: (a: A) => B) => MaybeF<B>;
     pure<A>(a:A): MaybeF<A>;
     lift<A, B>(fab: MaybeF<Application<A, B>>, fa: MaybeF<A>): MaybeF<B>;
-    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: MaybeF<A>, fb: MaybeF<A>): MaybeF<A>;
+    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: MaybeF<A>, fb: MaybeF<B>): MaybeF<C>;
     '*>'<A, B, C>(fa: MaybeF<A>, fb: MaybeF<B>): MaybeF<C>;
     '<*'<A, B, C>(fa: MaybeF<A>, fb: MaybeF<B>): MaybeF<C>;
     '<**>'<A, B>(fa: MaybeF<A>, fab: MaybeF<Application<A, B>>): MaybeF<B>;
