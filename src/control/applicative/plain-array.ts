@@ -28,7 +28,7 @@ const lift = <A, B>(fab: ArrayF<Application<A, B>>, fa: ArrayF<A>): ArrayF<B> =>
     
     return fab.reduce((acc, curr) => {
         curr = curr || (identity as Application<A, B>);
-        const elements = functor.fmap((element) => curr(element), fa);
+        const elements = functor.fmap(curr, fa);
         return acc.concat(elements);
     }, [] as ArrayF<B>);
 }

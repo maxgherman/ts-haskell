@@ -29,7 +29,7 @@ const lift = <A, B>(fab: BoxedArrayF<Application<A, B>>, fa: BoxedArrayF<A>): Bo
     
     const data = fab.value.reduce((acc, curr) => {
         curr = curr || (identity as Application<A, B>);
-        const elements = functor.fmap((element) => curr(element) , fa);
+        const elements = functor.fmap(curr, fa);
         return acc.concat((elements as BoxedArray<B>).value);
     }, [] as B[]);
     
