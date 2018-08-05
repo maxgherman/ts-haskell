@@ -1,4 +1,4 @@
-import { identity } from 'ramda';
+import { identity, always } from 'ramda';
 import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types';
 import { IsPlainReader, ReaderF, functor } from '@control/functor/plain-reader';
 
@@ -19,7 +19,7 @@ export interface IReaderApplicative<T> extends IApplicative<IsPlainReader> {
 }
 
 // pure a = \_ -> a
-const pure: (<R,A>(a: A)=> ReaderF<R, A>) = a => (x) => a;
+const pure: (<R,A>(a: A)=> ReaderF<R, A>) = always;
 
 // f <*> g = \x -> f x (g x)
 const lift =
