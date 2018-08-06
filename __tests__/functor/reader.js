@@ -1,55 +1,55 @@
-import { functor as baseFunctor } from '@control/functor/plain-reader';
 import { identity, partial, compose } from "ramda";
+import { functor as baseFunctor } from '@control/functor/reader';
+import { Reader } from '@data/reader';
 
 const functor = baseFunctor();
 
-describe('Plain Reader functor', () => {
+describe('Reader functor', () => {
     describe('fmap', () => {
         it('maps over', () => {
-            const transformer = (x) => x  + x;
-            const result = functor.fmap(transformer, (x) => x - 10);
-            const expected = 180;
+            const transformer = (x) => x + x/2;
+            const result = functor.fmap(transformer, Reader.from((e) => e - 10));
           
-            expect(result(100)).toBe(expected);
+            expect(result.runReader(100)).toBe(135);
         });
 
         it('uses id for falsy transformer paramter', () => {
-			const result = functor.fmap(undefined, (x) => x + 10);
-			expect(result(100)).toBe(110);
+			const result = functor.fmap(undefined, Reader.from((x) => x + 10));
+			expect(result.runReader(100)).toBe(110);
 		});
 
-        it('uses id for false second paramter', () => {
+        it('uses id for falsy second paramter', () => {
 			const result = functor.fmap(undefined, undefined);
-			expect(result(100)).toBe(100);
+			expect(result.runReader(100)).toBe(100);
 		});
     });
 
     describe('extensions', () => {
         it('<$>', () => {
             const transformer = (x) => x * x + x/2;
-            const argument = (x) => x + 1
+            const argument = Reader.from((x) => x + 1);
 
             const result = functor['<$>'](transformer, argument);
-            expect(result(10)).toBe(126.5);
+            expect(result.runReader(10)).toBe(126.5);
             
         });
 
         it('<$', () => {
-            const result = functor['<$'](7, (x) => x + 1);
-            expect(result(10)).toBe(7);
+            const result = functor['<$'](7, Reader.from((x) => x + 1));
+            expect(result.runReader(10)).toBe(7);
         });
 
         it('$>', () => {
-            const result = functor['$>']((x) => x + 1, 7);
-            expect(result(10)).toBe(7);
+            const result = functor['$>'](Reader.from((x) => x + 1), 7);
+            expect(result.runReader(10)).toBe(7);
         });
 
         it('<&>', () => {
             const transformer = (x) => x * x + x/2;
             const argument = (x) => x + 1;
 
-            const result = functor['<&>'](argument, transformer);
-            expect(result(10)).toBe(126.5);
+            const result = functor['<&>'](Reader.from(argument), transformer);
+            expect(result.runReader(10)).toBe(126.5);
         });
     });
 
@@ -58,10 +58,10 @@ describe('Plain Reader functor', () => {
 		
 		it('non empty value', () => {
 			const argument = (x) => x + 10;
-			const result = fmapId(argument);
+			const result = fmapId(Reader.from(argument));
 			const expected = identity(argument);
 			
-            const resultValue = result(10);
+            const resultValue = result.runReader(10);
             const expectedValue = expected(10);
             
             expect(resultValue).toBe(expectedValue);
@@ -71,7 +71,7 @@ describe('Plain Reader functor', () => {
         it('empty value', () => {
 			const argument = null;
 			const result = fmapId(argument);
-			expect(result(10)).toBe(identity(10));
+			expect(result.runReader(10)).toBe(identity(10));
 		});
     });
 
@@ -85,11 +85,11 @@ describe('Plain Reader functor', () => {
 		const fAfB = compose(fA, fB);
 
         it('non empty value', () => {
-			const argument = (x) => x + 1;
+			const argument = Reader.from((x) => x + 1);
 			const result1 = fAB(argument);
 			const result2 = fAfB(argument);
-            const result1Value = result1(10);
-            const result2Value = result2(10);
+            const result1Value = result1.runReader(10);
+            const result2Value = result2.runReader(10);
 
 			expect(result1Value).toBe(result2Value);
 
@@ -102,8 +102,8 @@ describe('Plain Reader functor', () => {
 			const result1 = fAB(argument);
 			const result2 = fAfB(argument);
 			
-            const result1Value = result1(10);
-            const result2Value = result2(10);
+            const result1Value = result1.runReader(10);
+            const result2Value = result2.runReader(10);
 
             expect(result1Value).toBe(result2Value);
 			expect(result1Value).toBe(32);
