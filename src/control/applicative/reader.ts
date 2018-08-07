@@ -1,8 +1,9 @@
-import { identity, always, compose } from 'ramda';
+import { identity, always } from 'ramda';
 import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types';
-import { IsPlainReader, ReaderF, functor } from '@control/functor/plain-reader';
+import { IsReader, ReaderF, functor } from '@control/functor/reader';
+import { Reader } from '@data/reader';
 
-export interface IReaderApplicative<T> extends IApplicative<IsPlainReader> {
+export interface IReaderApplicative<T> extends IApplicative<IsReader> {
     fmap: <A, B>(f: (a: A) => B, fa: ReaderF<T, A>) => ReaderF<T, B>;
     '<$>': <A, B>(f: (a: A) => B, fa: ReaderF<T, A>) => ReaderF<T, B>;
     '<$': <A, B>(a: A, fb: ReaderF<T, B>) => ReaderF<T, A>;
@@ -19,18 +20,21 @@ export interface IReaderApplicative<T> extends IApplicative<IsPlainReader> {
 }
 
 // pure a = \_ -> a
-const pure: (<R,A>(a: A)=> ReaderF<R, A>) = always;
+const pure = <R,A>(a: A) => Reader.from((_: R) => a);
 
 // f <*> g = \x -> f x (g x)
 const lift =
     <R, A, B>(fab: ReaderF<R, Application<A, B>>, fa: ReaderF<R, A>): ReaderF<R, B> => {
     
     // fab :: r -> a -> b
-    fab = fab || always(identity) as ReaderF<R, Application<A, B>>;
-    // fab = fab || ((_) => identity) as ReaderF<R, Application<A, B>>;
-    fa = fa || identity as ReaderF<R, A>;
+    fab = fab ||  Reader.from(always(identity)) as ReaderF<R, Application<A, B>>;
+    // fab = fab || Reader.from((_) => identity) as ReaderF<R, Application<A, B>>;
+    fa = fa || Reader.from(identity as Application<R, A>) as ReaderF<R, A>;
 
-    return (x) => fab(x)(fa(x));
+    return Reader.from((x: R) => {
+        const fax = fa.runReader(x);
+        return fab.runReader(x)(fax);
+    });
 }
 
 export const applicative = <T>(): IReaderApplicative<T> => {
