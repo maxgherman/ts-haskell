@@ -8,6 +8,16 @@ describe('Reader',() => {
         expect(reader.runReader(10)).toBe(20);
     });
 
+    it('mapReader', () => {
+        const mapped = reader.mapReader((a) => a * 3);
+        expect(mapped.runReader(10)).toBe(60);
+    });
+
+    it('withReader', () => {
+        const mapped = reader.withReader((e) => e * 3);
+        expect(mapped.runReader(10)).toBe(40);
+    });
+
     it('runReader (mapReader f m) = f . runReader m', () => {
         const f = (b) => b * 3 + b/2;
         const value = 5;
@@ -17,16 +27,6 @@ describe('Reader',() => {
       
         expect(result1).toBe(result2);
         expect(result1).toBe(52.5);
-    });
-
-    it('mapReader', () => {
-        const mapped = reader.mapReader((a) => a * 3);
-        expect(mapped.runReader(10)).toBe(60);
-    });
-
-    it('withReader', () => {
-        const mapped = reader.withReader((e) => e * 3);
-        expect(mapped.runReader(10)).toBe(40);
     });
 
     it('runReader (withReader f m) = runReader m . f', () => {

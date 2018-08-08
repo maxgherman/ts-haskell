@@ -19,11 +19,11 @@ export class Reader<T, A> {
 
     // mapReader :: (a -> b) -> Reader r a -> Reader r b
     public mapReader<B>(app: Application<A, B>): Reader<T, B> {
-        return new Reader<T, B>(compose(app, this.runReader));
+        return Reader.from(compose(app, this.runReader));
     }
 
     // withReader :: :: (r' -> r) -> Reader r a	 -> Reader r' a
     public withReader<K>(app: Application<K, T>) {
-        return new Reader<K, A>(compose(this.runReader, app));
+        return Reader.from(compose(this.runReader, app));
     }
 }
