@@ -1,5 +1,6 @@
 import { identity } from 'ramda';
-import { Box, functor as baseFunctor, IFunctor, Application } from '@common/types';
+import { Box, functor as baseFunctor, IFunctor } from '@common/types/functor';
+import { Application } from '@common/types/applicative';
 import { Writer } from '@data/writer';
 
 export class IsWriter {}

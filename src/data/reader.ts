@@ -1,5 +1,5 @@
 import { compose } from 'ramda';
-import { Application } from '@common/types';
+import { Application } from '@common/types/applicative';
 
 export class Reader<T, A> {
     private _action: Application<T, A>;

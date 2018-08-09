@@ -1,5 +1,5 @@
 import { identity } from 'ramda';
-import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
 import { BoxedArray } from '@data/boxed-array';
 import { IsBoxedArray, functor, BoxedArrayF } from '@control/functor/boxed-array';
 

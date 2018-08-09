@@ -1,5 +1,5 @@
 import { identity } from 'ramda';
-import { Box, functor as baseFunctor, IFunctor } from '@common/types';
+import { Box, functor as baseFunctor, IFunctor } from '@common/types/functor';
 
 export class IsPlainArray {}
 
