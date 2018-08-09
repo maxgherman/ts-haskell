@@ -4,6 +4,7 @@ import { functor as mbf } from '@control/functor/maybe';
 import { functor as eif } from '@control/functor/either';
 import { functor as prf } from '@control/functor/plain-reader';
 import { functor as rf } from '@control/functor/reader';
+import { functor as wf } from '@control/functor/writer';
 
 import { applicative as pla } from '@control/applicative/plain-array';
 import { applicative as baa } from '@control/applicative/boxed-array';
@@ -16,6 +17,7 @@ import { BoxedArray } from '@data/boxed-array';
 import { Maybe } from '@data/maybe';
 import { Either } from '@data/either';
 import { Reader } from '@data/reader';
+import { Writer } from '@data/writer';
 
 plf.fmap(x => ({ a: x.a + 1}), [{a:1}, {a:2}, {a:3}]);
 
@@ -28,6 +30,10 @@ eif<string>().fmap(x => ({ a: x.a + 1}), Either.right({a:1}));
 prf<number>().fmap((x: number) => x + 1, (x) => x * 2);
 
 rf<number>().fmap(x => x + 1, Reader.from((x) => x + '2'));
+
+wf<string[]>().fmap(x => x + 1, Writer.from([10, ['Test']]));
+
+
 
 pla.lift([x => x + 1], [1, 2, 3]);
 
