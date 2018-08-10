@@ -1,4 +1,4 @@
 
-export interface ISemigroup {
-    '<>'<R>(a: R, b: R): R;    
+export interface ISemigroup<T> {
+    '<>'(a: T, b: T): T;    
 }
