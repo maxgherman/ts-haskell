@@ -6,7 +6,6 @@ export interface IMonoidBase<T> {
 }
 
 export interface IMonoid<T> extends IMonoidBase<T> {
-    // NOTE: This method is redundant and has the default implementation mappend = '(<>)' since base-4.11.0.0.
     // mconcat :: [a] -> a
     // mconcat = foldr '(<>)' mempty
     mconcat(array: [T]): T;
@@ -18,7 +17,7 @@ export interface IMonoid<T> extends IMonoidBase<T> {
 }
 
 const mconcat = <T>(semigroup: ISemigroup<T>, monoidBase: IMonoidBase<T>) => (array: [T]): T => {
-    return (array || [] as [T]).reduceRight(semigroup["<>"], monoidBase.mempty());
+    return (array || [] as Array<T>).reduceRight(semigroup["<>"], monoidBase.mempty());
 };
 
 export const monoid = <T>(semigroup: ISemigroup<T>, monoidBase: IMonoidBase<T>): IMonoid<T> => {
