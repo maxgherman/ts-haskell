@@ -1,6 +1,5 @@
 import { useWith, always, flip } from 'ramda';
-
-export class Box<F, T> { }
+import { Box } from '@common/types/box';
 
 export interface IBaseFunctor<F> {
     fmap<A, B>(f: (a: A) => B, fa: Box<F, A>) : Box<F, B>;

@@ -1,7 +1,7 @@
 import { identity } from 'ramda';
-import { Box, functor as baseFunctor, IFunctor } from '@common/types/functor';
-
-export class IsPlainArray {}
+import { Box } from '@common/types/box';
+import { functor as baseFunctor, IFunctor } from '@common/types/functor';
+import {IsPlainArray } from '@control/plain-array';
 
 export type ArrayF<T> = Box<IsPlainArray, T> & Array<T>;
 

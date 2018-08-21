@@ -31,7 +31,7 @@ prf<number>().fmap((x: number) => x + 1, (x) => x * 2);
 
 rf<number>().fmap(x => x + 1, Reader.from((x) => x + '2'));
 
-wf<string[]>().fmap(x => x + 1, Writer.from([10, ['Test']]));
+// wf<string[]>().fmap(x => x + 1, Writer.from([10, ['Test']]));
 
 
 

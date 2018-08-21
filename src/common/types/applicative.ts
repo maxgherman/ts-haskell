@@ -1,5 +1,6 @@
 import { useWith, always, identity, partial } from 'ramda';
-import { Box, IFunctor } from '@common/types/functor';
+import { IFunctor } from '@common/types/functor';
+import { Box } from '@common/types/box';
 import { applyReverse } from '@common/utils';
 
 export type Application<A, B> = (a: A) => B;

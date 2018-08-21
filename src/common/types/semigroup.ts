@@ -1,4 +1,5 @@
+import { Box } from '@common/types/box';
 
-export interface ISemigroup<T> {
-    '<>'(a: T, b: T): T;    
+export interface ISemigroup<F> {
+    '<>'<R>(a: Box<F, R>, b: Box<F, R>): Box<F, R>;    
 }

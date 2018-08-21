@@ -1,6 +1,7 @@
 import { identity } from 'ramda';
 import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
-import { ArrayF, IsPlainArray, functor  } from '@control/functor/plain-array';
+import { ArrayF, functor  } from '@control/functor/plain-array';
+import {IsPlainArray } from '@control/plain-array';
 
 export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
     fmap: <A, B>(f: (a: A) => B, fa: ArrayF<A>) => ArrayF<B>;
