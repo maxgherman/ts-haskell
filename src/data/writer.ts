@@ -1,11 +1,5 @@
 
-export interface IWriter<T, A> {
-    runWriter(): [A, T];
-    execWriter();
-    mapWriter<B, T2>(action: (_: [A, T]) => [B, T2]): Writer<T2, B>;
-}
-
-export class Writer<T, A> implements IWriter<T, A> {
+export class Writer<T, A> {
     private _value: [A, T];
     
     private constructor(value: [A, T]) {

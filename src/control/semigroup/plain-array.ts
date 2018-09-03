@@ -1,6 +1,6 @@
 import { Box } from '@common/types/box';
 import { ISemigroup }  from '@common/types/semigroup';
-import {IsPlainArray } from '@control/plain-array';
+import { IsPlainArray } from '@control/plain-array';
 
 export type PlainArrayS<T> = Box<IsPlainArray, T> & Array<T> 
 

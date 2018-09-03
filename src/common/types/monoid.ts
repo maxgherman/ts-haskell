@@ -1,29 +1,53 @@
+import { flip } from 'ramda';
 import { Box } from '@common/types/box';
 import { ISemigroup } from '@common/types/semigroup';
 
 // LAWS
 
+// -- Identity laws
 // x <> mempty = x
 // mempty <> x = x
-// x <> (y <> z) = (x <> y) <> z (Semigroup law)
-// mconcat = foldr '(<>)' mempty
+ 
+// -- Associativity
+// (x <> y) <> z = x <> (y <> z)
 
 export interface IMonoidBase<F> {
     mempty<A>(): Box<F, A>;
-    mconcat<A>(array: Array<Box<F, A>>): Box<F, A>;
+    mconcat? : <A>(array: Array<Box<F, A>>) => Box<F, A>;
 }
 
 export interface IMonoid<F> extends IMonoidBase<F> {
     mappend<A>(a: Box<F, A>, b: Box<F, A>): Box<F, A>;
 }
 
-const mappend = <R, A>(semigroup: ISemigroup<R>) =>  (a: Box<R, A>, b: Box<R, A>): Box<R, A> => {
+const mappend = <R, A>(semigroup: ISemigroup<R>, mempty: <A>() => Box<R, A>) =>  (a: Box<R, A>, b: Box<R, A>): Box<R, A> => {
+    a = a || mempty();
+    b = b || mempty();
+    
     return semigroup["<>"](a, b);
 }
 
+// mconcat = foldr '(<>)' mempty
+const mconcat = <T, A>(semigroup: ISemigroup<A>, mempty: <A>() => Box<T, A>) => (array: [Box<T, A>]): Box<T, A> => {
+    // flipping the args for mappend because in Haskell foldr lambda takes current element as first arg
+    const mappendInstance = flip(mappend<T, A>(semigroup, mempty)); 
+    
+    array = array || [ mempty() ];
+
+    return array.reduceRight(mappendInstance, mempty());
+}
+
 export const monoid = <T>(semigroup: ISemigroup<T>, monoidBase: IMonoidBase<T>): IMonoid<T> => {
+    const base = {
+        ...monoidBase
+    };
+
+    if(!base.mconcat ){
+        base.mconcat = mconcat(semigroup, monoidBase.mempty); 
+    };
+    
     return {
-        ...monoidBase,
-        mappend: mappend(semigroup)
+        ...base,
+        mappend: mappend(semigroup, monoidBase.mempty)
     };
 };
