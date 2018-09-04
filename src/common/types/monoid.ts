@@ -2,15 +2,6 @@ import { flip } from 'ramda';
 import { Box } from '@common/types/box';
 import { ISemigroup } from '@common/types/semigroup';
 
-// LAWS
-
-// -- Identity laws
-// x <> mempty = x
-// mempty <> x = x
- 
-// -- Associativity
-// (x <> y) <> z = x <> (y <> z)
-
 export interface IMonoidBase<F> {
     mempty<A>(): Box<F, A>;
     mconcat? : <A>(array: Array<Box<F, A>>) => Box<F, A>;
@@ -18,6 +9,7 @@ export interface IMonoidBase<F> {
 
 export interface IMonoid<F> extends IMonoidBase<F> {
     mappend<A>(a: Box<F, A>, b: Box<F, A>): Box<F, A>;
+    '<>'<A>(a: Box<F, A>, b: Box<F, A>): Box<F, A>;    
 }
 
 const mappend = <R, A>(semigroup: ISemigroup<R>, mempty: <A>() => Box<R, A>) =>  (a: Box<R, A>, b: Box<R, A>): Box<R, A> => {
@@ -48,6 +40,7 @@ export const monoid = <T>(semigroup: ISemigroup<T>, monoidBase: IMonoidBase<T>):
     
     return {
         ...base,
-        mappend: mappend(semigroup, monoidBase.mempty)
+        mappend: mappend(semigroup, monoidBase.mempty),
+        ...semigroup
     };
 };
