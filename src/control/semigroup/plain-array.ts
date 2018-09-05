@@ -1,15 +1,12 @@
-import { Box } from '@common/types/box';
 import { ISemigroup }  from '@common/types/semigroup';
-import { IsPlainArray } from '@control/plain-array';
-
-export type PlainArrayS<T> = Box<IsPlainArray, T> & Array<T> 
+import { IsPlainArray, ArrayBox } from '@control/plain-array';
 
 export interface IPlainArraySemigroup extends ISemigroup<IsPlainArray> {
-    '<>'<A>(a: PlainArrayS<A>, b: PlainArrayS<A>): PlainArrayS<A>;
+    '<>'<A>(a: ArrayBox<A>, b: ArrayBox<A>): ArrayBox<A>;
 }
 
 export const semigroup: IPlainArraySemigroup = {
-    '<>'<A>(a: PlainArrayS<A>, b: PlainArrayS<A>) {
+    '<>'<A>(a: ArrayBox<A>, b: ArrayBox<A>) {
         a = a || [];
         b = b || [];
 

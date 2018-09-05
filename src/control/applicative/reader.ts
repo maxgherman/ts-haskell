@@ -28,7 +28,6 @@ const lift =
     
     // fab :: r -> a -> b
     fab = fab ||  Reader.from(always(identity)) as ReaderF<R, Application<A, B>>;
-    // fab = fab || Reader.from((_) => identity) as ReaderF<R, Application<A, B>>;
     fa = fa || Reader.from(identity as Application<R, A>) as ReaderF<R, A>;
 
     return Reader.from((x: R) => {

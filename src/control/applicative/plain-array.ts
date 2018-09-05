@@ -1,29 +1,29 @@
 import { identity } from 'ramda';
 import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
-import { ArrayF, functor  } from '@control/functor/plain-array';
-import {IsPlainArray } from '@control/plain-array';
+import { functor  } from '@control/functor/plain-array';
+import { IsPlainArray, ArrayBox } from '@control/plain-array';
 
 export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
-    fmap: <A, B>(f: (a: A) => B, fa: ArrayF<A>) => ArrayF<B>;
-    '<$>': <A, B>(f: (a: A) => B, fa: ArrayF<A>) => ArrayF<B>;
-    '<$': <A, B>(a: A, fb: ArrayF<B>) => ArrayF<A>;
-    '$>': <A, B>(fa: ArrayF<A>, b: B) => ArrayF<B>;
-    '<&>': <A, B>(fa: ArrayF<A>, f: (a: A) => B) => ArrayF<B>;
-    pure<A>(a:A): ArrayF<A>;
-    lift<A, B>(fab: ArrayF<Application<A, B>>, fa: ArrayF<A>): ArrayF<B>;
-    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<C>;
-    '*>'<A, B, C>(fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<C>;
-    '<*'<A, B, C>(fa: ArrayF<A>, fb: ArrayF<B>): ArrayF<C>;
-    '<**>'<A, B>(fa: ArrayF<A>, fab: ArrayF<Application<A, B>>): ArrayF<B>;
-    liftA<A, B>(f: Application<A, B>, fa: ArrayF<A>): ArrayF<B>;
-    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: ArrayF<A>, fb: ArrayF<B>, fc: ArrayF<C>): ArrayF<D>; 
+    fmap: <A, B>(f: (a: A) => B, fa: ArrayBox<A>) => ArrayBox<B>;
+    '<$>': <A, B>(f: (a: A) => B, fa: ArrayBox<A>) => ArrayBox<B>;
+    '<$': <A, B>(a: A, fb: ArrayBox<B>) => ArrayBox<A>;
+    '$>': <A, B>(fa: ArrayBox<A>, b: B) => ArrayBox<B>;
+    '<&>': <A, B>(fa: ArrayBox<A>, f: (a: A) => B) => ArrayBox<B>;
+    pure<A>(a:A): ArrayBox<A>;
+    lift<A, B>(fab: ArrayBox<Application<A, B>>, fa: ArrayBox<A>): ArrayBox<B>;
+    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: ArrayBox<A>, fb: ArrayBox<B>): ArrayBox<C>;
+    '*>'<A, B, C>(fa: ArrayBox<A>, fb: ArrayBox<B>): ArrayBox<C>;
+    '<*'<A, B, C>(fa: ArrayBox<A>, fb: ArrayBox<B>): ArrayBox<C>;
+    '<**>'<A, B>(fa: ArrayBox<A>, fab: ArrayBox<Application<A, B>>): ArrayBox<B>;
+    liftA<A, B>(f: Application<A, B>, fa: ArrayBox<A>): ArrayBox<B>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: ArrayBox<A>, fb: ArrayBox<B>, fc: ArrayBox<C>): ArrayBox<D>; 
 }
 
-const pure = <A>(a: A): ArrayF<A> => {
+const pure = <A>(a: A): ArrayBox<A> => {
     return [a];
 }  
 
-const lift = <A, B>(fab: ArrayF<Application<A, B>>, fa: ArrayF<A>): ArrayF<B> => {
+const lift = <A, B>(fab: ArrayBox<Application<A, B>>, fa: ArrayBox<A>): ArrayBox<B> => {
     fab = fab || [];
     fa = fa || [];
     
@@ -31,7 +31,7 @@ const lift = <A, B>(fab: ArrayF<Application<A, B>>, fa: ArrayF<A>): ArrayF<B> =>
         curr = curr || (identity as Application<A, B>);
         const elements = functor.fmap(curr, fa);
         return acc.concat(elements);
-    }, [] as ArrayF<B>);
+    }, [] as ArrayBox<B>);
 }
 
 export const applicative = appBase(functor, { pure, lift }) as IPlainArrayApplicative;

@@ -1,10 +1,12 @@
 import { identity, partial, compose } from 'ramda';
 import { functor as baseFunctor } from '@control/functor/writer';
+import { monoid } from '@control/monoid/plain-array';
 import { Writer } from '@data/writer';
 
-const functor = baseFunctor();
-
-describe('Writer functor', () => {
+describe('PlainArray Writer functor', () => {
+    
+    const functor = baseFunctor(monoid);
+    
     describe('fmap', () => {
         const writer = Writer.from([10, ['Test']]);
 
@@ -20,9 +22,9 @@ describe('Writer functor', () => {
 			expect(result.runWriter()).toEqual([10, ['Test']]);
 		});
 
-        it('uses id for falsy second paramter', () => {
+        it('uses mempty for falsy second paramter', () => {
 			const result = functor.fmap(undefined, undefined);
-			expect(result.runWriter()).toEqual([undefined, undefined]);
+			expect(result.runWriter()).toEqual([undefined, []]);
 		});
     });
 
@@ -72,7 +74,7 @@ describe('Writer functor', () => {
         it('empty value', () => {
 			const argument = null;
 			const result = fmapId(argument);
-			expect(result.runWriter()).toEqual(identity([undefined, undefined]));
+			expect(result.runWriter()).toEqual(identity([undefined, []]));
 		});
     });
 
@@ -107,8 +109,7 @@ describe('Writer functor', () => {
             const result2Value = result2.runWriter();
 
             expect(result1Value).toEqual(result2Value);
-			expect(result1Value).toEqual([NaN, undefined]);
+			expect(result1Value).toEqual([NaN, []]);
 		});
     });
 });
-
