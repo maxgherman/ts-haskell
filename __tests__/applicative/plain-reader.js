@@ -6,7 +6,7 @@ const applicative = appBase();
 
 describe('Plain Reader Applicative',() => {
     describe('pure', () => {
-        it('returns always', () => {
+        it('returns Reader', () => {
             const expected = applicative.pure(3);
             expect(expected(10)).toBe(3);
         });

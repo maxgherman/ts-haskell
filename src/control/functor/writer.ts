@@ -21,16 +21,6 @@ interface IWriterFunctor<T, T1, TLog> extends IFunctor<IsWriter> {
     '<&>': <A, B>(fa: WriterF<T, T1, TLog, A>, f: (a: A) => B) => WriterF<T, T1, TLog, A>
 }
 
-// export type WriterF<T, A> = Box<IsWriter, IMonoid<T>> & Writer<IMonoid<T>, A>;
-
-// export interface IWriterFunctor<T> extends IFunctor<IsWriter> {
-//     fmap: <A, B>(f: (a: A) => B, fa: WriterF<T, A>) => WriterF<T, B>;
-//     '<$>': <A, B>(f: (a: A) => B, fa: WriterF<T, A>) => WriterF<T, B>,
-//     '<$': <A, B>(a: A, fb: WriterF<T, B>) => WriterF<T, A>,
-//     '$>': <A, B>(fa: WriterF<T, A>, b: B) => WriterF<T, B>,
-//     '<&>': <A, B>(fa: WriterF<T, A>, f: (a: A) => B) => WriterF<T, B>
-// }
-
 const fmap = <T, T1, TLog, A, B>(monoid: IMonoid<T1>) =>
     (f: (a: A) => B, fa: WriterF<T, T1, TLog, A>): WriterF<T, T1, TLog, B> => {
 

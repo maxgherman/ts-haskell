@@ -7,15 +7,21 @@ const applicative = appBase();
 
 describe('Reader Applicative',() => {
     describe('pure', () => {
-        it('returns always', () => {
+        it('returns reader', () => {
             const expected = applicative.pure(3);
             expect(expected.runReader(10)).toBe(3);
         });
     });
 
     describe('lift', () => {
-        it('returns for valid args', () => {
-            // const arg1 = Reader.from((r) => (x) => r * 3 + x);
+        it('returns for Reader', () => {
+            const arg1 = Reader.from((r) => (x) => r * 3 + x);
+            const arg2 = Reader.from((x) => x + 1);
+            const result = applicative.lift(arg1, arg2);
+            expect(result.runReader(10)).toBe(41);
+        });
+
+        it('returns for fmap', () => {
             const arg1 = applicative.fmap((x) => (y) => x + y, Reader.from((x) => x * 3));
             const arg2 = Reader.from((x) => x + 1);
             const result = applicative.lift(arg1, arg2);

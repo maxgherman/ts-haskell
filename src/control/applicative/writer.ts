@@ -15,8 +15,8 @@ export interface IWriterApplicative<T, T1, TLog> extends IApplicative<IsWriter> 
     lift<A, B>(fab: WriterF<T, T1, TLog, Application<A, B>>, fa: WriterF<T, T1, TLog, A>): WriterF<T, T1, TLog, B>;
     liftA2<A, B, C>(abc: Application2<A, B, C>, fa: WriterF<T, T1, TLog, A>, fb: WriterF<T, T1, TLog, B>):
         WriterF<T, T1, TLog, C>;
-    '*>'<A, B, C>(fa: WriterF<T, T1, TLog, A>, fb: WriterF<T, T1, TLog, B>): WriterF<T, T1, TLog, C>;
-    '<*'<A, B, C>(fa: WriterF<T, T1, TLog, A>, fb: WriterF<T, T1, TLog, B>): WriterF<T, T1, TLog, C>;
+    '*>'<A, B>(fa: WriterF<T, T1, TLog, A>, fb: WriterF<T, T1, TLog, B>): WriterF<T, T1, TLog, B>;
+    '<*'<A, B>(fa: WriterF<T, T1, TLog, A>, fb: WriterF<T, T1, TLog, B>): WriterF<T, T1, TLog, A>;
     '<**>'<A, B>(fa: WriterF<T, T1, TLog, A>, fab: WriterF<T, T1, TLog, Application<A, B>>): WriterF<T, T1, TLog, B>;
     liftA<A, B>(f: Application<A, B>, fa: WriterF<T, T1, TLog, A>): WriterF<T, T1, TLog, B>;
     liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: WriterF<T, T1, TLog, A>, fb: WriterF<T, T1, TLog, B>, fc: WriterF<T, T1, TLog, C>):
@@ -35,9 +35,9 @@ const liftWithMonoid = <T, T1, TLog, A, B>(monoid: IMonoid<T1>) => (
     fab = fab || Writer.from([identity as Application<A, B>, monoid.mempty()]);
     fa = fa || Writer.from([undefined, monoid.mempty()]);
 
-    const [data, log1] = fa.runWriter();
-    const [action, log2] = fab.runWriter();
-
+    const [action, log1] = fab.runWriter();
+    const [data, log2] = fa.runWriter();
+   
     return Writer.from([action(data), monoid.mappend(log1, log2)]);
 }
 

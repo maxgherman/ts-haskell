@@ -11,8 +11,8 @@ export interface IReaderApplicative<T> extends IApplicative<IsPlainReader> {
     pure<A>(a:A): ReaderF<T, A>;
     lift<A, B>(fab: ReaderF<T, Application<A, B>>, fa: ReaderF<T, A>): ReaderF<T, B>;
     liftA2<A, B, C>(abc: Application2<A, B, C>, fa: ReaderF<T, A>, fb: ReaderF<T, B>): ReaderF<T, C>;
-    '*>'<A, B, C>(fa: ReaderF<T, A>, fb: ReaderF<T, B>): ReaderF<T, C>;
-    '<*'<A, B, C>(fa: ReaderF<T, A>, fb: ReaderF<T, B>): ReaderF<T, C>;
+    '*>'<A, B>(fa: ReaderF<T, A>, fb: ReaderF<T, B>): ReaderF<T, B>;
+    '<*'<A, B>(fa: ReaderF<T, A>, fb: ReaderF<T, B>): ReaderF<T, A>;
     '<**>'<A, B>(fa: ReaderF<T, A>, fab: ReaderF<T, Application<A, B>>): ReaderF<T, B>;
     liftA<A, B>(f: Application<A, B>, fa: ReaderF<T, A>): ReaderF<T, B>;
     liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: ReaderF<T, A>, fb: ReaderF<T, B>, fc: ReaderF<T, C>): ReaderF<T, D>; 

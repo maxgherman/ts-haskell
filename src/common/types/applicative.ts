@@ -19,10 +19,10 @@ export interface IApplicative<F> extends IFunctor<F>, IApplicativeBase<F> {
     liftA2<A, B, C>(abc: Application2<A, B, C>, fa: Box<F, A>, fb: Box<F, B>): Box<F, C>;
  
    //(*>) :: f a -> f b -> f b
-    '*>'<A, B, C>(fa: Box<F, A>, fb: Box<F, B>): Box<F, C>;
+    '*>'<A, B>(fa: Box<F, A>, fb: Box<F, B>): Box<F, B>;
  
    // (<*) :: f a -> f b -> f a
-    '<*'<A, B, C>(fa: Box<F, A>, fb: Box<F, B>): Box<F, C>;
+    '<*'<A, B>(fa: Box<F, A>, fb: Box<F, B>): Box<F, A>;
    
    // (<**>) :: Applicative f => f a -> f (a -> b) -> f b
     '<**>'<A, B>(fa: Box<F, A>, fab: Box<F, Application<A, B>>): Box<F, B>;
@@ -43,7 +43,7 @@ export const applicative = <F>(f: IFunctor<F>, base: IApplicativeBase<F>): IAppl
     const extensions = {
         liftA2,
 
-        '*>'<A, B, C>(fa: Box<F, A>, fb: Box<F, B>): Box<F, C> {
+        '*>'<A, B>(fa: Box<F, A>, fb: Box<F, B>): Box<F, B> {
             return base.lift(f['<$'](identity, fa), fb);
         },
 
