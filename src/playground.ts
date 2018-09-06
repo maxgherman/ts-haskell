@@ -1,3 +1,5 @@
+import { monoid as plm } from '@control/monoid/plain-array';
+
 import { functor as plf } from '@control/functor/plain-array';
 import { functor as baf } from '@control/functor/boxed-array';
 import { functor as mbf } from '@control/functor/maybe';
@@ -12,12 +14,16 @@ import { applicative as mba } from '@control/applicative/maybe';
 import { applicative as eia } from '@control/applicative/either';
 import { applicative as pra } from '@control/applicative/plain-reader';
 import { applicative as ra } from '@control/applicative/reader';
+import { applicative as wa} from '@control/applicative/writer';
 
 import { BoxedArray } from '@data/boxed-array';
 import { Maybe } from '@data/maybe';
 import { Either } from '@data/either';
 import { Reader } from '@data/reader';
 import { Writer } from '@data/writer';
+
+plm.mappend<number>([1,2, 3], [1, 2, 3]);
+
 
 plf.fmap(x => ({ a: x.a + 1}), [{a:1}, {a:2}, {a:3}]);
 
@@ -31,7 +37,7 @@ prf<number>().fmap((x: number) => x + 1, (x) => x * 2);
 
 rf<number>().fmap(x => x + 1, Reader.from((x) => x + '2'));
 
-// wf<string[]>().fmap(x => x + 1, Writer.from([10, ['Test']]));
+wf<string[]>(plm).fmap((x) => x.toLowerCase(), Writer.from(['a', ['Test']]));
 
 
 
@@ -55,3 +61,4 @@ pra<{ a : number }>().lift(prat, (x) => x.a + 1);
 
 ra<{a : number }>().lift(Reader.from((r) => (x) => r.a + x), Reader.from((x) => x.a + 1));
 
+wa<string[]>(plm).lift(Writer.from([(x: string) => x.toLowerCase() + 1, ['Test']]), Writer.from(['1', ['Test1']]));

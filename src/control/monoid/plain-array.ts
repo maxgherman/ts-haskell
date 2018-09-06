@@ -6,6 +6,7 @@ export interface IPlainArrayMonoid extends IMonoid<IsPlainArray> {
     mempty<A>(): ArrayBox<A>;
     mappend<A>(a: ArrayBox<A>, b: ArrayBox<A>): ArrayBox<A>;
     mconcat<A>(array: Array<ArrayBox<A>>): ArrayBox<A>;
+    '<>'<A>(a: ArrayBox<A>, b: ArrayBox<A>): ArrayBox<A>;
 }
 
 const base: IMonoidBase<IsPlainArray> = {
