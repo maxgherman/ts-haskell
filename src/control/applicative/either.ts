@@ -1,5 +1,5 @@
 import { identity } from 'ramda';
-import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@control/common/applicative';
 import { Either } from '@data/either';
 import { IsEither, EitherF, functor, IEitherFunctor } from '@control/functor/either';
 

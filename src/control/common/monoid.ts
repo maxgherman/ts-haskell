@@ -1,6 +1,6 @@
 import { flip } from 'ramda';
 import { Box } from '@common/types/box';
-import { ISemigroup } from '@common/types/semigroup';
+import { ISemigroup } from '@control/common/semigroup';
 
 export interface IMonoidBase<F> {
     mempty<A>(): Box<F, A>;

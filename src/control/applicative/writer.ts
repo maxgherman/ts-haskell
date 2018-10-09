@@ -1,7 +1,7 @@
 import { identity } from 'ramda';
-import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@control/common/applicative';
 import { IsWriter, WriterF, functor as functorBase } from '@control/functor/writer';
-import { IMonoid } from '@common/types/monoid';
+import { IMonoid } from '@control/common/monoid';
 import { Writer } from '@data/writer';
 
 export interface IWriterApplicative<TLog> extends IApplicative<IsWriter> {

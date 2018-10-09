@@ -1,6 +1,6 @@
-import { IMonoid, IMonoidBase, monoid as monoidBase } from '@common/types/monoid';
+import { IMonoid, IMonoidBase, monoid as monoidBase } from '@control/common/monoid';
 import { semigroup } from '@control/semigroup/plain-array';
-import { IsPlainArray, ArrayBox } from '@control/plain-array';
+import { IsPlainArray, ArrayBox } from '@common/types/plain-array-box';
 
 export interface IPlainArrayMonoid extends IMonoid<IsPlainArray> {
     mempty<A>(): ArrayBox<A>;

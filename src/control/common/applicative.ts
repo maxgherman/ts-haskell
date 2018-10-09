@@ -1,5 +1,5 @@
 import { useWith, always, identity, partial } from 'ramda';
-import { IFunctor } from '@common/types/functor';
+import { IFunctor } from '@control/common/functor';
 import { Box } from '@common/types/box';
 import { applyReverse } from '@common/utils';
 

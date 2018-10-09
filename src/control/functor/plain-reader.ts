@@ -1,7 +1,7 @@
 import { identity, compose } from 'ramda';
 import { Box } from '@common/types/box';
-import { functor as baseFunctor, IFunctor } from '@common/types/functor';
-import { Application } from '@common/types/applicative';
+import { functor as baseFunctor, IFunctor } from '@control/common/functor';
+import { Application } from '@control/common/applicative';
 
 export class IsPlainReader {}
 

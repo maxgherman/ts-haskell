@@ -1,5 +1,5 @@
 import { identity, always } from 'ramda';
-import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@control/common/applicative';
 import { IsReader, ReaderF, functor } from '@control/functor/reader';
 import { Reader } from '@data/reader';
 

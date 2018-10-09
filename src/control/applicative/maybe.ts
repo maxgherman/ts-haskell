@@ -1,4 +1,4 @@
-import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@control/common/applicative';
 import { Maybe } from '@data/maybe';
 import { MaybeF, IsMaybe, functor } from '@control/functor/maybe';
 

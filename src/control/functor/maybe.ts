@@ -1,6 +1,6 @@
 import { identity } from 'ramda';
 import { Box } from '@common/types/box';
-import { functor as baseFunctor, IFunctor } from '@common/types/functor';
+import { functor as baseFunctor, IFunctor } from '@control/common/functor';
 import { Maybe } from '@data/maybe';
 
 export class IsMaybe {}

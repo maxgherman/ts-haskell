@@ -1,5 +1,5 @@
-import { ISemigroup }  from '@common/types/semigroup';
-import { IsPlainArray, ArrayBox } from '@control/plain-array';
+import { ISemigroup }  from '@control/common/semigroup';
+import { IsPlainArray, ArrayBox } from '@common/types/plain-array-box';
 
 export interface IPlainArraySemigroup extends ISemigroup<IsPlainArray> {
     '<>'<A>(a: ArrayBox<A>, b: ArrayBox<A>): ArrayBox<A>;

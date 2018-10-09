@@ -1,6 +1,6 @@
 import { identity } from 'ramda';
-import { functor as baseFunctor, IFunctor } from '@common/types/functor';
-import { IsPlainArray, ArrayBox } from '@control/plain-array';
+import { functor as baseFunctor, IFunctor } from '@control/common/functor';
+import { IsPlainArray, ArrayBox } from '@common/types/plain-array-box';
 
 export interface IPlainArrayFunctor extends IFunctor<IsPlainArray> {
     fmap: <A, B>(f: (a: A) => B, fa: ArrayBox<A>) => ArrayBox<B>;

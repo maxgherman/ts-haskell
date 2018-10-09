@@ -1,7 +1,7 @@
 import { identity } from 'ramda';
 import { Box } from '@common/types/box';
-import { functor as baseFunctor, IFunctor } from '@common/types/functor';
-import { Application } from '@common/types/applicative';
+import { functor as baseFunctor, IFunctor } from '@control/common/functor';
+import { Application } from '@control/common/applicative';
 import { Reader } from '@data/reader';
 
 export class IsReader {}

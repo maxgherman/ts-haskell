@@ -1,8 +1,8 @@
 import { identity } from 'ramda';
-import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
+import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@control/common/applicative';
 import { BoxedArray } from '@data/boxed-array';
 import { functor } from '@control/functor/boxed-array';
-import { IsBoxedArray, BoxedArrayBox } from '@control/boxed-array';
+import { IsBoxedArray, BoxedArrayBox } from '@common/types/boxed-array-box';
 
 export interface IBoxedArrayApplicative extends IApplicative<IsBoxedArray> {
     fmap: <A, B>(f: (a: A) => B, fa: BoxedArrayBox<A>) => BoxedArrayBox<B>;

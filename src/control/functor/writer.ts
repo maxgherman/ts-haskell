@@ -1,8 +1,8 @@
 import { identity } from 'ramda';
 import { Box } from '@common/types/box';
-import { functor as baseFunctor, IFunctor } from '@common/types/functor';
-import { IMonoid } from '@common/types/monoid';
-import { Application } from '@common/types/applicative';
+import { functor as baseFunctor, IFunctor } from '@control/common/functor';
+import { IMonoid } from '@control/common/monoid';
+import { Application } from '@control/common/applicative';
 import { Writer } from '@data/writer';
 
 export class IsWriter {}

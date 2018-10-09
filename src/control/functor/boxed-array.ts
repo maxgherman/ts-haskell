@@ -1,7 +1,7 @@
 import { identity } from 'ramda';
-import { functor as baseFunctor, IFunctor } from '@common/types/functor';
+import { functor as baseFunctor, IFunctor } from '@control/common/functor';
 import { BoxedArray } from '@data/boxed-array';
-import { IsBoxedArray, BoxedArrayBox } from '@control/boxed-array';
+import { IsBoxedArray, BoxedArrayBox } from '@common/types/boxed-array-box';
 
 export interface IBoxedArrayFunctor extends IFunctor<IsBoxedArray> {
     fmap: <A, B>(f: (a: A) => B, fa: BoxedArrayBox<A>) => BoxedArrayBox<B>;
