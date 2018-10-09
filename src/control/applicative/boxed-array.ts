@@ -1,29 +1,30 @@
 import { identity } from 'ramda';
 import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@common/types/applicative';
 import { BoxedArray } from '@data/boxed-array';
-import { IsBoxedArray, functor, BoxedArrayF } from '@control/functor/boxed-array';
+import { functor } from '@control/functor/boxed-array';
+import { IsBoxedArray, BoxedArrayBox } from '@control/boxed-array';
 
 export interface IBoxedArrayApplicative extends IApplicative<IsBoxedArray> {
-    fmap: <A, B>(f: (a: A) => B, fa: BoxedArrayF<A>) => BoxedArrayF<B>;
-    '<$>': <A, B>(f: (a: A) => B, fa: BoxedArrayF<A>) => BoxedArrayF<B>;
-    '<$': <A, B>(a: A, fb: BoxedArrayF<B>) => BoxedArrayF<A>;
-    '$>': <A, B>(fa: BoxedArrayF<A>, b: B) => BoxedArrayF<B>;
-    '<&>': <A, B>(fa: BoxedArrayF<A>, f: (a: A) => B) => BoxedArrayF<B>;
-    pure<A>(a:A): BoxedArrayF<A>;
-    lift<A, B>(fab: BoxedArrayF<Application<A, B>>, fa: BoxedArrayF<A>): BoxedArrayF<B>;
-    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: BoxedArrayF<A>, fb: BoxedArrayF<B>): BoxedArrayF<C>;
-    '*>'<A, B>(fa: BoxedArrayF<A>, fb: BoxedArrayF<B>): BoxedArrayF<B>;
-    '<*'<A, B>(fa: BoxedArrayF<A>, fb: BoxedArrayF<B>): BoxedArrayF<A>;
-    '<**>'<A, B>(fa: BoxedArrayF<A>, fab: BoxedArrayF<Application<A, B>>): BoxedArrayF<B>;
-    liftA<A, B>(f: Application<A, B>, fa: BoxedArrayF<A>): BoxedArrayF<B>;
-    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: BoxedArrayF<A>, fb: BoxedArrayF<B>, fc: BoxedArrayF<C>): BoxedArrayF<D>; 
+    fmap: <A, B>(f: (a: A) => B, fa: BoxedArrayBox<A>) => BoxedArrayBox<B>;
+    '<$>': <A, B>(f: (a: A) => B, fa: BoxedArrayBox<A>) => BoxedArrayBox<B>;
+    '<$': <A, B>(a: A, fb: BoxedArrayBox<B>) => BoxedArrayBox<A>;
+    '$>': <A, B>(fa: BoxedArrayBox<A>, b: B) => BoxedArrayBox<B>;
+    '<&>': <A, B>(fa: BoxedArrayBox<A>, f: (a: A) => B) => BoxedArrayBox<B>;
+    pure<A>(a:A): BoxedArrayBox<A>;
+    lift<A, B>(fab: BoxedArrayBox<Application<A, B>>, fa: BoxedArrayBox<A>): BoxedArrayBox<B>;
+    liftA2<A, B, C, X extends Application2<A, B, C>>(abc: X, fa: BoxedArrayBox<A>, fb: BoxedArrayBox<B>): BoxedArrayBox<C>;
+    '*>'<A, B>(fa: BoxedArrayBox<A>, fb: BoxedArrayBox<B>): BoxedArrayBox<B>;
+    '<*'<A, B>(fa: BoxedArrayBox<A>, fb: BoxedArrayBox<B>): BoxedArrayBox<A>;
+    '<**>'<A, B>(fa: BoxedArrayBox<A>, fab: BoxedArrayBox<Application<A, B>>): BoxedArrayBox<B>;
+    liftA<A, B>(f: Application<A, B>, fa: BoxedArrayBox<A>): BoxedArrayBox<B>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: BoxedArrayBox<A>, fb: BoxedArrayBox<B>, fc: BoxedArrayBox<C>): BoxedArrayBox<D>; 
 }
 
-const pure = <A>(a:A): BoxedArrayF<A> => {
+const pure = <A>(a:A): BoxedArrayBox<A> => {
     return BoxedArray.from([a]);
 }
 
-const lift = <A, B>(fab: BoxedArrayF<Application<A, B>>, fa: BoxedArrayF<A>): BoxedArrayF<B> => {
+const lift = <A, B>(fab: BoxedArrayBox<Application<A, B>>, fa: BoxedArrayBox<A>): BoxedArrayBox<B> => {
     fab = fab || BoxedArray.from([]);
     fa = fa || BoxedArray.from([]);
     
