@@ -21,7 +21,7 @@ const fmap = <TLog, A, B>(monoid: IMonoid<TLog>) =>
     (f: (a: A) => B, fa: WriterF<A, TLog>): WriterF<B, TLog> => {
 
     f = f || (identity as Application<A, B>);
-    fa = fa || Writer.from<TLog, A>([undefined as A, monoid.mempty() as TLog]);
+    fa = fa || Writer.from([undefined as A, monoid.mempty<A>()]) as  WriterF<A, TLog>;
     
     return fa.mapWriter<B, TLog>(([data, log]: [A, TLog]) => [ f(data), log ]);
 }

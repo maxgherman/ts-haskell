@@ -33,8 +33,12 @@ const liftWithMonoid = <A, B, TLog>(monoid: IMonoid<TLog>) => (
     fab: WriterF<Application<A, B>, TLog>,
     fa: WriterF<A, TLog>): WriterF<B, TLog> => {
 
-    fab = fab || Writer.from([identity as Application<A, B>, monoid.mempty() as TLog]);
-    fa = fa || Writer.from([undefined, monoid.mempty() as TLog]);
+    fab = fab || Writer.from([
+            identity as Application<A, B>,
+            monoid.mempty<Application<A, B>>()
+    ]) as WriterF<Application<A, B>, TLog>;
+    
+    fa = fa || Writer.from([undefined, monoid.mempty<A>()]) as WriterF<A, TLog>;
 
     return fa.mapWriter<B, Box<TLog, B>>(([data, log2]: [A, TLog]) => {
         const [action, log1] = fab.runWriter();
