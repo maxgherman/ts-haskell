@@ -32,7 +32,7 @@ describe('PlainArray monoid', () => {
     })
 
     describe('mconcat', () => {
-        it('flatters right array', () => {
+        it('flattens right array', () => {
             const result = monoid.mconcat([[1, 2, 3], [4, 5, 6]]);
             expect(result).toEqual([1, 2, 3, 4, 5, 6]);
         }),

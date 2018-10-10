@@ -33,7 +33,7 @@ describe('BoxedArray monoid', () => {
     });
 
     describe('mconcat', () => {
-        it('flatters right array', () => {
+        it('flattens right array', () => {
             const result = monoid.mconcat([ BoxedArray.from([1, 2, 3]), BoxedArray.from([4, 5, 6]) ]);
             expect(result.value).toEqual([1, 2, 3, 4, 5, 6]);
         }),
