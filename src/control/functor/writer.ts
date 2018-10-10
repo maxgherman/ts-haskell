@@ -22,9 +22,8 @@ const fmap = <TLog, A, B>(monoid: IMonoid<TLog>) =>
 
     f = f || (identity as Application<A, B>);
     fa = fa || Writer.from<TLog, A>([undefined as A, monoid.mempty() as TLog]);
-
-    const [data, log] = fa.runWriter();
-    return Writer.from([f(data), log]);
+    
+    return fa.mapWriter<B, TLog>(([data, log]: [A, TLog]) => [ f(data), log ]);
 }
 
 export const functor = <TLog>(monoid: IMonoid<TLog>): IWriterFunctor<TLog> =>

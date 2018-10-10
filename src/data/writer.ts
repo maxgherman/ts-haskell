@@ -19,7 +19,7 @@ export class Writer<T, A> {
     }
 
     // mapWriter :: ((a, w) -> (b, w')) -> Writer w a -> Writer w' b
-    public mapWriter<B, T2>(action: (_: [A, T]) => [B, T2]): Writer<T2, B> {
+    public mapWriter<B, T2>(action: ([A, T]) => [B, T2]): Writer<T2, B> {
         return Writer.from(action(this.runWriter()));
     }
 }

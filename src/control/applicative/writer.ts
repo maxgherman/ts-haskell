@@ -1,4 +1,5 @@
 import { identity } from 'ramda';
+import { Box } from '@common/types/box';
 import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@control/common/applicative';
 import { IsWriter, WriterF, functor as functorBase } from '@control/functor/writer';
 import { IMonoid } from '@control/common/monoid';
@@ -35,10 +36,14 @@ const liftWithMonoid = <A, B, TLog>(monoid: IMonoid<TLog>) => (
     fab = fab || Writer.from([identity as Application<A, B>, monoid.mempty() as TLog]);
     fa = fa || Writer.from([undefined, monoid.mempty() as TLog]);
 
-    const [action, log1] = fab.runWriter();
-    const [data, log2] = fa.runWriter();
-   
-    return Writer.from([action(data), monoid.mappend(log1, log2) as TLog]);
+    return fa.mapWriter<B, Box<TLog, B>>(([data, log2]: [A, TLog]) => {
+        const [action, log1] = fab.runWriter();
+
+        return [
+            action(data),
+            monoid.mappend<B>(log1, log2)
+        ];
+    }) as WriterF<B, TLog>;
 }
 
 export const applicative = <TLog>(monoid: IMonoid<TLog>): IWriterApplicative<TLog> => {
