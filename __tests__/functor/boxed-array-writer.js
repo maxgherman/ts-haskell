@@ -102,4 +102,39 @@ describe('PlainArray Writer functor', () => {
             expect([value, log]).toEqual(expected);
       	});
     });
+
+    describe('Functor second law: fmap (f . g) = fmap f . fmap g', () => {
+        const a = (x) => x + 2;
+		const b = (x) => x * 3;
+		const ab = compose(a, b);
+		const fA = partial(functor.fmap, [a]);
+		const fB = partial(functor.fmap, [b]);
+		const fAB = partial(functor.fmap, [ab]);
+		const fAfB = compose(fA, fB);
+
+        it('non empty value', () => {
+			const argument = Writer.from([ 10, BoxedArray.from(['Test']) ]);
+			const result1 = fAB(argument);
+			const result2 = fAfB(argument);
+            const [ value1, log1 ] = result1.runWriter();
+            const [ value2, log2 ] = result2.runWriter();
+
+			expect([ value1, log1 ]).toEqual([ value2, log2 ]);
+
+            // 10 => x * 3 => x + 2 => 35
+            expect([ value1, log1.value ]).toEqual([32, ['Test']]);
+		});
+
+        it('empty value', () => {
+			const argument = null;
+			const result1 = fAB(argument);
+			const result2 = fAfB(argument);
+			
+            const [ value1, log1 ] = result1.runWriter();
+            const [ value2, log2 ] = result2.runWriter();
+
+            expect([ value1, log1 ]).toEqual([ value2, log2 ]);
+			expect([ value1, log1.value ]).toEqual([NaN, []]);
+		});
+    });
 });
