@@ -9,7 +9,7 @@ describe('BoxedArray functor', () => {
 			const result = functor.fmap(transformer, BoxedArray.from([1, 2, 3]));
 			const expected = BoxedArray.from([2, 8, 18]);
 
-			expect(result).toEqual(expected);
+			expect(result.value).toEqual(expected.value);
 		});
 
 		it('uses id for falsy transformer paramter', () => {
