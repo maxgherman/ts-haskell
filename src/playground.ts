@@ -1,7 +1,9 @@
 import { monoid as plm } from '@control/monoid/plain-array';
+import { monoid as lm } from '@control/monoid/list';
 
 import { functor as plf } from '@control/functor/plain-array';
 import { functor as baf } from '@control/functor/boxed-array';
+import { functor as lf } from '@control/functor/list';
 import { functor as mbf } from '@control/functor/maybe';
 import { functor as eif } from '@control/functor/either';
 import { functor as prf } from '@control/functor/plain-reader';
@@ -17,6 +19,7 @@ import { applicative as ra } from '@control/applicative/reader';
 import { applicative as wa} from '@control/applicative/writer';
 
 import { BoxedArray } from '@data/boxed-array';
+import { List } from '@data/list';
 import { Maybe } from '@data/maybe';
 import { Either } from '@data/either';
 import { Reader } from '@data/reader';
@@ -24,10 +27,14 @@ import { Writer } from '@data/writer';
 
 plm.mappend<number>([1,2, 3], [1, 2, 3]);
 
+lm.mappend<number>(List.single(1)[":"](3), List.single(2));
+
 
 plf.fmap(x => ({ a: x.a + 1}), [{a:1}, {a:2}, {a:3}]);
 
 baf.fmap(x => ({ a: x.a + 1}), BoxedArray.from([{a:1}, {a:2}, {a:3}]));
+
+lf.fmap(x => x.toUpperCase(), List.single('1'));
 
 mbf.fmap(x => ({ a: x.a + 1}), Maybe.just({a:1}));
 
