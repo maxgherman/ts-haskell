@@ -12,6 +12,7 @@ import { functor as wf } from '@control/functor/writer';
 
 import { applicative as pla } from '@control/applicative/plain-array';
 import { applicative as baa } from '@control/applicative/boxed-array';
+import { applicative as la } from '@control/applicative/list';
 import { applicative as mba } from '@control/applicative/maybe';
 import { applicative as eia } from '@control/applicative/either';
 import { applicative as pra } from '@control/applicative/plain-reader';
@@ -51,6 +52,8 @@ wf<string[]>(plm).fmap((x) => x.toLowerCase(), Writer.from(['a', ['Test']]));
 pla.lift([x => x + 1], [1, 2, 3]);
 
 baa.lift(BoxedArray.from([x => x + 1]), BoxedArray.from([1, 2, 3]));
+
+la.lift(List.single<(x:number) => number>(x => x + 1), List.single(1)[':'](2)[':'](3));
 
 mba.lift(Maybe.just((x: { a: number}) => ({ a: x.a + 1})), Maybe.from({a: 1}));
 

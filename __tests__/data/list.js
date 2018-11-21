@@ -26,6 +26,44 @@ describe('List', () => {
         expect(result.toArray()).toEqual([2, 4, 6]);
     });
 
+    describe('reduce', () => {
+        it('empty', () => {
+            const list = List.empty();
+            const result = list.reduce((acc, curr) => acc + curr * curr, 1);
+
+            expect(result).toBe(1);
+        });
+
+        it('non empty', () => {
+            const list = ((empty[':'](3))[':'](2))[':'](1);
+            const result = list.reduce((acc, curr) => acc[':'](curr), List.empty());
+
+            expect(result.head).toBe(3);
+            expect(result.tail.head).toBe(2);
+            expect(result.tail.tail.head).toBe(1);
+            expect(result.tail.tail.isSingle).toBe(true);
+        });
+    });
+
+    describe('reduceRight', () => {
+        it('empty', () => {
+            const list = List.empty();
+            const result = list.reduceRight((acc, curr) => acc + curr * curr, 1);
+
+            expect(result).toBe(1);
+        });
+
+        it('non empty', () => {
+            const list = ((empty[':'](3))[':'](2))[':'](1);
+            const result = list.reduceRight((acc, curr) => acc[':'](curr), List.empty());
+
+            expect(result.head).toBe(1);
+            expect(result.tail.head).toBe(2);
+            expect(result.tail.tail.head).toBe(3);
+            expect(result.tail.tail.isSingle).toBe(true);
+        });
+    });
+
     describe(':', () => {
         it('single', () => {
             const list = empty[':'](123);

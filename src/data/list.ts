@@ -61,21 +61,34 @@ export class List<T> {
         return result;
     }
 
-    public toArray(): Array<T> {
-        if(this.isEmpty) {
-            return [];
-        }
+    public reduce<R>(f : (acc: R, curr: T) => R, acc: R): R {
         
-        const result = [];
-        let current = this as List<T>;
-        while(!current.isSingle) {
-            result.push(current.head);
-            current = current.tail;
-        }
+        const internal = (list: List<T>, f : (acc: R, curr: T) => R, acc: R) : R => {
+            if(!list || list.isEmpty) {
+                return acc;
+            }
 
-        result.push(current.head);
+            return internal(list.tail, f, f(acc, list.head));
+        };
+        
+        return internal(this, f, acc);
+    }
 
-        return result;
+    public reduceRight<R>(f : (acc: R, curr: T) => R, acc: R): R {
+        
+        const internal = (list: List<T>, f : (acc: R, curr: T) => R, acc: R) : R => {
+            if(!list || list.isEmpty) {
+                return acc;
+            }
+
+            return f(internal(list.tail, f, acc), list.head);
+        };
+        
+        return internal(this, f, acc);
+    }
+
+    public toArray(): Array<T> {
+        return this.reduce((acc, curr) => acc.concat(curr), []);
     }
 
     private static copy<R1, R2>(list: List<R1>, f: (a:R1) => R2): { result: List<R2>, bottom: List<R2> } {

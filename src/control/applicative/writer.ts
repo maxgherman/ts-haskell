@@ -1,6 +1,9 @@
 import { identity } from 'ramda';
 import { Box } from '@common/types/box';
-import { IApplicative, Application, Application2, Application3, applicative as appBase } from '@control/common/applicative';
+import {
+    IApplicative, Application,
+    Application2, Application3,
+    applicative as appBase } from '@control/common/applicative';
 import { IsWriter, WriterF, functor as functorBase } from '@control/functor/writer';
 import { IMonoid } from '@control/common/monoid';
 import { Writer } from '@data/writer';
@@ -14,14 +17,15 @@ export interface IWriterApplicative<TLog> extends IApplicative<IsWriter> {
     
     pure<A>(a: A): WriterF<A, TLog>
     lift<A, B>(fab: WriterF<Application<A, B>, TLog>, fa: WriterF<A, TLog>): WriterF<B, TLog>;
+    '<*>'<A, B>(fab: WriterF<Application<A, B>, TLog>, fa: WriterF<A, TLog>): WriterF<B, TLog>;
+    liftA<A, B>(f: Application<A, B>, fa: WriterF<A, TLog>): WriterF<B, TLog>;
     liftA2<A, B, C>(abc: Application2<A, B, C>, fa: WriterF<A, TLog>, fb: WriterF<B, TLog>):
         WriterF<C, TLog>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: WriterF<A, TLog>, fb: WriterF<B, TLog>, fc: WriterF<C, TLog>):
+        WriterF<D, TLog>;
     '*>'<A, B>(fa: WriterF<A, TLog>, fb: WriterF<B, TLog>): WriterF<B, TLog>;
     '<*'<A, B>(fa: WriterF<A, TLog>, fb: WriterF<B, TLog>): WriterF<A, TLog>;
-    '<**>'<A, B>(fa: WriterF<A, TLog>, fab: WriterF<Application<A, B>, TLog>): WriterF<B, TLog>;
-    liftA<A, B>(f: Application<A, B>, fa: WriterF<A, TLog>): WriterF<B, TLog>;
-    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: WriterF<A, TLog>, fb: WriterF<B, TLog>, fc: WriterF<C, TLog>):
-        WriterF<D, TLog>; 
+    '<**>'<A, B>(fa: WriterF<A, TLog>, fab: WriterF<Application<A, B>, TLog>): WriterF<B, TLog>; 
 }
 
 // pure a = \_ -> a
