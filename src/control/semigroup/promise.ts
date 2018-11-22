@@ -5,7 +5,8 @@ export interface IPromiseSemigroup extends ISemigroup<IsPromise> {
     '<>'<A>(a: PromiseBox<A>, b: PromiseBox<A>): PromiseBox<A>;
 }
 
-export const semigroup = (baseSemigroup: ISemigroup<IsPromise>): IPromiseSemigroup => ({
+export const semigroup = <T, K extends ISemigroup<T>>
+    (baseSemigroup: K): IPromiseSemigroup => ({
     '<>'<A>(a: PromiseBox<A>, b: PromiseBox<A>): PromiseBox<A> {
         a = a || Promise.resolve();
         b = b || Promise.resolve();

@@ -20,11 +20,12 @@ const mappend = <R, A>(semigroup: ISemigroup<R>, mempty: <A>() => Box<R, A>) => 
 }
 
 // mconcat = foldr '(<>)' mempty
-const mconcat = <T, A>(semigroup: ISemigroup<A>, mempty: <A>() => Box<T, A>) => (array: [Box<T, A>]): Box<T, A> => {
+const mconcat = <T, A>(semigroup: ISemigroup<A>, mempty: <A>() => Box<T, A>) =>
+    (array: Box<T, A>[]): Box<T, A> => {
+    
     // flipping the args for mappend because in Haskell foldr lambda takes current element as first arg
     const mappendInstance = flip(mappend<T, A>(semigroup, mempty)); 
-    
-    array = array || [ mempty() ];
+    array = array || [];
 
     return array.reduceRight(mappendInstance, mempty());
 }

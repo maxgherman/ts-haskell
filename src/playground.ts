@@ -1,5 +1,9 @@
+import { semigroup as pas } from '@control/semigroup/plain-array';
+import { semigroup as ps } from '@control/semigroup/promise';
+
 import { monoid as plm } from '@control/monoid/plain-array';
 import { monoid as lm } from '@control/monoid/list';
+import { monoid as pm } from '@control/monoid/promise';
 
 import { functor as plf } from '@control/functor/plain-array';
 import { functor as baf } from '@control/functor/boxed-array';
@@ -26,10 +30,14 @@ import { Either } from '@data/either';
 import { Reader } from '@data/reader';
 import { Writer } from '@data/writer';
 
+ps(pas)["<>"](Promise.resolve([1]), new Promise(resolve => { resolve([1]); }));
+
+
 plm.mappend<number>([1,2, 3], [1, 2, 3]);
 
 lm.mappend<number>(List.single(1)[":"](3), List.single(2));
 
+pm(plm).mappend(Promise.resolve([1]), new Promise(resolve => { resolve([1]); }));
 
 plf.fmap(x => ({ a: x.a + 1}), [{a:1}, {a:2}, {a:3}]);
 

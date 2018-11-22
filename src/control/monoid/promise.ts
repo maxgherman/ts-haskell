@@ -9,22 +9,22 @@ export interface IPromiseMonoid extends IMonoid<IsPromise> {
     '<>'<A>(a: PromiseBox<A>, b: PromiseBox<A>): PromiseBox<A>;
 }
 
-const base = (baseTypeMonoid: IMonoid<IsPromise>): IMonoidBase<IsPromise> => ({
+const base = <T, K extends IMonoid<T>>(baseTypeMonoid: K): IMonoidBase<IsPromise> => ({
     mempty: <A>() =>
         Promise.resolve(baseTypeMonoid.mempty() as A),
 
-        mconcat<A>(array: Array<PromiseBox<A>>): PromiseBox<A> {
-            array = array || ([this.mempty()] as Array<PromiseBox<A>>);
+    mconcat<A>(array: PromiseBox<A>[]): PromiseBox<A> {
+        array = array || ([] as Array<PromiseBox<A>>);
 
-            return Promise.all(array as PromiseLike<A>[])
-            .then((values) => {
-                return baseTypeMonoid.mconcat(values);
-            }) as PromiseBox<A>;
-        }
+        return Promise.all(array as PromiseLike<A>[])
+        .then((values) =>
+            baseTypeMonoid.mconcat(values)
+        ) as PromiseBox<A>;
+    }
 });
 
-export const monoid = (baseTypeMonoid: IMonoid<IsPromise>): IPromiseMonoid => {
+export const monoid = <T, K extends IMonoid<T>>(baseTypeMonoid: K): IPromiseMonoid => {
     const semigroup = baseSemigroup(baseTypeMonoid); 
     
-    return monoidBase(semigroup, base(baseTypeMonoid)) as IPromiseMonoid;
+    return monoidBase(semigroup, base<T, K>(baseTypeMonoid)) as IPromiseMonoid;
 }
