@@ -15,7 +15,7 @@ export interface IMonoid<F> extends IMonoidBase<F> {
 const mappend = <R, A>(semigroup: ISemigroup<R>, mempty: <A>() => Box<R, A>) =>  (a: Box<R, A>, b: Box<R, A>): Box<R, A> => {
     a = a || mempty();
     b = b || mempty();
-    
+
     return semigroup["<>"](a, b);
 }
 
@@ -39,8 +39,8 @@ export const monoid = <T>(semigroup: ISemigroup<T>, monoidBase: IMonoidBase<T>):
     };
     
     return {
+        ...semigroup,
         ...base,
         mappend: mappend(semigroup, monoidBase.mempty),
-        ...semigroup
     };
 };
