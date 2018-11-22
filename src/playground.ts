@@ -13,6 +13,7 @@ import { functor as eif } from '@control/functor/either';
 import { functor as prf } from '@control/functor/plain-reader';
 import { functor as rf } from '@control/functor/reader';
 import { functor as wf } from '@control/functor/writer';
+import { functor as pf } from '@control/functor/promise';
 
 import { applicative as pla } from '@control/applicative/plain-array';
 import { applicative as baa } from '@control/applicative/boxed-array';
@@ -55,6 +56,7 @@ rf<number>().fmap(x => x + 1, Reader.from((x) => x + '2'));
 
 wf<string[]>(plm).fmap((x) => x.toLowerCase(), Writer.from(['a', ['Test']]));
 
+pf.fmap(x => x.toUpperCase(), new Promise<string>(resolve => resolve('')));
 
 
 pla.lift([x => x + 1], [1, 2, 3]);
