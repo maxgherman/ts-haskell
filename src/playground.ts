@@ -23,6 +23,7 @@ import { applicative as eia } from '@control/applicative/either';
 import { applicative as pra } from '@control/applicative/plain-reader';
 import { applicative as ra } from '@control/applicative/reader';
 import { applicative as wa} from '@control/applicative/writer';
+import { applicative as pa } from '@control/applicative/promise';
 
 import { BoxedArray } from '@data/boxed-array';
 import { List } from '@data/list';
@@ -82,3 +83,5 @@ pra<{ a : number }>().lift(prat, (x) => x.a + 1);
 ra<{a : number }>().lift(Reader.from((r) => (x) => r.a + x), Reader.from((x) => x.a + 1));
 
 wa<string[]>(plm).lift(Writer.from([(x: string) => x.toLowerCase() + 1, ['Test']]), Writer.from(['1', ['Test1']]));
+
+pa.lift<string, string[]>(Promise.resolve<((string) => string[])>((x: string) => [x]), Promise.resolve('3'));
