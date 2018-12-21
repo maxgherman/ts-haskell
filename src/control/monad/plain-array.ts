@@ -1,16 +1,17 @@
 import { identity } from 'ramda';
-import { IApplicative, applicative as appBase } from '@control/common/applicative';
-import { functor } from '@control/functor/plain-array';
-import { IsPlainArray, ArrayBox } from '@common/types/plain-array-box';
 import { Application, Application2, Application3 } from '@common/types/application';
+import { IsPlainArray, ArrayBox } from '@common/types/plain-array-box';
+import { IMonad, IMonadBase, monad as monadBase } from '@control/common/monad';
+import { IFunctor } from '@control/common/functor';
+import { applicative } from '@control/applicative/plain-array';
 
-export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
+export interface IPlainArrayMonad extends IMonad<IsPlainArray> {
     fmap: <A, B>(f: (a: A) => B, fa: ArrayBox<A>) => ArrayBox<B>;
     '<$>': <A, B>(f: (a: A) => B, fa: ArrayBox<A>) => ArrayBox<B>;
     '<$': <A, B>(a: A, fb: ArrayBox<B>) => ArrayBox<A>;
     '$>': <A, B>(fa: ArrayBox<A>, b: B) => ArrayBox<B>;
     '<&>': <A, B>(fa: ArrayBox<A>, f: (a: A) => B) => ArrayBox<B>;
-    
+
     pure<A>(a:A): ArrayBox<A>;
     lift<A, B>(fab: ArrayBox<Application<A, B>>, fa: ArrayBox<A>): ArrayBox<B>;
     '<*>'<A, B>(fab: ArrayBox<Application<A, B>>, fa: ArrayBox<A>): ArrayBox<B>;
@@ -20,21 +21,26 @@ export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
     '*>'<A, B>(fa: ArrayBox<A>, fb: ArrayBox<B>): ArrayBox<B>;
     '<*'<A, B>(fa: ArrayBox<A>, fb: ArrayBox<B>): ArrayBox<A>;
     '<**>'<A, B>(fa: ArrayBox<A>, fab: ArrayBox<Application<A, B>>): ArrayBox<B>;
-}
-
-const pure = <A>(a: A): ArrayBox<A> => {
-    return [a];
-}  
-
-const lift = <A, B>(fab: ArrayBox<Application<A, B>>, fa: ArrayBox<A>): ArrayBox<B> => {
-    fab = fab || [];
-    fa = fa || [];
     
-    return fab.reduce((acc, curr) => {
-        curr = curr || (identity as Application<A, B>);
-        const elements = functor.fmap(curr, fa);
-        return acc.concat(elements);
-    }, [] as ArrayBox<B>);
+    '>>='<A,B>(ma: ArrayBox<A>, action: Application<A, ArrayBox<B>>): ArrayBox<B>;
+    '>>'<A,B>(ma: ArrayBox<A>, mb: ArrayBox<B>): ArrayBox<B>;
+    return<A>(a: A) : ArrayBox<A>;
+    fail<A>(value: string): ArrayBox<A>;
 }
 
-export const applicative = appBase(functor, { pure, lift }) as IPlainArrayApplicative;
+const implementation = (f: IFunctor<IsPlainArray>) => ({
+    ">>="<A,B>(ma: ArrayBox<A>, action: Application<A, ArrayBox<B>>): ArrayBox<B> {
+        ma = ma || [];
+        action = action || identity as Application<A, ArrayBox<B>>;
+        
+        return f.fmap(action, ma) as ArrayBox<B>;
+    },
+
+    fail<A>(_: string): ArrayBox<A> {
+        return [];
+    }
+}) as IMonadBase<IsPlainArray>;
+
+const base = implementation(applicative);
+
+export const monad = monadBase(base, applicative) as IMonad<IsPlainArray>;

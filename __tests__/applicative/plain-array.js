@@ -8,6 +8,11 @@ describe('PlainArray applicative', () => {
             const expected = applicative.pure(3);
             expect(expected).toEqual([3]);
         });
+
+        it('returns array for falsy args', () => {
+            const expected = applicative.pure(null);
+            expect(expected).toEqual([null]);
+        });
     });
 
     describe('lift', () => {
@@ -16,12 +21,12 @@ describe('PlainArray applicative', () => {
             expect(result).toEqual([3, 6, 9, 3, 4, 5]);
         });
 
-        it('returns uses empty array for falsy first arg', () => {
+        it('uses empty array for falsy first arg', () => {
             const result = applicative.lift(undefined, [1, 2, 3]);
             expect(result).toEqual([]);
         });
 
-        it('returns uses empty array for falsy second arg', () => {
+        it('uses empty array for falsy second arg', () => {
             const result = applicative.lift([(x) => x + 1], undefined);
             expect(result).toEqual([]);
         });
