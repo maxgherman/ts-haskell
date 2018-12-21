@@ -1,9 +1,7 @@
 import { identity } from 'ramda';
 import { Box } from '@common/types/box';
-import {
-    IApplicative, Application,
-    Application2, Application3,
-    applicative as appBase } from '@control/common/applicative';
+import { Application, Application2, Application3 } from '@common/types/application';
+import { IApplicative, applicative as appBase } from '@control/common/applicative';
 import { IsWriter, WriterF, functor as functorBase } from '@control/functor/writer';
 import { IMonoid } from '@control/common/monoid';
 import { Writer } from '@data/writer';

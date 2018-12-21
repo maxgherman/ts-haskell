@@ -1,9 +1,7 @@
-import {
-    IApplicative, Application,
-    Application2, Application3,
-    applicative as appBase } from '@control/common/applicative';
+import { IApplicative, applicative as appBase } from '@control/common/applicative';
 import { Maybe } from '@data/maybe';
 import { MaybeF, IsMaybe, functor } from '@control/functor/maybe';
+import { Application, Application2, Application3 } from '@common/types/application';
 
 export interface IMaybeApplicative extends IApplicative<IsMaybe> {
     fmap: <A, B>(f: (a: A) => B, fa: MaybeF<A>) => MaybeF<B>;

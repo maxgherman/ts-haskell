@@ -1,10 +1,8 @@
 import { identity } from 'ramda';
-import {
-    IApplicative, Application,
-    Application2, Application3,
-    applicative as appBase } from '@control/common/applicative';
+import { IApplicative, applicative as appBase } from '@control/common/applicative';
 import { functor  } from '@control/functor/promise';
 import { IsPromise, PromiseBox } from '@common/types/promise-box';
+import { Application, Application2, Application3 } from '@common/types/application';
 
 export interface IPlainArrayApplicative extends IApplicative<IsPromise> {
     fmap: <A, B>(f: (a: A) => B, fa: PromiseBox<A>) => PromiseBox<B>;

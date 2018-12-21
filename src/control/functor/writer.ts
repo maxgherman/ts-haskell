@@ -2,7 +2,7 @@ import { identity } from 'ramda';
 import { Box } from '@common/types/box';
 import { functor as baseFunctor, IFunctor } from '@control/common/functor';
 import { IMonoid } from '@control/common/monoid';
-import { Application } from '@control/common/applicative';
+import { Application } from '@common/types/application';
 import { Writer } from '@data/writer';
 
 export class IsWriter {}

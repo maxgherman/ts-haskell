@@ -1,10 +1,8 @@
 import { identity, always } from 'ramda';
-import {
-    IApplicative, Application,
-    Application2, Application3,
-    applicative as appBase } from '@control/common/applicative';
+import { IApplicative, applicative as appBase } from '@control/common/applicative';
 import { IsReader, ReaderF, functor } from '@control/functor/reader';
 import { Reader } from '@data/reader';
+import { Application, Application2, Application3 } from '@common/types/application';
 
 export interface IReaderApplicative<T> extends IApplicative<IsReader> {
     fmap: <A, B>(f: (a: A) => B, fa: ReaderF<T, A>) => ReaderF<T, B>;

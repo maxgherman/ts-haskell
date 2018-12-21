@@ -1,13 +1,8 @@
 import { useWith, always, identity, partial } from 'ramda';
 import { IFunctor } from '@control/common/functor';
 import { Box } from '@common/types/box';
+import { Application, Application2, Application3 } from '@common/types/application';
 import { applyReverse } from '@common/utils';
-
-export type Application<A, B> = (a: A) => B;
-
-export type Application2<A, B, C> = (a: A) => (b: B) => C;
-
-export type Application3<A, B, C, D> = (a: A) => (b: B) => (c: C) => D;
 
 export interface IApplicativeBase<F> {
     pure<A>(a:A): Box<F, A>;

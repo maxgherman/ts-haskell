@@ -1,11 +1,9 @@
 import { identity } from 'ramda';
-import {
-    IApplicative, Application,
-    Application2, Application3,
-    applicative as appBase } from '@control/common/applicative';
+import { IApplicative, applicative as appBase } from '@control/common/applicative';
 import { List } from '@data/list';
 import { functor } from '@control/functor/list';
 import { IsList, ListBox } from '@common/types/list-box';
+import { Application, Application2, Application3 } from '@common/types/application';
 
 export interface IListApplicative extends IApplicative<IsList> {
     fmap: <A, B>(f: (a: A) => B, fa: ListBox<A>) => ListBox<B>;

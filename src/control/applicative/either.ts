@@ -1,10 +1,8 @@
 import { identity } from 'ramda';
-import {
-    IApplicative, Application,
-    Application2, Application3,
-    applicative as appBase } from '@control/common/applicative';
+import { IApplicative, applicative as appBase } from '@control/common/applicative';
 import { Either } from '@data/either';
 import { IsEither, EitherF, functor, IEitherFunctor } from '@control/functor/either';
+import { Application, Application2, Application3 } from '@common/types/application';
 
 export interface IEitherApplicative<T> extends IApplicative<IsEither> {
     fmap: <A, B>(f: (a: A) => B, fa: EitherF<T, A>) => EitherF<T, B>;
