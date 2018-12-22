@@ -25,6 +25,8 @@ import { applicative as ra } from '@control/applicative/reader';
 import { applicative as wa} from '@control/applicative/writer';
 import { applicative as pa } from '@control/applicative/promise';
 
+import { monad as plmonad } from '@control/monad/plain-array';
+
 import { BoxedArray } from '@data/boxed-array';
 import { List } from '@data/list';
 import { Maybe } from '@data/maybe';
@@ -35,7 +37,7 @@ import { Writer } from '@data/writer';
 ps(pas)["<>"](Promise.resolve([1]), new Promise(resolve => { resolve([1]); }));
 
 
-plm.mappend<number>([1,2, 3], [1, 2, 3]);
+plm.mappend<number>([1, 2, 3], [1, 2, 3]);
 
 lm.mappend<number>(List.single(1)[":"](3), List.single(2));
 
@@ -85,3 +87,5 @@ ra<{a : number }>().lift(Reader.from((r) => (x) => r.a + x), Reader.from((x) => 
 wa<string[]>(plm).lift(Writer.from([(x: string) => x.toLowerCase() + 1, ['Test']]), Writer.from(['1', ['Test1']]));
 
 pa.lift<string, string[]>(Promise.resolve<((string) => string[])>((x: string) => [x]), Promise.resolve('3'));
+
+plmonad[">>="]([1, 2, 3], (x) => [x ,x]);

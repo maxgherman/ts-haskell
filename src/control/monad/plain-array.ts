@@ -46,4 +46,4 @@ const implementation = (f: IFunctor<IsPlainArray>) => ({
 
 const base = implementation(applicative);
 
-export const monad = monadBase(base, applicative) as IMonad<IsPlainArray>;
+export const monad = monadBase(base, applicative) as IPlainArrayMonad;
