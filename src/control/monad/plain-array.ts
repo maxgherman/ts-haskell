@@ -32,8 +32,11 @@ const implementation = (f: IFunctor<IsPlainArray>) => ({
     ">>="<A,B>(ma: ArrayBox<A>, action: Application<A, ArrayBox<B>>): ArrayBox<B> {
         ma = ma || [];
         action = action || identity as Application<A, ArrayBox<B>>;
-        
-        return f.fmap(action, ma) as ArrayBox<B>;
+
+        return ma.reduce((acc, curr) => 
+            acc.concat(action(curr)),
+            []
+        );
     },
 
     fail<A>(_: string): ArrayBox<A> {
