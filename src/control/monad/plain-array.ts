@@ -1,4 +1,3 @@
-import { identity } from 'ramda';
 import { Application, Application2, Application3 } from '@common/types/application';
 import { IsPlainArray, ArrayBox } from '@common/types/plain-array-box';
 import { IMonad, IMonadBase, monad as monadBase } from '@control/common/monad';
@@ -30,7 +29,7 @@ export interface IPlainArrayMonad extends IMonad<IsPlainArray> {
 const implementation = {
     ">>="<A,B>(ma: ArrayBox<A>, action: Application<A, ArrayBox<B>>): ArrayBox<B> {
         ma = ma || [];
-        action = action || identity as Application<A, ArrayBox<B>>;
+        action = action || ((_) => []);
 
         return ma.reduce((acc, curr) => 
             acc.concat(action(curr)),

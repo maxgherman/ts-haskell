@@ -1,15 +1,17 @@
-import { IApplicative, applicative as appBase } from '@control/common/applicative';
+import { identity } from 'ramda';
+import { Application, Application2, Application3 } from '@common/types/application';
 import { IsMaybe, MaybeBox } from '@common/types/maybe-box';
 import { Maybe } from '@data/maybe';
-import { functor } from '@control/functor/maybe';
-import { Application, Application2, Application3 } from '@common/types/application';
+import { IMonad, IMonadBase, monad as monadBase } from '@control/common/monad';
+import { applicative } from '@control/applicative/maybe';
 
-export interface IMaybeApplicative extends IApplicative<IsMaybe> {
+export interface IMaybeMonad extends IMonad<IsMaybe> {
     fmap: <A, B>(f: (a: A) => B, fa: MaybeBox<A>) => MaybeBox<B>;
     '<$>': <A, B>(f: (a: A) => B, fa: MaybeBox<A>) => MaybeBox<B>;
     '<$': <A, B>(a: A, fb: MaybeBox<B>) => MaybeBox<A>;
     '$>': <A, B>(fa: MaybeBox<A>, b: B) => MaybeBox<B>;
     '<&>': <A, B>(fa: MaybeBox<A>, f: (a: A) => B) => MaybeBox<B>;
+
     pure<A>(a:A): MaybeBox<A>;
     lift<A, B>(fab: MaybeBox<Application<A, B>>, fa: MaybeBox<A>): MaybeBox<B>;
     '<*>'<A, B>(fab: MaybeBox<Application<A, B>>, fa: MaybeBox<A>): MaybeBox<B>;
@@ -19,17 +21,24 @@ export interface IMaybeApplicative extends IApplicative<IsMaybe> {
     '*>'<A, B>(fa: MaybeBox<A>, fb: MaybeBox<B>): MaybeBox<B>;
     '<*'<A, B>(fa: MaybeBox<A>, fb: MaybeBox<B>): MaybeBox<A>;
     '<**>'<A, B>(fa: MaybeBox<A>, fab: MaybeBox<Application<A, B>>): MaybeBox<B>;
+    
+    '>>='<A,B>(ma: MaybeBox<A>, action: Application<A, MaybeBox<B>>): MaybeBox<B>;
+    '>>'<A,B>(ma: MaybeBox<A>, mb: MaybeBox<B>): MaybeBox<B>;
+    return<A>(a: A) : MaybeBox<A>;
+    fail<A>(value: string): MaybeBox<A>;
 }
 
-const pure = <A>(a: A): MaybeBox<A> => {
-    return Maybe.from(a);
-}
+const implementation = {
+    ">>="<A,B>(ma: MaybeBox<A>, action: Application<A, MaybeBox<B>>): MaybeBox<B> {
+        ma = ma || Maybe.nothing();
+        action = action || identity as Application<A, MaybeBox<B>>;
 
-const lift = <A, B>(fab: MaybeBox<Application<A, B>>, fa: MaybeBox<A>): MaybeBox<B> => {
-    fab = fab || Maybe.nothing();
-    fa = fa || Maybe.nothing();
+        return ma.isNothing ? Maybe.nothing() : action(ma.value);
+    },
 
-    return fab.isNothing ? Maybe.nothing() : functor.fmap(fab.value, fa);
-}
+    fail<A>(_: string): MaybeBox<A> {
+        return Maybe.nothing();
+    }
+} as IMonadBase<IsMaybe>;
 
-export const applicative = appBase(functor, { pure, lift }) as IMaybeApplicative;
+export const monad = monadBase(implementation, applicative) as IMaybeMonad;

@@ -31,9 +31,9 @@ describe('PlainArray monad', () => {
             expect(result).toEqual([]);
         });
 
-        it('uses id for falsy second paramter', () => {
+        it('uses empty array for falsy second paramter', () => {
             const result = monad['>>='](a, undefined);
-            expect(result).toEqual(a);
+            expect(result).toEqual([]);
         });
     });
 

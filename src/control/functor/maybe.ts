@@ -1,21 +1,17 @@
 import { identity } from 'ramda';
-import { Box } from '@common/types/box';
+import { IsMaybe, MaybeBox } from '@common/types/maybe-box';
 import { functor as baseFunctor, IFunctor } from '@control/common/functor';
 import { Maybe } from '@data/maybe';
 
-export class IsMaybe {}
-
-export type MaybeF<T> = Box<IsMaybe, T> & Maybe<T>;
-
 export interface IMaybeFunctor extends IFunctor<IsMaybe> {
-    fmap: <A, B>(f: (a: A) => B, fa: MaybeF<A>) => MaybeF<B>;
-    '<$>': <A, B>(f: (a: A) => B, fa: MaybeF<A>) => MaybeF<B>,
-    '<$': <A, B>(a: A, fb: MaybeF<B>) => MaybeF<A>,
-    '$>': <A, B>(fa: MaybeF<A>, b: B) => MaybeF<B>,
-    '<&>': <A, B>(fa: MaybeF<A>, f: (a: A) => B) => MaybeF<B>
+    fmap: <A, B>(f: (a: A) => B, fa: MaybeBox<A>) => MaybeBox<B>;
+    '<$>': <A, B>(f: (a: A) => B, fa: MaybeBox<A>) => MaybeBox<B>,
+    '<$': <A, B>(a: A, fb: MaybeBox<B>) => MaybeBox<A>,
+    '$>': <A, B>(fa: MaybeBox<A>, b: B) => MaybeBox<B>,
+    '<&>': <A, B>(fa: MaybeBox<A>, f: (a: A) => B) => MaybeBox<B>
 }
 
-const fmap = <A, B>(f: (a: A) => B, fa: MaybeF<A>): MaybeF<B> => {
+const fmap = <A, B>(f: (a: A) => B, fa: MaybeBox<A>): MaybeBox<B> => {
     f = f || (identity as (a: A) => B);
     fa = fa || Maybe.nothing();
 
