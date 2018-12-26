@@ -2,7 +2,6 @@ import { identity } from 'ramda';
 import { Application, Application2, Application3 } from '@common/types/application';
 import { IsPlainArray, ArrayBox } from '@common/types/plain-array-box';
 import { IMonad, IMonadBase, monad as monadBase } from '@control/common/monad';
-import { IFunctor } from '@control/common/functor';
 import { applicative } from '@control/applicative/plain-array';
 
 export interface IPlainArrayMonad extends IMonad<IsPlainArray> {
@@ -28,7 +27,7 @@ export interface IPlainArrayMonad extends IMonad<IsPlainArray> {
     fail<A>(value: string): ArrayBox<A>;
 }
 
-const implementation = (f: IFunctor<IsPlainArray>) => ({
+const implementation = {
     ">>="<A,B>(ma: ArrayBox<A>, action: Application<A, ArrayBox<B>>): ArrayBox<B> {
         ma = ma || [];
         action = action || identity as Application<A, ArrayBox<B>>;
@@ -42,8 +41,6 @@ const implementation = (f: IFunctor<IsPlainArray>) => ({
     fail<A>(_: string): ArrayBox<A> {
         return [];
     }
-}) as IMonadBase<IsPlainArray>;
+} as IMonadBase<IsPlainArray>;
 
-const base = implementation(applicative);
-
-export const monad = monadBase(base, applicative) as IPlainArrayMonad;
+export const monad = monadBase(implementation, applicative) as IPlainArrayMonad;
