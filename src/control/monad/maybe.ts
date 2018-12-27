@@ -1,4 +1,3 @@
-import { identity } from 'ramda';
 import { Application, Application2, Application3 } from '@common/types/application';
 import { IsMaybe, MaybeBox } from '@common/types/maybe-box';
 import { Maybe } from '@data/maybe';
@@ -31,7 +30,7 @@ export interface IMaybeMonad extends IMonad<IsMaybe> {
 const implementation = {
     ">>="<A,B>(ma: MaybeBox<A>, action: Application<A, MaybeBox<B>>): MaybeBox<B> {
         ma = ma || Maybe.nothing();
-        action = action || identity as Application<A, MaybeBox<B>>;
+        action = action || (() => Maybe.nothing());
 
         return ma.isNothing ? Maybe.nothing() : action(ma.value);
     },

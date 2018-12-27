@@ -22,12 +22,12 @@ describe('PlainArray monad', () => {
 
     describe('>>=', () => {
         it('returns for valid args', () => {
-            const result = monad['>>='](a, x => [x * x]);
+            const result = monad['>>='](a, g);
             expect(result).toEqual([1, 4, 9]);
         });
 
         it('uses empty array for falsy first arg', () => {
-            const result = monad['>>='](undefined, x => [x * x]);
+            const result = monad['>>='](undefined, g);
             expect(result).toEqual([]);
         });
 
@@ -67,11 +67,9 @@ describe('PlainArray monad', () => {
     });
 
     describe('Monad first law (Left identity): return a >>= k = k a', () => {
-        const action = (x) => [x * x];
-        
         it('direct', () => {
-            const result1 = monad['>>='](monad.return(3), action);
-            const result2 = action(3);
+            const result1 = monad['>>='](monad.return(3), g);
+            const result2 = g(3);
 
             expect(result1).toEqual(result2);
             expect(result1).toEqual([9]);
@@ -80,11 +78,11 @@ describe('PlainArray monad', () => {
         it('with compose', () => {
             
             const result1 = compose(
-                partial(flip(monad['>>=']), [action]),
+                partial(flip(monad['>>=']), [g]),
                 () => monad.return(3)
             )();
             
-            const result2 = action(3);
+            const result2 = g(3);
 
             expect(result1).toEqual(result2);
             expect(result1).toEqual([9]);
@@ -105,7 +103,7 @@ describe('PlainArray monad', () => {
              )(monad.return);
             
             expect(result).toEqual(a);
-        })
+        });
     });
 
     describe('Monad third law (Associativity): (m >>= f) >>= g = m >>= (\\x -> f x >>= g)', () => {
