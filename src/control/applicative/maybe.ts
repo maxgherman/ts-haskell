@@ -22,7 +22,7 @@ export interface IMaybeApplicative extends IApplicative<IsMaybe> {
 }
 
 const pure = <A>(a: A): MaybeBox<A> => {
-    return Maybe.from(a);
+    return (a instanceof Maybe) ? a : Maybe.from(a);
 }
 
 const lift = <A, B>(fab: MaybeBox<Application<A, B>>, fa: MaybeBox<A>): MaybeBox<B> => {

@@ -1,30 +1,31 @@
 import { IMonad } from './monad';
 
-// var Do = function(gen, m) {
-//     var doing = gen();
-//     var doRec = function(v){
-//         var a = doing.next(v);
-//         if(a.done) {
-//             return m.of(a.value);
-//         } else {
-//             return a.value.chain(doRec);
-//         }
-//     };
-//     return doRec(null);
-// };
+export const doSingle = <R>(generator: () => IterableIterator<R>, monad: IMonad<{}>) => {
+    const result = generator();
+
+    const iteration = function(element) {
+        const next = result.next(element);
+
+        return next.done ?
+            monad.return(next.value) :
+            monad[">>="](next.value, iteration);
+    };
+
+    return iteration(null);
+};
 
 export const doRepeat = <R>(generator: () => IterableIterator<R>, monad: IMonad<{}>): R => {
     const iteration = (element, state) => {
         const result = generator();
         
-        state.forEach((it) => result.next(it));
+        state.forEach((self) => result.next(self));
        
         const next = result.next(element);
 
         if(next.done) {
-            return next.value;
+            return monad.return(next.value);
         } else {
-            return monad['>>='](next.value, (value) =>
+            return monad[">>="](next.value, (value) =>
                 iteration(value, state.concat(element))
             );
         }

@@ -10,6 +10,12 @@ describe('Maybe Applicative',() => {
             expect(expected.value).toEqual(3);
             expect(expected.isJust).toBe(true);
         });
+
+        it('returns Maybe for Maybe', () => {
+            const expected = applicative.pure(Maybe.from(3));
+            expect(expected.isJust).toBe(true);
+            expect(expected.value).toBe(3);
+        });
     });
 
     describe('lift', () => {

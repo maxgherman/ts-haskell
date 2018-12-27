@@ -1,6 +1,7 @@
 import { compose, flip, partial } from 'ramda';
 import { Maybe } from '@data/maybe';
 import { monad } from '@control/monad/maybe';
+import { doSingle } from '@control/common/monad';
 
 describe('Maybe monad', () => {
     const a = Maybe.from(3);
@@ -140,6 +141,112 @@ describe('Maybe monad', () => {
         it('for Just', () => {
             expect(monad.return(5).value).toBe(monad.pure(5).value);
             expect(monad.pure(5).value).toBe(5);
+        });
+    });
+
+    describe('do - notation', () => {
+        const run = (x) => Maybe.from(x*x);
+        const start = 5;
+
+        it('returns', () => {
+            const test = function*() {
+                const value1 = yield monad.return(start);
+                return run(value1);
+            };
+
+            const result = doSingle(test, monad);
+
+            expect(result.isJust).toBe(true);
+            expect(result.value).toBe(25);
+        });
+
+        it('returns as yield', () => {
+            const test = function*() {
+                const value1 = yield monad.return(start);
+                const value2 = yield run(value1);
+
+                return value2;
+            };
+
+            const result = doSingle(test, monad);
+
+            expect(result.isJust).toBe(true);
+            expect(result.value).toBe(25);
+        });
+
+        it('Monad first law (Left identity): do { x′ <- return x; f x′ } = do { f x }', () => {
+            const left = function*() {
+                const value = yield monad.return(start);
+                return run(value);
+            }
+    
+            const right = function*() {
+                return run(start);
+            }
+    
+            const result1 = doSingle(left, monad);
+            const result2 = doSingle(right, monad);
+    
+            expect(result1.value).toEqual(result2.value);
+            expect(result1.value).toBe(25);    
+        });
+
+        it('Monad second law (Right identity): do { x <- m; return x } = do { m }', () => {
+            
+            const left = function*() {
+                const value = yield a;
+                return value;
+            }
+
+            const right = function*() {
+                return a;
+            }
+
+            const result1 = doSingle(left, monad);
+            const result2 = doSingle(right, monad);
+
+            expect(result1.value).toEqual(result2.value);
+            expect(result1.value).toBe(a.value);    
+        });
+
+        it(`Monad third law (Associativity):
+            do { y <- do { x <- m; f x } g y } =
+            do { x <- m; do { y <- f x; g y } } =
+            do { x <- m; y <- f x; g y }`, () => {
+
+            const left = function*() {
+                const y = yield doSingle(function*() {
+                    const x = yield a;
+                    return f(x);
+                }, monad);
+
+                return g(y);
+            };
+
+            const middle = function*() {
+                const x = yield a;
+                const value = yield doSingle(function*(){
+                    const y = yield f(x);
+                    return g(y);
+                }, monad);
+
+                return value;
+            };
+
+            const right = function*() {
+                const x = yield a;
+                const y = yield f(x);
+
+                return g(y);
+            };
+
+            const result1 = doSingle(left, monad);
+            const result = doSingle(middle, monad);
+            const result2 = doSingle(right, monad);
+
+            expect(result1.value).toBe(result.value);
+            expect(result.value).toBe(result2.value);
+            expect(result.value).toBe(36);
         });
     });
 });

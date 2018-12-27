@@ -13,6 +13,11 @@ describe('PlainArray applicative', () => {
             const expected = applicative.pure(null);
             expect(expected).toEqual([null]);
         });
+
+        it('returns array for array', () => {
+            const expected = applicative.pure([3]);
+            expect(expected).toEqual([3]);
+        });
     });
 
     describe('lift', () => {

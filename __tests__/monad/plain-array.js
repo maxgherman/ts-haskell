@@ -145,14 +145,25 @@ describe('PlainArray monad', () => {
         const run = (x) => [x-1, x, x+1];
         const start = 1;
 
-        const test = function*() {
-            const value1 = yield run(start)
-            const value2 = yield run(value1)
-            return value2;
-        };
-        
         it('returns', () => {
-            let result = doRepeat(test, monad);
+            const test = function*() {
+                const value1 = yield run(start)
+                return run(value1)
+            };
+            
+            const result = doRepeat(test, monad);
+
+            expect(result).toEqual([-1,0,1,0,1,2,1,2,3]);
+        });
+        
+        it('returns as yield', () => {
+            const test = function*() {
+                const value1 = yield run(start)
+                const value2 = yield run(value1)
+                return value2;
+            };
+            
+            const result = doRepeat(test, monad);
 
             expect(result).toEqual([-1,0,1,0,1,2,1,2,3]);
         });
