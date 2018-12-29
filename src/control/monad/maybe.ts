@@ -37,6 +37,10 @@ const implementation = {
 
     fail<A>(_: string): MaybeBox<A> {
         return Maybe.nothing();
+    },
+
+    isOfType<A>(a:A) {
+        return a instanceof Maybe;
     }
 } as IMonadBase<IsMaybe>;
 

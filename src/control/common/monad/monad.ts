@@ -7,7 +7,9 @@ export interface IMonadBase<F> {
     '>>='<A,B>(ma: Box<F, A>, action: Application<A, Box<F,B>>): Box<F,B>;
 
  // fail   :: String -> m a
-    fail?<A>(value: string): Box<F,A>; 
+    fail?<A>(value: string): Box<F,A>;
+
+    isOfType<A>(a:A): boolean;
 }
 
 export interface IMonad<F> extends IMonadBase<F>, IApplicative<F> {

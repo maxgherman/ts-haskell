@@ -7,7 +7,7 @@ export const doSingle = <R>(generator: () => IterableIterator<R>, monad: IMonad<
         const next = result.next(element);
 
         return next.done ?
-            monad.return(next.value) :
+            (monad.isOfType(next.value) ? next.value : monad.return(next.value)) :
             monad[">>="](next.value, iteration);
     };
 
@@ -22,13 +22,11 @@ export const doRepeat = <R>(generator: () => IterableIterator<R>, monad: IMonad<
        
         const next = result.next(element);
 
-        if(next.done) {
-            return monad.return(next.value);
-        } else {
-            return monad[">>="](next.value, (value) =>
+        return next.done ?
+            (monad.isOfType(next.value) ? next.value : monad.return(next.value)) :
+            monad[">>="](next.value, (value) =>
                 iteration(value, state.concat(element))
             );
-        }
     };
     
     return iteration(null, []);

@@ -39,6 +39,10 @@ const implementation = {
 
     fail<A>(_: string): ArrayBox<A> {
         return [];
+    },
+
+    isOfType<A>(a:A) {
+        return Array.isArray(a);
     }
 } as IMonadBase<IsPlainArray>;
 
