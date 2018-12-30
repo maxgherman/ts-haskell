@@ -53,7 +53,8 @@ export const applicative = <F>(f: IFunctor<F>, base: IApplicativeBase<F>): IAppl
         },
 
         '*>'<A, B>(fa: Box<F, A>, fb: Box<F, B>): Box<F, B> {
-            return base.lift(f['<$'](identity, fa), fb);
+            const a = fa ? f['<$'](identity, fa) : undefined;
+            return base.lift(a, fb);
         },
 
         '<*': partial(liftA2, [always]),

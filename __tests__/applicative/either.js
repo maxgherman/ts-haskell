@@ -12,6 +12,11 @@ describe('Either Applicative',() => {
             expect(expected.value).toEqual(3);
             expect(expected.isRight).toBe(true);
         });
+
+        it('returns Left for falsy arg', () => {
+            const result = applicative.pure(undefined);
+            expect(result.isLeft).toBe(true);
+        });
     });
 
     describe('lift', () => {
@@ -23,14 +28,14 @@ describe('Either Applicative',() => {
             expect(result.isRight).toBe(true);
         });
 
-        it('uses Right for falsy first arg', () => {
+        it('uses Left for falsy first arg', () => {
             const result = applicative.lift(undefined, Either.right(2));
-            expect(result.isRight).toBe(true);
+            expect(result.isLeft).toBe(true);
         });
 
-        it('uses Right for falsy second arg', () => {
+        it('uses Left for falsy second arg', () => {
             const result = applicative.lift(Either.right((x) => x + 1), undefined);
-            expect(result.isRight).toBe(true);
+            expect(result.isLeft).toBe(true);
         });
 
         it('returns Left for (Left, Left)', () => {

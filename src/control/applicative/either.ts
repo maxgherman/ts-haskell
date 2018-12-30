@@ -1,38 +1,43 @@
 import { identity } from 'ramda';
 import { IApplicative, applicative as appBase } from '@control/common/applicative';
 import { Either } from '@data/either';
-import { IsEither, EitherF, functor, IEitherFunctor } from '@control/functor/either';
+import { IsEither, EitherBox  } from '@common/types/either-box';
+import { functor, IEitherFunctor } from '@control/functor/either';
 import { Application, Application2, Application3 } from '@common/types/application';
 
 export interface IEitherApplicative<T> extends IApplicative<IsEither> {
-    fmap: <A, B>(f: (a: A) => B, fa: EitherF<T, A>) => EitherF<T, B>;
-    '<$>': <A, B>(f: (a: A) => B, fa: EitherF<T, A>) => EitherF<T, B>;
-    '<$': <A, B>(a: A, fb: EitherF<T, B>) => EitherF<T, A>;
-    '$>': <A, B>(fa: EitherF<T, A>, b: B) => EitherF<T, B>;
-    '<&>': <A, B>(fa: EitherF<T, A>, f: (a: A) => B) => EitherF<T, B>;
-    pure<A>(a:A): EitherF<T, A>;
-    lift<A, B>(fab: EitherF<T, Application<A, B>>, fa: EitherF<T, A>): EitherF<T, B>;
-    '<*>'<A, B>(fab: EitherF<T, Application<A, B>>, fa: EitherF<T, A>): EitherF<T, B>;
-    liftA<A, B>(f: Application<A, B>, fa: EitherF<T, A>): EitherF<T, B>;
-    liftA2<A, B, C>(abc: Application2<A, B, C>, fa: EitherF<T, A>, fb: EitherF<T, B>): EitherF<T, C>;
-    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: EitherF<T, A>, fb: EitherF<T, B>, fc: EitherF<T, C>): EitherF<T, D>;
-    '*>'<A, B>(fa: EitherF<T, A>, fb: EitherF<T, B>): EitherF<T, B>;
-    '<*'<A, B>(fa: EitherF<T, A>, fb: EitherF<T, B>): EitherF<T, A>;
-    '<**>'<A, B>(fa: EitherF<T, A>, fab: EitherF<T, Application<A, B>>): EitherF<T, B>;
+    fmap: <A, B>(f: (a: A) => B, fa: EitherBox<T, A>) => EitherBox<T, B>;
+    '<$>': <A, B>(f: (a: A) => B, fa: EitherBox<T, A>) => EitherBox<T, B>;
+    '<$': <A, B>(a: A, fb: EitherBox<T, B>) => EitherBox<T, A>;
+    '$>': <A, B>(fa: EitherBox<T, A>, b: B) => EitherBox<T, B>;
+    '<&>': <A, B>(fa: EitherBox<T, A>, f: (a: A) => B) => EitherBox<T, B>;
+    pure<A>(a:A): EitherBox<T, A>;
+    lift<A, B>(fab: EitherBox<T, Application<A, B>>, fa: EitherBox<T, A>): EitherBox<T, B>;
+    '<*>'<A, B>(fab: EitherBox<T, Application<A, B>>, fa: EitherBox<T, A>): EitherBox<T, B>;
+    liftA<A, B>(f: Application<A, B>, fa: EitherBox<T, A>): EitherBox<T, B>;
+    liftA2<A, B, C>(abc: Application2<A, B, C>, fa: EitherBox<T, A>, fb: EitherBox<T, B>): EitherBox<T, C>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: EitherBox<T, A>, fb: EitherBox<T, B>, fc: EitherBox<T, C>): EitherBox<T, D>;
+    '*>'<A, B>(fa: EitherBox<T, A>, fb: EitherBox<T, B>): EitherBox<T, B>;
+    '<*'<A, B>(fa: EitherBox<T, A>, fb: EitherBox<T, B>): EitherBox<T, A>;
+    '<**>'<A, B>(fa: EitherBox<T, A>, fab: EitherBox<T, Application<A, B>>): EitherBox<T, B>;
 }
 
-const pure = <R,A>(a: A): EitherF<R, A> => {
-    return Either.right(a) as EitherF<R, A>;
+const pure = <R,A>(a: A): EitherBox<R, A> => {
+    if(a === null || a === undefined) {
+        return Either.left(undefined);
+    }
+    
+    return Either.right(a) as EitherBox<R, A>;
 }
 
 const lift = <R>(functor: IEitherFunctor<R>) =>
-    <A, B>(fab: EitherF<R, Application<A, B>>, fa: EitherF<R, A>): EitherF<R, B> => {
+    <A, B>(fab: EitherBox<R, Application<A, B>>, fa: EitherBox<R, A>): EitherBox<R, B> => {
     
-    fab = fab || Either.right(identity) as EitherF<R, Application<A, B>>;
-    fa = fa || Either.right(undefined);
+    fab = fab || Either.left(undefined);
+    fa = fa || Either.left(undefined);
     
     if(fab.isLeft) {
-        return Either.left(fab.value) as EitherF<R, B>;
+        return Either.left(fab.value) as EitherBox<R, B>;
     }
 
     return functor.fmap(fab.value as Application<A, B>, fa);
