@@ -23,7 +23,7 @@ export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
 }
 
 const pure = <A>(a: A): ArrayBox<A> => {
-    return [a];
+    return a === null || a === undefined ? [] : [a]; 
 }  
 
 const lift = <A, B>(fab: ArrayBox<Application<A, B>>, fa: ArrayBox<A>): ArrayBox<B> => {

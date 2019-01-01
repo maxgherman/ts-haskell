@@ -11,7 +11,7 @@ describe('PlainArray applicative', () => {
 
         it('returns array for falsy args', () => {
             const expected = applicative.pure(null);
-            expect(expected).toEqual([null]);
+            expect(expected).toEqual([]);
         });
     });
 

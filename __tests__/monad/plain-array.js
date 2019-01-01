@@ -16,7 +16,7 @@ describe('PlainArray monad', () => {
 
         it('returns array for falsy args', () => {
             const result = monad.return(undefined);
-            expect(result).toEqual([undefined]);
+            expect(result).toEqual([]);
         });
     });
 
@@ -138,6 +138,10 @@ describe('PlainArray monad', () => {
         it('for non empty array', () => {
             expect(monad.return(5)).toEqual(monad.pure(5));
             expect(monad.pure(5)).toEqual([5]);
+        });
+
+        it('for empty array', () => {
+            expect(monad.return(null)).toEqual(monad.pure(null));
         });
     });
 

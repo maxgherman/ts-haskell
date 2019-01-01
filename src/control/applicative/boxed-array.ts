@@ -23,7 +23,8 @@ export interface IBoxedArrayApplicative extends IApplicative<IsBoxedArray> {
 }
 
 const pure = <A>(a:A): BoxedArrayBox<A> => {
-    return BoxedArray.from([a]);
+    const result = a === null || a === undefined ? [] : [a]; 
+    return BoxedArray.from(result);
 }
 
 const lift = <A, B>(fab: BoxedArrayBox<Application<A, B>>, fa: BoxedArrayBox<A>): BoxedArrayBox<B> => {

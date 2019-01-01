@@ -10,6 +10,11 @@ describe('Plain Reader Applicative',() => {
             const expected = applicative.pure(3);
             expect(expected(10)).toBe(3);
         });
+
+        it('returns Reader for falsy arg', () => {
+            const expected = applicative.pure(undefined);
+            expect(expected(10)).toBe(undefined);
+        });
     });
 
     describe('lift', () => {

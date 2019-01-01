@@ -16,6 +16,14 @@ describe('BoxedArray writer applicative', () => {
             expect(data).toBe(123);
             expect(log.value).toEqual([]);
         });
+
+        it('returns Writer for falsy arg', () => {
+            const writer = applicative.pure(null);
+            const [data, log] = writer.runWriter();
+
+            expect(data).toBe(null);
+            expect(log.value).toEqual([]);
+        });
     });
 
     describe('lift', () => {

@@ -10,6 +10,11 @@ describe('Maybe Applicative',() => {
             expect(expected.value).toEqual(3);
             expect(expected.isJust).toBe(true);
         });
+
+        it('returns Nothing for falsy arg', () => {
+            const expected = applicative.pure(undefined);
+            expect(expected.isNothing).toBe(true);
+        });
     });
 
     describe('lift', () => {

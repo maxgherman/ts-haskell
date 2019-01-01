@@ -23,12 +23,9 @@ export interface IEitherApplicative<T> extends IApplicative<IsEither> {
 }
 
 const pure = <R,A>(a: A): EitherBox<R, A> => {
-    if(a === null || a === undefined) {
-        return Either.left(undefined);
-    }
-    
-    return Either.right(a) as EitherBox<R, A>;
-}
+    return a === null || a === undefined ?
+        Either.left(undefined) : Either.right(a); 
+ }
 
 const lift = <R>(functor: IEitherFunctor<R>) =>
     <A, B>(fab: EitherBox<R, Application<A, B>>, fa: EitherBox<R, A>): EitherBox<R, B> => {

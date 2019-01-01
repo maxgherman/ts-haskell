@@ -23,7 +23,8 @@ export interface IListApplicative extends IApplicative<IsList> {
 }
 
 const pure = <A>(a:A): ListBox<A> => {
-    return List.single(a);
+    return a === null || a === undefined ?
+        List.empty() : List.single(a);
 }
 
 const lift = <A, B>(fab: ListBox<Application<A, B>>, fa: ListBox<A>): ListBox<B> => {

@@ -14,6 +14,14 @@ describe('PlainArray writer applicative', () => {
 
             expect(data).toBe(123);
             expect(log).toEqual([]);
+        });
+
+        it('returns Writer for falsy arg', () => {
+            const writer = applicative.pure(undefined);
+            const [data, log] = writer.runWriter();
+
+            expect(data).toBe(undefined);
+            expect(log).toEqual([]);
         })
     })
 

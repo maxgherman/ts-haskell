@@ -11,6 +11,11 @@ describe('Reader Applicative',() => {
             const expected = applicative.pure(3);
             expect(expected.runReader(10)).toBe(3);
         });
+
+        it('returns reader for falsy arg', () => {
+            const expected = applicative.pure(undefined);
+            expect(expected.runReader(10)).toBe(undefined);
+        });
     });
 
     describe('lift', () => {

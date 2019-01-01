@@ -12,6 +12,11 @@ describe('List applicative', () => {
             const expected = applicative.pure(3);
             expect(expected.toArray()).toEqual([3]);
         });
+
+        it('returns empty list for falsy arg', () => {
+            const expected = applicative.pure(undefined);
+            expect(expected.isEmpty).toBe(true);
+        });
     });
 
     describe('lift', () => {

@@ -9,7 +9,12 @@ describe('Promise applicative', () => {
     describe('pure', () => {
         it('returns promise', () =>
             applicative.pure(3)
-            .then(result => expect(result).toEqual(3))
+            .then(result => expect(result).toBe(3))
+        );
+
+        it('returns promise for falsy arg', () =>
+            applicative.pure(undefined)
+            .then(result => expect(result).toBe(undefined))
         );
     });
 

@@ -9,6 +9,11 @@ describe('BoxedArray Applicative',() => {
             const expected = applicative.pure(3);
             expect(expected.value).toEqual([3]);
         });
+
+        it('returns empty boxed array for falsy args', () => {
+            const expected = applicative.pure(null);
+            expect(expected.value).toEqual([]);
+        });
     });
 
     describe('lift', () => {
