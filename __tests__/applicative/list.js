@@ -77,7 +77,7 @@ describe('List applicative', () => {
             const arg1 = applicative.pure(identity);
             const result = applicative.lift(arg1, a);
 
-            expect(result).toEqual(a);
+            expect(result.toArray()).toEqual(a.toArray());
             expect(result.toArray()).toEqual([1, 2, 3]);
         });
 
@@ -86,7 +86,7 @@ describe('List applicative', () => {
             const arg2 = List.empty();
             const result = applicative.lift(arg1, arg2);
 
-            expect(result).toEqual(arg2);
+            expect(result.toArray()).toEqual(arg2.toArray());
             expect(result.toArray()).toEqual([]);
         });
     });

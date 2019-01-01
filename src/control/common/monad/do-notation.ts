@@ -23,7 +23,8 @@ export const doRepeat = <R>(generator: () => IterableIterator<R>, monad: IMonad<
         const next = result.next(element);
 
         return next.done ?
-            (monad.isOfType(next.value) ? next.value : monad.return(next.value)) :
+            (monad.isOfType(next.value) ? next.value : monad.return(next.value))
+            :
             monad[">>="](next.value, (value) =>
                 iteration(value, state.concat(element))
             );

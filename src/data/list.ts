@@ -87,6 +87,24 @@ export class List<T> {
         return internal(this, f, acc);
     }
 
+    // Iterator protocol
+    [Symbol.iterator]() {
+        
+        let current = this as List<T>;
+        
+        return {
+            next() {
+                if(!current || current.isEmpty) {
+                    return { done: true, value: undefined };
+                } else {
+                    const result = current.head;
+                    current = current.tail;
+                    return { done: false, value: result };
+                }
+            }
+        };
+    }
+
     public toArray(): Array<T> {
         return this.reduce((acc, curr) => acc.concat(curr), []);
     }

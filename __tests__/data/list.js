@@ -152,4 +152,38 @@ describe('List', () => {
             expect(result.toArray()).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
         });
     });
+
+    describe('iterator protocol', () => {
+        it('returns empty', () => {
+            const list = List.empty();
+            const iterator = list[Symbol.iterator]();
+            const result = iterator.next();
+
+            expect(result.done).toBe(true);
+            expect(result.value).toBe(undefined);
+        });
+
+        it('returns non empty', () => {
+            const list = ((empty[':'](3))[':'](2))[':'](1);
+            const iterator = list[Symbol.iterator]();
+
+            let result = iterator.next();
+            const acc = [];
+
+            while(!result.done) {
+                acc.push(result.value);
+                result = iterator.next();
+            }
+
+            expect(acc).toEqual(list.toArray());
+        });
+
+        it('returns spread', () => {
+            const list = ((empty[':'](3))[':'](2))[':'](1);
+            const result = [...list];
+            
+            expect(result).toEqual(list.toArray());
+        });
+
+    });
  });
