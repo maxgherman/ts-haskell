@@ -49,4 +49,4 @@ const implementation = {
     }
 } as IMonadBase<IsBoxedArray>;
 
-export const monad = monadBase(implementation, applicative) as IsBoxedArray;
+export const monad = monadBase(implementation, applicative) as IBoxedArrayMonad;

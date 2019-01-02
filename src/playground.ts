@@ -26,6 +26,7 @@ import { applicative as wa} from '@control/applicative/writer';
 import { applicative as pa } from '@control/applicative/promise';
 
 import { monad as plmonad } from '@control/monad/plain-array';
+import { monad as bamonad } from '@control/monad/boxed-array';
 
 import { BoxedArray } from '@data/boxed-array';
 import { List } from '@data/list';
@@ -88,4 +89,6 @@ wa<string[]>(plm).lift(Writer.from([(x: string) => x.toLowerCase() + 1, ['Test']
 
 pa.lift<string, string[]>(Promise.resolve<((string) => string[])>((x: string) => [x]), Promise.resolve('3'));
 
-plmonad[">>="]([1, 2, 3], (x) => [x ,x]);
+plmonad[">>="]([1, 2, 3], (x) => [x, x]);
+
+bamonad[">>="](BoxedArray.from(['1', '2', '3']), (x) => BoxedArray.from([x.toLowerCase() , x]));
