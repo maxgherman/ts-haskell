@@ -7,7 +7,16 @@ export class BoxedArray<T> {
         return new BoxedArray<T>(value);
     }
 
+    public static empty<T>() {
+        return new BoxedArray<T>(undefined);
+    }
+
     public get value(): T[] {
         return this._value;
+    }
+
+    // Iterator protocol
+    [Symbol.iterator]() {
+        return this._value[Symbol.iterator]();
     }
 }

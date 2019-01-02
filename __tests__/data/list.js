@@ -184,6 +184,5 @@ describe('List', () => {
             
             expect(result).toEqual(list.toArray());
         });
-
     });
  });
