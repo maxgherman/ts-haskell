@@ -27,6 +27,7 @@ import { applicative as pa } from '@control/applicative/promise';
 
 import { monad as plmonad } from '@control/monad/plain-array';
 import { monad as bamonad } from '@control/monad/boxed-array';
+import { monad as lmonad } from '@control/monad/list';
 
 import { BoxedArray } from '@data/boxed-array';
 import { List } from '@data/list';
@@ -92,3 +93,5 @@ pa.lift<string, string[]>(Promise.resolve<((string) => string[])>((x: string) =>
 plmonad[">>="]([1, 2, 3], (x) => [x, x]);
 
 bamonad[">>="](BoxedArray.from(['1', '2', '3']), (x) => BoxedArray.from([x.toLowerCase() , x]));
+
+lmonad[">>="](List.single(3)[':'](1)[':'](2), (x) => List.single(x));
