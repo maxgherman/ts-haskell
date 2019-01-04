@@ -30,7 +30,7 @@ const pure = <R,A>(a: A): EitherBox<R, A> => {
 const lift = <R>(functor: IEitherFunctor<R>) =>
     <A, B>(fab: EitherBox<R, Application<A, B>>, fa: EitherBox<R, A>): EitherBox<R, B> => {
     
-    fab = fab || Either.left(undefined);
+    fab = fab || Either.right(identity as Application<A,B>);
     fa = fa || Either.left(undefined);
     
     if(fab.isLeft) {

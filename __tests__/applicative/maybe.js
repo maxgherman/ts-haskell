@@ -26,9 +26,10 @@ describe('Maybe Applicative',() => {
             expect(result.isJust).toBe(true);
         });
 
-        it('uses Nothing for falsy first arg', () => {
+        it('uses Just for falsy first arg', () => {
             const result = applicative.lift(undefined, Maybe.just(2));
-            expect(result.isNothing).toBe(true);
+            expect(result.isJust).toBe(true);
+            expect(result.value).toBe(2);
         });
 
         it('uses Nothing for falsy second arg', () => {

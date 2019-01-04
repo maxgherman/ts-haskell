@@ -28,7 +28,7 @@ const pure = <A>(a:A): ListBox<A> => {
 }
 
 const lift = <A, B>(fab: ListBox<Application<A, B>>, fa: ListBox<A>): ListBox<B> => {
-    fab = fab || List.empty();
+    fab = fab || List.single(identity as Application<A,B>);
     fa = fa || List.empty();
 
     return fab.reduce((acc, curr) => {

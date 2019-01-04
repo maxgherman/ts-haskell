@@ -26,12 +26,12 @@ describe('List applicative', () => {
             expect(result.toArray()).toEqual([3, 6, 9, 3, 4, 5]);
         });
 
-        it('returns uses empty list for falsy first arg', () => {
+        it('uses right arg for falsy first arg', () => {
             const result = applicative.lift(undefined, a);
-            expect(result.toArray()).toEqual([]);
+            expect(result.toArray()).toEqual(a.toArray());
         });
 
-        it('returns uses empty list for falsy second arg', () => {
+        it('uses empty list for falsy second arg', () => {
             const result = applicative.lift(List.single((x) => x + 1), undefined);
             expect(result.toArray()).toEqual([]);
         });

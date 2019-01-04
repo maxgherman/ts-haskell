@@ -45,9 +45,9 @@ describe('List monad', () => {
             expect(result.toArray()).toEqual([4, 5, 6, 4, 5, 6, 4, 5, 6]);
         });
 
-        it('uses empty list for falsy first arg', () => {
+        it('uses right arg for falsy first arg', () => {
             const result = monad['>>'](undefined, b);
-            expect(result.isEmpty).toBe(true);
+            expect(result.toArray()).toEqual(b.toArray());
         });
 
         it('uses empty list for falsy second arg', () => {

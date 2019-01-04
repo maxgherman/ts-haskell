@@ -46,9 +46,10 @@ describe('Maybe monad', () => {
             expect(result.value).toEqual(5);
         });
 
-        it('uses Nothing for falsy first arg', () => {
+        it('uses Just for falsy first arg', () => {
             const result = monad['>>'](undefined, b);
-            expect(result.isNothing).toBe(true);
+            expect(result.isJust).toBe(true);
+            expect(result.value).toBe(5);
         });
 
         it('uses Nothing for falsy second arg', () => {

@@ -28,9 +28,10 @@ describe('Either Applicative',() => {
             expect(result.isRight).toBe(true);
         });
 
-        it('uses Left for falsy first arg', () => {
+        it('uses Right for falsy first arg', () => {
             const result = applicative.lift(undefined, Either.right(2));
-            expect(result.isLeft).toBe(true);
+            expect(result.isRight).toBe(true);
+            expect(result.value).toBe(2);
         });
 
         it('uses Left for falsy second arg', () => {

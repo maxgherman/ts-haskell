@@ -43,9 +43,9 @@ describe('PlainArray monad', () => {
             expect(result).toEqual([4, 5, 6, 4, 5, 6, 4, 5, 6]);
         });
 
-        it('uses empty array for falsy first arg', () => {
+        it('uses second arg for falsy first arg', () => {
             const result = monad['>>'](undefined, b);
-            expect(result).toEqual([]);
+            expect(result).toEqual([4, 5, 6]);
         });
 
         it('uses empty array for falsy second arg', () => {

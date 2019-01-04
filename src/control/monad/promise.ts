@@ -1,15 +1,15 @@
-import { identity } from 'ramda';
-import { IApplicative, applicative as appBase } from '@control/common/applicative';
-import { functor  } from '@control/functor/promise';
-import { IsPromise, PromiseBox } from '@common/types/promise-box';
 import { Application, Application2, Application3 } from '@common/types/application';
+import { IsPromise, PromiseBox } from '@common/types/promise-box';
+import { IMonad, IMonadBase, monad as monadBase } from '@control/common/monad';
+import { applicative } from '@control/applicative/promise';
 
-export interface IPlainArrayApplicative extends IApplicative<IsPromise> {
+export interface IPromiseMonad extends IMonad<IsPromise> {
     fmap: <A, B>(f: (a: A) => B, fa: PromiseBox<A>) => PromiseBox<B>;
     '<$>': <A, B>(f: (a: A) => B, fa: PromiseBox<A>) => PromiseBox<B>;
     '<$': <A, B>(a: A, fb: PromiseBox<B>) => PromiseBox<A>;
     '$>': <A, B>(fa: PromiseBox<A>, b: B) => PromiseBox<B>;
     '<&>': <A, B>(fa: PromiseBox<A>, f: (a: A) => B) => PromiseBox<B>;
+
     pure<A>(a:A): PromiseBox<A>;
     lift<A, B>(fab: PromiseBox<Application<A, B>>, fa: PromiseBox<A>): PromiseBox<B>;
     '<*>'<A, B>(fab: PromiseBox<Application<A, B>>, fa: PromiseBox<A>): PromiseBox<B>;
@@ -19,21 +19,30 @@ export interface IPlainArrayApplicative extends IApplicative<IsPromise> {
     '*>'<A, B>(fa: PromiseBox<A>, fb: PromiseBox<B>): PromiseBox<B>;
     '<*'<A, B>(fa: PromiseBox<A>, fb: PromiseBox<B>): PromiseBox<A>;
     '<**>'<A, B>(fa: PromiseBox<A>, fab: PromiseBox<Application<A, B>>): PromiseBox<B>;
+    
+    '>>='<A,B>(ma: PromiseBox<A>, action: Application<A, PromiseBox<B>>): PromiseBox<B>;
+    '>>'<A,B>(ma: PromiseBox<A>, mb: PromiseBox<B>): PromiseBox<B>;
+    return<A>(a: A) : PromiseBox<A>;
+    fail<A>(value: string): PromiseBox<A>;
 }
 
-const pure = <A>(a: A): PromiseBox<A> => {
-    return Promise.resolve(a);
-}
+const implementation = {
+    ">>="<A,B>(ma: PromiseBox<A>, action: Application<A, PromiseBox<B>>): PromiseBox<B> {
+        ma = ma || Promise.resolve();
+        action = action || (() => Promise.resolve());
+        
+        return (ma as Promise<A>).then(data =>
+            action(data) as Promise<B>
+        );
+    },
 
-const lift = <A, B>(fab: PromiseBox<Application<A, B>>, fa: PromiseBox<A>): PromiseBox<B> => {
-    fab = fab || Promise.resolve(identity as Application<A, B>);
-    fa = fa || Promise.resolve();
+    fail<A>(a: string): PromiseBox<A> {
+        return Promise.reject(a) as PromiseBox<A>;
+    },
 
-    return Promise.all([fab as Promise<Application<A, B>>, fa as Promise<A>])
-    .then(([app, value]) => {
-        app = app || identity as Application<A, B>;
-        return app(value);
-    });
-}
+    isOfType<A>(a:A) {
+        return a instanceof Promise;
+    }
+} as IMonadBase<IsPromise>;
 
-export const applicative = appBase(functor, { pure, lift }) as IPlainArrayApplicative;
+export const monad = monadBase(implementation, applicative) as IPromiseMonad;

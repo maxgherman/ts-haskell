@@ -21,9 +21,9 @@ describe('PlainArray applicative', () => {
             expect(result).toEqual([3, 6, 9, 3, 4, 5]);
         });
 
-        it('uses empty array for falsy first arg', () => {
+        it('uses second arg for falsy first arg', () => {
             const result = applicative.lift(undefined, [1, 2, 3]);
-            expect(result).toEqual([]);
+            expect(result).toEqual([1, 2, 3]);
         });
 
         it('uses empty array for falsy second arg', () => {

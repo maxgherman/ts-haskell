@@ -28,7 +28,7 @@ const pure = <A>(a:A): BoxedArrayBox<A> => {
 }
 
 const lift = <A, B>(fab: BoxedArrayBox<Application<A, B>>, fa: BoxedArrayBox<A>): BoxedArrayBox<B> => {
-    fab = fab || BoxedArray.from([]);
+    fab = fab || BoxedArray.from([identity as Application<A, B>]);
     fa = fa || BoxedArray.from([]);
     
     const data = fab.value.reduce((acc, curr) => {

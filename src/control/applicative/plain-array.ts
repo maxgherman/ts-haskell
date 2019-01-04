@@ -27,7 +27,7 @@ const pure = <A>(a: A): ArrayBox<A> => {
 }  
 
 const lift = <A, B>(fab: ArrayBox<Application<A, B>>, fa: ArrayBox<A>): ArrayBox<B> => {
-    fab = fab || [];
+    fab = fab || [identity as Application<A,B>];
     fa = fa || [];
     
     return fab.reduce((acc, curr) => {

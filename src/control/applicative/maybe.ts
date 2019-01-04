@@ -1,3 +1,4 @@
+import { identity } from 'ramda';
 import { IApplicative, applicative as appBase } from '@control/common/applicative';
 import { IsMaybe, MaybeBox } from '@common/types/maybe-box';
 import { Maybe } from '@data/maybe';
@@ -26,7 +27,7 @@ const pure = <A>(a: A): MaybeBox<A> => {
 }
 
 const lift = <A, B>(fab: MaybeBox<Application<A, B>>, fa: MaybeBox<A>): MaybeBox<B> => {
-    fab = fab || Maybe.nothing();
+    fab = fab || Maybe.just(identity as Application<A,B>)
     fa = fa || Maybe.nothing();
 
     return fab.isNothing ? Maybe.nothing() : functor.fmap(fab.value, fa);

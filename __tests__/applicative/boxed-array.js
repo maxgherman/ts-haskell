@@ -26,7 +26,7 @@ describe('BoxedArray Applicative',() => {
 
         it('returns uses empty array for falsy first arg', () => {
             const result = applicative.lift(undefined, BoxedArray.from([1, 2, 3]));
-            expect(result.value).toEqual([]);
+            expect(result.value).toEqual([1, 2, 3]);
         });
 
         it('returns uses empty array for falsy second arg', () => {

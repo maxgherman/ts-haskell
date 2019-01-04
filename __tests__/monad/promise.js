@@ -1,78 +1,89 @@
 import { compose, flip, partial } from 'ramda';
-import { Either } from '@data/either';
-import { monad as monadBase } from '@control/monad/either';
+import { monad } from '@control/monad/promise';
 import { doSingle } from '@control/common/monad';
 
-const monad = monadBase();
-
-describe('Either monad', () => {
-    const a = Either.right(3);
-    const b = Either.right(5);
-    const f = x => Either.right(x + x);
-    const g = x => Either.right(x * x);
+describe('Promise monad', () => {
+    const a = Promise.resolve(3);
+    const b = Promise.resolve(5);
+    const f = x => Promise.resolve(x + x);
+    const g = x => Promise.resolve(x * x);
 
     describe('return', () => {
-        it('returns Right', () => {
-            const result = monad.return(123);
-            expect(result.isRight).toBe(true);
-            expect(result.value).toBe(123);
-        });
+        it('returns', () => 
+            monad.return(123)
+            .then(data => {
+                expect(data).toBe(123);    
+            })
+        );
 
-        it('returns Left for falsy arg', () => {
-            const result = monad.return(undefined);
-            expect(result.isLeft).toBe(true);
-        });
+        it('returns falsy for falsy arg', () =>
+            monad.return(undefined)
+            .then(data => {
+                expect(data).toBe(undefined);
+            })
+        );
     });
 
     describe('>>=', () => {
-        it('returns for valid args', () => {
-            const result = monad['>>='](a, g);
-            expect(result.isRight).toBe(true);
-            expect(result.value).toBe(3 * 3);
-        });
+        it('returns for valid args', () =>
+            monad['>>='](a, g)
+            .then(data => {
+                expect(data).toBe(3 * 3);
+            })
+        );
 
-        it('uses Left for falsy first arg', () => {
-            const result = monad['>>='](undefined, g);
-            expect(result.isLeft).toBe(true);
-        });
+        it('uses falsy for falsy first arg', () =>
+            monad['>>='](undefined, g)
+            .then(data => {
+                expect(data).toBe(NaN);
+            })
+        );
 
-        it('uses Left for falsy second arg', () => {
-            const result = monad['>>='](a, undefined);
-            expect(result.isLeft).toBe(true);
-        });
+        it('uses falsy for falsy second arg', () =>
+            monad['>>='](a, undefined)
+            .then(data => {
+                expect(data).toBe(undefined);
+            })
+        );
     });
 
     describe('>>', () => {
-        it('returns for valid args', () => {
-            const result = monad['>>'](a, b);
-            expect(result.value).toEqual(5);
-            expect(result.isRight).toBe(true);
-        });
+        it('returns for valid args', () =>
+            monad['>>'](a, b)
+            .then(data => {
+                expect(data).toEqual(5);
+            })
+        );
 
-        it('uses Right for falsy first arg', () => {
-            const result = monad['>>'](undefined, b);
-            expect(result.isRight).toBe(true);
-            expect(result.value).toBe(5);
-        });
+        it('uses second arg for falsy first arg', () =>
+            monad['>>'](undefined, b)
+            .then(data => {
+                expect(data).toBe(5);
+            })
+        );
 
-        it('uses Left for falsy second arg', () => {
-            const result = monad['>>'](a, undefined);
-            expect(result.isLeft).toBe(true);
-        });
+        it('uses false for falsy second arg', () =>
+            monad['>>'](a, undefined)
+            .then(data => {
+                expect(data).toBe(undefined);
+            })
+        );
     });
 
     describe('fail', () => {
-        it('returns for valid args', () => {
-            const result = monad.fail('Test');
-            expect(result.isLeft).toBe(true);
-            expect(result.value).toBe('Test');
-        });
+        it('returns for valid args', () => 
+            monad.fail('Test')
+            .catch(data => {
+                expect(data).toBe('Test');
+            })
+        );
 
-        it('returns for falsy args', () => {
-            const result = monad.fail(undefined);
-            expect(result.isLeft).toBe(true);
-            expect(result.value).toBe(undefined);
-        });
+        it('returns for falsy args', () =>
+            monad.fail(undefined)
+            .catch(data => {
+                expect(data).toBe(undefined);
+            })
+       );
     });
 
     describe('Monad first law (Left identity): return a >>= k = k a', () => {
@@ -80,10 +91,11 @@ describe('Either monad', () => {
             const result1 = monad['>>='](monad.return(3), g);
             const result2 = g(3);
 
-            expect(result1.value).toBe(result2.value);
-            expect(result1.value).toBe(9);
-            expect(result1.isRight).toBe(true);
-            expect(result2.isRight).toBe(true);
+            return Promise.all([result1, result2])
+            .then(([value1, value2]) => {
+                expect(value1).toBe(value2);
+                expect(value2).toBe(9);
+            });
         });
 
         it('with compose', () => {
@@ -95,10 +107,11 @@ describe('Either monad', () => {
             
             const result2 = g(3);
 
-            expect(result1.value).toBe(result2.value);
-            expect(result1.value).toBe(9);
-            expect(result1.isRight).toBe(true);
-            expect(result2.isRight).toBe(true);
+            return Promise.all([result1, result2])
+            .then(([value1, value2]) => {
+                expect(value1).toBe(value2);
+                expect(value2).toBe(9);
+            });
         });
     });
 
@@ -106,7 +119,11 @@ describe('Either monad', () => {
 
         it('direct', () => {
             const result = monad['>>='](a, monad.return); 
-            expect(result.value).toBe(a.value);
+            
+            return Promise.all([result, a])
+            .then(([value1, value2]) => {
+                expect(value1).toBe(value2);
+            });
         });
 
         it('with compose', () => {
@@ -115,7 +132,10 @@ describe('Either monad', () => {
                 partial(monad['>>='], [a]),
              )(monad.return);
             
-            expect(result.value).toEqual(a.value);
+             return Promise.all([result, a])
+             .then(([value1, value2]) => {
+                 expect(value1).toBe(value2);
+             });
         });
     });
 
@@ -124,8 +144,11 @@ describe('Either monad', () => {
             const result1 = monad['>>='](monad['>>='](a, f), g);
             const result2 = monad['>>='](a, (x) => monad['>>='](f(x), g));
 
-            expect(result1.value).toBe(result2.value);
-            expect(result1.value).toBe((3+3) * (3+3));
+            return Promise.all([result1, result2])
+             .then(([value1, value2]) => {
+                expect(value1).toBe(value2);
+                expect(value1).toBe((3+3) * (3+3));
+            });
         });
 
         it('with compose', () => {
@@ -141,8 +164,11 @@ describe('Either monad', () => {
                 partial(flip(monad['>>=']), [g])     
             )();
 
-            expect(result1.value).toBe(result2.value);
-            expect(result1.value).toBe((3+3) * (3+3));
+            return Promise.all([result1, result2])
+             .then(([value1, value2]) => {
+                expect(value1).toBe(value2);
+                expect(value1).toBe((3+3) * (3+3));
+            });
         });
     });
 
@@ -152,24 +178,27 @@ describe('Either monad', () => {
             const result1 = monad.return(5);
             const result2 = monad.pure(5);
 
-            expect(result1.value).toBe(result2.value);
-            expect(result1.isRight).toBe(result2.isRight);
-            expect(result2.value).toBe(5);
-            expect(result2.isRight).toBe(true);
+            return Promise.all([result1, result2])
+            .then(([value1, value2]) => {
+                expect(value1).toBe(value2);
+                expect(value1).toBe(5);
+           });
         });
 
         it('for Nothing', () => {
             const result1 = monad.return(undefined);
             const result2 = monad.pure(undefined);
 
-            expect(result1.isLeft).toBe(result2.isLeft);
-            expect(result1.value).toBe(result2.value);
-            expect(result1.value).toBe(undefined);
+            return Promise.all([result1, result2])
+            .then(([value1, value2]) => {
+                expect(value1).toBe(undefined);
+                expect(value2).toBe(undefined);
+           });
         });
     });
 
     describe('do - notation', () => {
-        const run = (x) => Either.right(x*x);
+        const run = (x) => Promise.resolve(x*x);
         const start = 5;
 
         it('returns', () => {
@@ -180,8 +209,9 @@ describe('Either monad', () => {
 
             const result = doSingle(test, monad);
 
-            expect(result.isRight).toBe(true);
-            expect(result.value).toBe(25);
+            return result.then(data => {
+                expect(data).toBe(25);
+            });
         });
 
         it('returns as yield', () => {
@@ -194,8 +224,9 @@ describe('Either monad', () => {
 
             const result = doSingle(test, monad);
 
-            expect(result.isRight).toBe(true);
-            expect(result.value).toBe(25);
+            return result.then(data => {
+                expect(data).toBe(25);
+            });
         });
 
         it('Monad first law (Left identity): do { x′ <- return x; f x′ } = do { f x }', () => {
@@ -211,8 +242,11 @@ describe('Either monad', () => {
             const result1 = doSingle(left, monad);
             const result2 = doSingle(right, monad);
     
-            expect(result1.value).toEqual(result2.value);
-            expect(result1.value).toBe(25);    
+            return Promise.all([result1, result2])
+            .then(([value1, value2]) => {
+                expect(value1).toBe(value2);
+                expect(value1).toBe(25);
+            });
         });
 
         it('Monad second law (Right identity): do { x <- m; return x } = do { m }', () => {
@@ -229,8 +263,11 @@ describe('Either monad', () => {
             const result1 = doSingle(left, monad);
             const result2 = doSingle(right, monad);
 
-            expect(result1.value).toEqual(result2.value);
-            expect(result1.value).toBe(a.value);    
+            return Promise.all([result1, result2, a])
+            .then(([value1, value2, value3]) => {
+                expect(value1).toBe(value2);
+                expect(value1).toBe(value3);
+            });
         });
 
         it(`Monad third law (Associativity):
@@ -268,9 +305,12 @@ describe('Either monad', () => {
             const result = doSingle(middle, monad);
             const result2 = doSingle(right, monad);
 
-            expect(result1.value).toBe(result.value);
-            expect(result.value).toBe(result2.value);
-            expect(result.value).toBe(36);
+            return Promise.all([result1, result, result2])
+            .then(([value1, value, value2]) => {
+                expect(value1).toBe(value);
+                expect(value).toBe(value2);
+                expect(value).toBe(36);
+            });
         });
     });
 });
