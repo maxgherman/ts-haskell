@@ -1,25 +1,22 @@
 import { identity, compose } from 'ramda';
-import { Box } from '@common/types/box';
+import { IsPlainReader, PlainReaderBox } from '@common/types/plain-reader-box';
 import { functor as baseFunctor, IFunctor } from '@control/common/functor';
 import { Application } from '@common/types/application';
 
-export class IsPlainReader {}
-
-export type ReaderF<T1, T2> = Box<IsPlainReader, T1> & Application<T1, T2>;
-
 export interface IPlainReaderFunctor<T> extends IFunctor<IsPlainReader> {
-    fmap: <A, B>(f: (a: A) => B, fa: ReaderF<T, A>) => ReaderF<T, B>;
-    '<$>': <A, B>(f: (a: A) => B, fa: ReaderF<T, A>) => ReaderF<T, B>,
-    '<$': <A, B>(a: A, fb: ReaderF<T, B>) => ReaderF<T, A>,
-    '$>': <A, B>(fa: ReaderF<T, A>, b: B) => ReaderF<T, B>,
-    '<&>': <A, B>(fa: ReaderF<T, A>, f: (a: A) => B) => ReaderF<T, B>
+    fmap: <A, B>(f: (a: A) => B, fa: PlainReaderBox<T, A>) => PlainReaderBox<T, B>;
+    '<$>': <A, B>(f: (a: A) => B, fa: PlainReaderBox<T, A>) => PlainReaderBox<T, B>,
+    '<$': <A, B>(a: A, fb: PlainReaderBox<T, B>) => PlainReaderBox<T, A>,
+    '$>': <A, B>(fa: PlainReaderBox<T, A>, b: B) => PlainReaderBox<T, B>,
+    '<&>': <A, B>(fa: PlainReaderBox<T, A>, f: (a: A) => B) => PlainReaderBox<T, B>
 }
 
-const fmap = <R, A, B>(f: (a: A) => B, fa: ReaderF<R, A>): ReaderF<R, B> => {
+const fmap = <R, A, B>(f: (a: A) => B, fa: PlainReaderBox<R, A>): PlainReaderBox<R, B> => {
     f = f || (identity as Application<A, B>);
-    fa = fa || (identity as ReaderF<R, A>);
+    fa = fa || (identity as PlainReaderBox<R, A>);
     
     return compose(f, fa);
 };
 
-export const functor = <T>(): IPlainReaderFunctor<T> => baseFunctor<IsPlainReader>({ fmap }) as IPlainReaderFunctor<T>;
+export const functor = <T>(): IPlainReaderFunctor<T> =>
+    baseFunctor<IsPlainReader>({ fmap }) as IPlainReaderFunctor<T>;
