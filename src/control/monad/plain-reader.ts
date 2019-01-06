@@ -1,4 +1,4 @@
-import { identity, always } from 'ramda';
+import { identity, compose } from 'ramda';
 import { Application, Application2, Application3 } from '@common/types/application';
 import { IsPlainReader, PlainReaderBox } from '@common/types/plain-reader-box';
 import { IMonad, IMonadBase, monad as monadBase } from '@control/common/monad';
@@ -32,7 +32,12 @@ const implementation = {
         ma = ma || identity as PlainReaderBox<R,A>;
         action = action || (() => identity) as  Application<A, PlainReaderBox<R,B>>;
         
-        return (r: R) => action(ma(r))(r);
+        return (r:R) =>
+            compose(
+                x => x(r),
+                action,
+                ma
+            )(r);
     },
 
     fail<R,A>(_: string): PlainReaderBox<R,A> {

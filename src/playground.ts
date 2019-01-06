@@ -30,6 +30,7 @@ import { monad as bamonad } from '@control/monad/boxed-array';
 import { monad as lmonad } from '@control/monad/list';
 import { monad as prmonad } from '@control/monad/promise';
 import { monad as plrmonad } from '@control/monad/plain-reader';
+import { monad as rmonad } from '@control/monad/reader';
 
 import { BoxedArray } from '@data/boxed-array';
 import { List } from '@data/list';
@@ -102,3 +103,6 @@ prmonad[">>="](Promise.resolve(3), (x) => Promise.resolve(x + 1));
 
 const prm = plrmonad<number>()[">>="]<number, string>((x) => x, (x) => (r) => x + r.toLocaleString());
 prm(10);
+
+const rm = rmonad<number>()[">>="](Reader.from((x) => x), (x) => Reader.from((r) => x + r.toLocaleString()));
+rm.runReader(10);

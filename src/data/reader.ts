@@ -22,7 +22,7 @@ export class Reader<T, A> {
         return Reader.from(compose(app, this.runReader));
     }
 
-    // withReader :: :: (r' -> r) -> Reader r a	 -> Reader r' a
+    // withReader :: (r' -> r) -> Reader r a	 -> Reader r' a
     public withReader<K>(app: Application<K, T>) {
         return Reader.from(compose(this.runReader, app));
     }
