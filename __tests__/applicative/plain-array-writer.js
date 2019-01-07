@@ -58,6 +58,7 @@ describe('PlainArray writer applicative', () => {
         });
 
         it('uses undefined and mempty for falsy second arg', () => {
+  
             const writer = applicative.lift(Writer.from([(x => x + 10), ['Test1']]), undefined);
             const [data, log] = writer.runWriter();
 

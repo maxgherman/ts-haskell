@@ -1,55 +1,52 @@
 import { identity } from 'ramda';
-import { Box } from '@common/types/box';
+import { IsWriter, WriterBox } from '@common/types/writer-box';
 import { Application, Application2, Application3 } from '@common/types/application';
 import { IApplicative, applicative as appBase } from '@control/common/applicative';
-import { IsWriter, WriterF, functor as functorBase } from '@control/functor/writer';
+import { functor as functorBase } from '@control/functor/writer';
 import { IMonoid } from '@control/common/monoid';
 import { Writer } from '@data/writer';
 
 export interface IWriterApplicative<TLog> extends IApplicative<IsWriter> {
-    fmap: <A, B>(f: (a: A) => B, fa: WriterF<A, TLog>) => WriterF<B, TLog>
-    '<$>': <A, B>(f: (a: A) => B, fa: WriterF<A, TLog>) => WriterF<B, TLog>
-    '<$': <A, B>(a: A, fb: WriterF<B, TLog>) => WriterF<A, TLog>
-    '$>': <A, B>(fa: WriterF<A, TLog>, b: B) => WriterF<B, TLog>
-    '<&>': <A, B>(fa: WriterF<A, TLog>, f: (a: A) => B) => WriterF<A, TLog>
+    fmap: <A, B>(f: (a: A) => B, fa: WriterBox<TLog, A>) => WriterBox<TLog, B>
+    '<$>': <A, B>(f: (a: A) => B, fa: WriterBox<TLog, A>) => WriterBox<TLog, B>
+    '<$': <A, B>(a: A, fb: WriterBox<TLog, B>) => WriterBox<TLog, A>
+    '$>': <A, B>(fa: WriterBox<TLog, A>, b: B) => WriterBox<TLog, B>
+    '<&>': <A, B>(fa: WriterBox<TLog, A>, f: (a: A) => B) => WriterBox<TLog, A>
     
-    pure<A>(a: A): WriterF<A, TLog>
-    lift<A, B>(fab: WriterF<Application<A, B>, TLog>, fa: WriterF<A, TLog>): WriterF<B, TLog>;
-    '<*>'<A, B>(fab: WriterF<Application<A, B>, TLog>, fa: WriterF<A, TLog>): WriterF<B, TLog>;
-    liftA<A, B>(f: Application<A, B>, fa: WriterF<A, TLog>): WriterF<B, TLog>;
-    liftA2<A, B, C>(abc: Application2<A, B, C>, fa: WriterF<A, TLog>, fb: WriterF<B, TLog>):
-        WriterF<C, TLog>;
-    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: WriterF<A, TLog>, fb: WriterF<B, TLog>, fc: WriterF<C, TLog>):
-        WriterF<D, TLog>;
-    '*>'<A, B>(fa: WriterF<A, TLog>, fb: WriterF<B, TLog>): WriterF<B, TLog>;
-    '<*'<A, B>(fa: WriterF<A, TLog>, fb: WriterF<B, TLog>): WriterF<A, TLog>;
-    '<**>'<A, B>(fa: WriterF<A, TLog>, fab: WriterF<Application<A, B>, TLog>): WriterF<B, TLog>; 
+    pure<A>(a: A): WriterBox<TLog, A>
+    lift<A, B>(fab: WriterBox<TLog, Application<A, B>>, fa: WriterBox<TLog, A>): WriterBox<TLog, B>;
+    '<*>'<A, B>(fab: WriterBox<TLog, Application<A, B>>, fa: WriterBox<TLog, A>): WriterBox<TLog, B>;
+    liftA<A, B>(f: Application<A, B>, fa: WriterBox<TLog, A>): WriterBox<TLog, B>;
+    liftA2<A, B, C>(abc: Application2<A, B, C>, fa: WriterBox<TLog, A>, fb: WriterBox<TLog, B>):
+        WriterBox<TLog, C>;
+    liftA3<A, B, C, D>(f: Application3<A, B, C, D>, fa: WriterBox<TLog, A>, fb: WriterBox<TLog, B>, fc: WriterBox<TLog, C>):
+        WriterBox<TLog, D>;
+    '*>'<A, B>(fa: WriterBox<TLog, A>, fb: WriterBox<TLog, B>): WriterBox<TLog, B>;
+    '<*'<A, B>(fa: WriterBox<TLog, A>, fb: WriterBox<TLog, B>): WriterBox<TLog, A>;
+    '<**>'<A, B>(fa: WriterBox<TLog, A>, fab: WriterBox<TLog, Application<A, B>>): WriterBox<TLog, B>;
 }
 
 // pure a = \_ -> a
-const pureWithMonoid = <A, TLog>(monoid: IMonoid<TLog>) => (a: A): WriterF<A, TLog> =>
+const pureWithMonoid = <A, TLog>(monoid: IMonoid<TLog>) => (a: A): WriterBox<TLog, A> =>
     Writer.from([a, monoid.mempty() as TLog]); 
 
 // f <*> g = \x -> f x (g x)
 const liftWithMonoid = <A, B, TLog>(monoid: IMonoid<TLog>) => (
-    fab: WriterF<Application<A, B>, TLog>,
-    fa: WriterF<A, TLog>): WriterF<B, TLog> => {
+    fab: WriterBox<TLog, Application<A, B>>,
+    fa: WriterBox<TLog, A>): WriterBox<TLog, B> => {
 
-    fab = fab || Writer.from([
-            identity as Application<A, B>,
-            monoid.mempty<Application<A, B>>()
-    ]) as WriterF<Application<A, B>, TLog>;
-    
-    fa = fa || Writer.from([undefined, monoid.mempty<A>()]) as WriterF<A, TLog>;
+    fab = fab || Writer.from([ identity as Application<A, B>, monoid.mempty<TLog>() as TLog ]);
+    fa = fa || Writer.from([ undefined as A, monoid.mempty<TLog>() as TLog ]);
 
-    return fa.mapWriter<B, Box<TLog, B>>(([data, log2]: [A, TLog]) => {
+    return fa.mapWriter(([data, log2]) => {
+        
         const [action, log1] = fab.runWriter();
 
         return [
             action(data),
-            monoid.mappend<B>(log1, log2)
-        ];
-    }) as WriterF<B, TLog>;
+            monoid.mappend<TLog>(log1, log2)
+        ] as [B, TLog];
+    });
 }
 
 export const applicative = <TLog>(monoid: IMonoid<TLog>): IWriterApplicative<TLog> => {
