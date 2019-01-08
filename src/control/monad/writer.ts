@@ -36,11 +36,11 @@ const implementation = <TLog>(monoid: IMonoid<TLog>) => ({
         ma = ma || Writer.from([undefined as A, monoid.mempty<TLog>() as TLog]);
         action = action || (() => Writer.from([undefined as B, monoid.mempty<TLog>() as TLog]));
       
-        return ma.mapWriter(([value, log1]) => {
-           const writer = action(value);
-           const [b, log2] = writer.runWriter();
+        return ma.mapWriter(([data, log1]) => {
+            const writer = action(data);
+            const [b, log2] = writer.runWriter();
            
-           return [b, monoid.mappend<TLog>(log1, log2)] as [B, TLog];
+            return [b, monoid.mappend<TLog>(log1, log2)] as [B, TLog];
         });
     },
 

@@ -1,71 +1,102 @@
 import { compose, flip, partial } from 'ramda';
-import { monad as monadBase } from '@control/monad/reader';
-import { Reader } from '@data/reader';
+import { Writer } from '@data/writer';
+import { monad as monadBase } from '@control/monad/writer';
+import { monoid } from '@control/monoid/plain-array';
 import { doRepeat } from '@control/common/monad';
 
-const monad = monadBase();
+const monad = monadBase(monoid);
 
-describe('Reader monad', () => {
-    const a = Reader.from((x) => x + 1);
-    const b = Reader.from((x) => x * 2);
-    const f = r => Reader.from(x => r + x);
-    const g = r => Reader.from(x => r * x);
-
+describe('PlainArray Writer monad', () => {
+    const a = Writer.from([3, ['Test A']]);
+    const b = Writer.from([5, ['Test B']]);
+    const f = x => Writer.from([x + x, ['Test X + X']]);
+    const g = x => Writer.from([x * x, ['Test X * X']]);
+    
     describe('return', () => {
         it('returns', () => {
             const result = monad.return(1);
-            expect(result.runReader(10)).toBe(1);
+            const [data, log] = result.runWriter();
+
+            expect(data).toBe(1);
+            expect(log).toEqual([]);
         });
 
         it('returns arg for falsy args', () => {
             const result = monad.return(undefined);
-            expect(result.runReader(10)).toBe(undefined);
+            const [data, log] = result.runWriter();
+
+            expect(data).toBe(undefined);
+            expect(log).toEqual([]);      
         });
     });
 
     describe('>>=', () => {
         it('returns for valid args', () => {
             const result = monad['>>='](a, g);
-            expect(result.runReader(10)).toBe(110);
+
+            const [data, log] = result.runWriter();
+            expect(data).toBe(3 * 3);
+            expect(log).toEqual(['Test A', 'Test X * X']);
         });
 
         it('uses empty array for falsy first arg', () => {
             const result = monad['>>='](undefined, g);
-            expect(result.runReader(10)).toBe(100);
+            
+            const [data, log] = result.runWriter();
+            expect(data).toBe(NaN);
+            expect(log).toEqual(['Test X * X']);
         });
 
         it('uses arg for falsy second paramter', () => {
             const result = monad['>>='](a, undefined);
-            expect(result.runReader(10)).toBe(10);
+          
+            const [data, log] = result.runWriter();
+            expect(data).toBe(undefined);
+            expect(log).toEqual(['Test A']);
         });
     });
 
     describe('>>', () => {
         it('returns for valid args', () => {
             const result = monad['>>'](a, b);
-            expect(result.runReader(10)).toBe(20);
+            
+            const [data, log] = result.runWriter();
+            expect(data).toBe(5);
+            expect(log).toEqual(['Test A', 'Test B']);
         });
 
         it('uses empty array for falsy first arg', () => {
             const result = monad['>>'](undefined, b);
-            expect(result.runReader(10)).toBe(20);
+
+            const [data, log] = result.runWriter();
+            expect(data).toBe(5);
+            expect(log).toEqual(['Test B']);
         });
 
         it('uses empty array for falsy second arg', () => {
             const result = monad['>>'](a, undefined);
-            expect(result.runReader(10)).toBe(10);
+            
+            const [data, log] = result.runWriter();
+            expect(data).toBe(undefined);
+            expect(log).toEqual(['Test A']);
         });
     });
 
     describe('fail', () => {
         it('returns for valid args', () => {
             const result = monad.fail('Test');
-            expect(result.runReader(10)).toBe(10);
+
+            const [data, log] = result.runWriter();
+            expect(data).toBe(undefined);
+            expect(log).toEqual([]);
         });
 
         it('returns for falsy args', () => {
             const result = monad.fail(undefined);
-            expect(result.runReader(10)).toBe(10);
+
+            const [data, log] = result.runWriter();
+            expect(data).toBe(undefined);
+            expect(log).toEqual([]);
         });
     });
 
@@ -74,8 +105,13 @@ describe('Reader monad', () => {
             const result1 = monad['>>='](monad.return(3), g);
             const result2 = g(3);
 
-            expect(result1.runReader(10)).toBe(result2.runReader(10));
-            expect(result1.runReader(10)).toBe(30);
+            const [data1, log1] = result1.runWriter();
+            const [data2, log2] = result2.runWriter();
+
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2);
+            expect(data1).toBe(3 * 3);
+            expect(log1).toEqual(['Test X * X']);
         });
 
         it('with compose', () => {
@@ -87,8 +123,13 @@ describe('Reader monad', () => {
             
             const result2 = g(3);
 
-            expect(result1.runReader(10)).toBe(result2.runReader(10));
-            expect(result1.runReader(10)).toBe(30);
+            const [data1, log1] = result1.runWriter();
+            const [data2, log2] = result2.runWriter();
+            
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2);
+            expect(data1).toBe(3 * 3);
+            expect(log1).toEqual(['Test X * X']);
         });
     });
 
@@ -96,7 +137,10 @@ describe('Reader monad', () => {
 
         it('direct', () => {
             const result = monad['>>='](a, monad.return); 
-            expect(result.runReader(10)).toBe(a.runReader(10));
+            const [data, log] = result.runWriter();
+
+            expect(data).toBe(3);
+            expect(log).toEqual(['Test A']);
         });
 
         it('with compose', () => {
@@ -104,8 +148,11 @@ describe('Reader monad', () => {
             const result = compose(
                 partial(monad['>>='], [a]),
              )(monad.return);
+
+             const [data, log] = result.runWriter();
             
-            expect(result.runReader(10)).toBe(a.runReader(10));
+             expect(data).toBe(3);
+             expect(log).toEqual(['Test A']);
         });
     });
 
@@ -114,8 +161,13 @@ describe('Reader monad', () => {
             const result1 = monad['>>='](monad['>>='](a, f), g);
             const result2 = monad['>>='](a, (x) => monad['>>='](f(x), g));
 
-            expect(result1.runReader(10)).toBe(result2.runReader(10));
-            expect(result1.runReader(10)).toBe(210);
+            const [data1, log1] = result1.runWriter();
+            const [data2, log2] = result2.runWriter();
+            
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2);
+            expect(data1).toBe((3 + 3) * (3 + 3));
+            expect(log1).toEqual(['Test A', 'Test X + X', 'Test X * X']);
         });
 
         it('with compose', () => {
@@ -131,49 +183,71 @@ describe('Reader monad', () => {
                 partial(flip(monad['>>=']), [g])     
             )();
 
-            expect(result1.runReader(10)).toBe(result2.runReader(10));
-            expect(result1.runReader(10)).toBe(210);
+            const [data1, log1] = result1.runWriter();
+            const [data2, log2] = result2.runWriter();
+            
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2);
+            expect(data1).toBe((3 + 3) * (3 + 3));
+            expect(log1).toEqual(['Test A', 'Test X + X', 'Test X * X']);
         });
     });
 
     describe('Monad - Applicative first relationship: pure = return', () => {
 
         it('for non arg', () => {
-            expect(monad.return(5).runReader(10)).toEqual(monad.pure(5).runReader(10));
-            expect(monad.pure(5).runReader(10)).toBe(5);
+            const result1 = monad.return(5);
+            const result2 = monad.pure(5);
+
+            const [data1, log1] = result1.runWriter();
+            const [data2, log2] = result2.runWriter();
+            
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2); 
         });
 
         it('for falsy arg', () => {
-            expect(monad.return(null).runReader(10)).toBe(monad.pure(null).runReader(10));
+            const result1 = monad.return(null);
+            const result2 = monad.pure(null);
+
+            const [data1, log1] = result1.runWriter();
+            const [data2, log2] = result2.runWriter();
+            
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2);
         });
     });
 
     describe('do - notation', () => {
-        const run = (r) => Reader.from((x) => Math.max(r, x));
-        const start = 10;
+        const run = (x) => Writer.from([-2 * x , ['Test Run']]);
+        const start = 3;
 
         it('returns', () => {
             const test = function*() {
-                const value1 = yield monad.return(start);
+                const value1 = yield run(start);
                 return run(value1);
             };
             
             const result = doRepeat(test, monad);
-            expect(result.runReader(1)).toBe(10);
-            expect(result.runReader(20)).toBe(20);
+            const [data, log] = result.runWriter();
+            
+            expect(data).toBe(12);
+            expect(log).toEqual(['Test Run', 'Test Run']);
         });
 
         it('returns as yield', () => {
             const test = function*() {
-                const value1 = yield monad.return(start);
+                const value1 = yield run(start);
                 const value2 = yield run(value1);
 
                 return value2;
             };
 
             const result = doRepeat(test, monad);
-            expect(result.runReader(1)).toBe(10);
-            expect(result.runReader(20)).toBe(20);
+            const [data, log] = result.runWriter();
+            
+            expect(data).toBe(12);
+            expect(log).toEqual(['Test Run', 'Test Run']);
         });
 
         it('Monad first law (Left identity): do { x′ <- return x; f x′ } = do { f x }', () => {
@@ -189,9 +263,13 @@ describe('Reader monad', () => {
             const result1 = doRepeat(left, monad);
             const result2 = doRepeat(right, monad);
     
-            expect(result1.runReader(1)).toBe(result2.runReader(1));
-            expect(result1.runReader(1)).toBe(10);
-            expect(result1.runReader(20)).toBe(20);    
+            const [data1, log1] = result1.runWriter();
+            const [data2, log2] = result2.runWriter();
+            
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2);
+            expect(data1).toBe(-6);
+            expect(log1).toEqual(['Test Run']);
         });
 
         it('Monad second law (Right identity): do { x <- m; return x } = do { m }', () => {
@@ -208,10 +286,13 @@ describe('Reader monad', () => {
             const result1 = doRepeat(left, monad);
             const result2 = doRepeat(right, monad);
 
-            expect(result1.runReader(1)).toBe(result2.runReader(1));
-            expect(result1.runReader(1)).toBe(a.runReader(1));
-            expect(result1.runReader(20)).toBe(a.runReader(20));
-            expect(result1.runReader(20)).toBe(21);    
+            const [data1, log1] = result1.runWriter();
+            const [data2, log2] = result2.runWriter();
+            
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2);
+            expect(data1).toBe(3);
+            expect(log1).toEqual(['Test A']);    
         });
 
         it(`Monad third law (Associativity):
@@ -249,11 +330,16 @@ describe('Reader monad', () => {
             const result = doRepeat(middle, monad);
             const result2 = doRepeat(right, monad);
 
-            expect(result1.runReader(1)).toBe(result.runReader(1));
-            expect(result.runReader(1)).toBe(result2.runReader(1));
-            expect(result.runReader(1)).toBe(3);
-            expect(result.runReader(20)).toBe(820);
-            expect(result1.runReader(20)).toBe(result.runReader(20));
+            const [data1, log1] = result1.runWriter();
+            const [data, log] = result.runWriter();
+            const [data2, log2] = result2.runWriter();
+            
+            expect(data1).toBe(data);
+            expect(log1).toEqual(log);
+            expect(data1).toBe(data2);
+            expect(log1).toEqual(log2);
+            expect(data1).toBe((3 + 3) * (3 + 3));
+            expect(log1).toEqual(['Test A', 'Test X + X', 'Test X * X']);
         });
     });
 });
