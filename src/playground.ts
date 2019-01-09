@@ -4,6 +4,7 @@ import { semigroup as ps } from '@control/semigroup/promise';
 import { monoid as plm } from '@control/monoid/plain-array';
 import { monoid as lm } from '@control/monoid/list';
 import { monoid as pm } from '@control/monoid/promise';
+import { monoid as bam } from '@control/monoid/boxed-array';
 
 import { functor as plf } from '@control/functor/plain-array';
 import { functor as baf } from '@control/functor/boxed-array';
@@ -31,7 +32,7 @@ import { monad as lmonad } from '@control/monad/list';
 import { monad as prmonad } from '@control/monad/promise';
 import { monad as plrmonad } from '@control/monad/plain-reader';
 import { monad as rmonad } from '@control/monad/reader';
-import { monad as wm } from '@control/monad/writer';
+import { monad as wmonad } from '@control/monad/writer';
 
 import { BoxedArray } from '@data/boxed-array';
 import { List } from '@data/list';
@@ -108,4 +109,7 @@ prm(10);
 const rm = rmonad<number>()[">>="](Reader.from((x) => x), (x) => Reader.from((r) => x + r.toLocaleString()));
 rm.runReader(10);
 
-wm<string[]>(plm)[">>="](Writer.from([1, ['Test 1']]), (x) => Writer.from([x + 2, ['Test 2']]));
+wmonad<string[]>(plm)[">>="](Writer.from([1, ['Test 1']]), (x) => Writer.from([x + 2, ['Test 2']]));
+
+wmonad<BoxedArray<string>>(bam)
+    [">>="](Writer.from([1, BoxedArray.from(['Test 1'])]), (x) => Writer.from([x + 2, BoxedArray.from(['Test 2'])]));
