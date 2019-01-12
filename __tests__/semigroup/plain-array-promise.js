@@ -1,6 +1,8 @@
+import each from 'jest-each';
 import { compose, partial, flip } from 'ramda';
 import { semigroup as arraySemigroup } from '@control/semigroup/plain-array';
 import { semigroup as promiseSemigroup } from '@control/semigroup/promise';
+import { NonEmpty } from '@data/non-empty';
 
 const semigroup = promiseSemigroup(arraySemigroup);
 
@@ -46,6 +48,51 @@ describe('Promise plain array semigroup', () => {
             )
             .then(result => expect(result).toEqual([]))
         )
+    });
+
+    describe('sconcat', () => {
+        it('returns for single value', () => {
+            const nonEmpty = NonEmpty.from([Promise.resolve([1])]);
+
+            return semigroup.sconcat(nonEmpty)
+            .then(result => expect(result).toEqual([1]));
+        });
+
+        it('returns for list', () => {
+            const nonEmpty = NonEmpty.from([Promise.resolve([1])])
+            [':|'](Promise.resolve([2]))
+            [':|'](Promise.resolve([3]));
+            
+            return semigroup.sconcat(nonEmpty)
+            .then(result => expect(result).toEqual([1, 2, 3]))
+        });
+    });
+
+    describe('stimes', () => {
+        each([
+            [0],
+            [-1]
+        ])
+        .it('throws', (value) => {
+
+            const action = () => semigroup.stimes(value, Promise.resolve(3));
+
+            expect(action).toThrow('stimes: positive multiplier expected');
+        });
+
+        it('returns for single value', () =>
+            semigroup.stimes(1, Promise.resolve([3]))
+            .then((result) => {
+                expect(result).toEqual([3]);
+            })
+        );
+
+        it('returns for list', () =>
+            semigroup.stimes(3, Promise.resolve([3]))
+            .then((result) => {
+                expect(result).toEqual([3, 3, 3]);
+            })
+        );
     });
 
     describe('Semigroup law (Associativity): (a <> b) <> c == a <> (b <> c)',() => {

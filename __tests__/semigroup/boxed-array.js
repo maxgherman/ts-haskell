@@ -1,5 +1,7 @@
+import each from 'jest-each';
 import { compose, partial, flip } from 'ramda';
 import { BoxedArray } from '@data/boxed-array';
+import { NonEmpty } from '@data/non-empty';
 import { semigroup } from '@control/semigroup/boxed-array';
 
 describe('BoxedArray semigroup', () => {
@@ -23,6 +25,48 @@ describe('BoxedArray semigroup', () => {
             const result = semigroup['<>'](undefined, undefined);
             expect(result.value).toEqual([]);
         })  
+    });
+
+    describe('sconcat', () => {
+        it('returns for single value', () => {
+            const nonEmpty = NonEmpty.from([BoxedArray.from([1])]);
+            const result = semigroup.sconcat(nonEmpty);
+
+            expect(result.value).toEqual([1]);
+        });
+
+        it('returns for list', () => {
+            const nonEmpty = NonEmpty.from([BoxedArray.from([1])])
+                [':|'](BoxedArray.from([2]))
+                [':|'](BoxedArray.from([3]));
+            const result = semigroup.sconcat(nonEmpty);
+
+            expect(result.value).toEqual([1, 2, 3]);
+        });
+    });
+
+    describe('stimes', () => {
+        each([
+            [0],
+            [-1]
+        ])
+        .it('throws', (value) => {
+            const action = () => semigroup.stimes(value, BoxedArray.from([1]));
+
+            expect(action).toThrow('stimes: positive multiplier expected');
+        });
+
+        it('returns for single value', () => {
+            const result = semigroup.stimes(1, BoxedArray.from([3]));
+
+            expect(result.value).toEqual([3]);
+        });
+
+        it('returns for list', () => {
+            const result = semigroup.stimes(3, BoxedArray.from([1,2]));
+
+            expect(result.value).toEqual([1, 2, 1, 2, 1, 2]);
+        });
     });
 
     describe('Semigroup law (Associativity): (a <> b) <> c == a <> (b <> c)',() => {

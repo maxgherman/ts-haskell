@@ -1,5 +1,7 @@
+import each from 'jest-each';
 import { compose, partial, flip } from 'ramda';
 import { semigroup } from '@control/semigroup/plain-array';
+import { NonEmpty } from '@data/non-empty';
 
 describe('PlainArray semigroup', () => {
     describe('<>', () => {
@@ -22,7 +24,47 @@ describe('PlainArray semigroup', () => {
             const result = semigroup['<>'](undefined, undefined);
             expect(result).toEqual([]);
         })  
-    })
+    });
+
+    describe('sconcat', () => {
+        it('returns for single value', () => {
+            const nonEmpty = NonEmpty.from([[1]]);
+            const result = semigroup.sconcat(nonEmpty);
+
+            expect(result).toEqual([1]);
+        });
+
+        it('returns for list', () => {
+            const nonEmpty = NonEmpty.from([[1]])[':|']([2])[':|']([3]);
+            const result = semigroup.sconcat(nonEmpty);
+
+            expect(result).toEqual([1, 2, 3]);
+        });
+    });
+
+    describe('stimes', () => {
+        each([
+            [0],
+            [-1]
+        ])
+        .it('throws', (value) => {
+            const action = () => semigroup.stimes(value, [1, 2, 3]);
+
+            expect(action).toThrow('stimes: positive multiplier expected');
+        });
+
+        it('returns for single value', () => {
+            const result = semigroup.stimes(1, [3]);
+
+            expect(result).toEqual([3]);
+        });
+
+        it('returns for list', () => {
+            const result = semigroup.stimes(3, [1, 2]);
+
+            expect(result).toEqual([1, 2, 1, 2, 1, 2]);
+        });
+    });
 
     describe('Semigroup law (Associativity): (a <> b) <> c == a <> (b <> c)',() => {
         it('non empty array', () => {
@@ -68,5 +110,5 @@ describe('PlainArray semigroup', () => {
             expect(result1).toEqual(result2);
             expect(result1).toEqual([1, 2, 3, 4, 5, 6]);
         })
-    })
+    });
 });
