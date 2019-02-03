@@ -13,9 +13,13 @@ module.exports = api => {
         ],
 
         plugins: [
-            ["babel-plugin-webpack-alias", {
-                "config": "alias.config.js",
-                "findConfig": true
+            [require.resolve('babel-plugin-module-resolver'), {
+                root: ["."],
+                alias: {
+                    "@common": "./lib/common",
+                    "@control": "./lib/control",
+                    "@data": "./lib/data"
+                }
             }]
         ]
     }
