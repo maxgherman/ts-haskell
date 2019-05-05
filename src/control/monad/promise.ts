@@ -31,9 +31,11 @@ const implementation = {
         ma = ma || Promise.resolve();
         action = action || (() => Promise.resolve());
         
-        return (ma as Promise<A>).then(data =>
+        const result = (ma as Promise<A>).then(data =>
             action(data) as Promise<B>
         );
+
+        return result;
     },
 
     fail<A>(a: string): PromiseBox<A> {

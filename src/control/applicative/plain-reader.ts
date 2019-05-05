@@ -29,7 +29,8 @@ const lift =
     <R, A, B>(fab: PlainReaderBox<R, Application<A, B>>, fa: PlainReaderBox<R, A>): PlainReaderBox<R, B> => {
     
     // fab :: r -> a -> b
-    fab = fab || always(identity) as PlainReaderBox<R, Application<A, B>>;
+    fab = fab || always(identity as Application<A, B>);
+
     // fab = fab || ((_) => identity) as PlainReaderBox<R, Application<A, B>>;
     fa = fa || identity as PlainReaderBox<R, A>;
 

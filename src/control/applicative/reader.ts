@@ -30,7 +30,7 @@ const lift =
     <R, A, B>(fab: ReaderBox<R, Application<A, B>>, fa: ReaderBox<R, A>): ReaderBox<R, B> => {
     
     // fab :: r -> a -> b
-    fab = fab ||  Reader.from(always(identity)) as ReaderBox<R, Application<A, B>>;
+    fab = fab ||  Reader.from(always(identity as Application<A, B>));
     fa = fa || Reader.from(identity as Application<R, A>) as ReaderBox<R, A>;
 
     return Reader.from((x: R) => {

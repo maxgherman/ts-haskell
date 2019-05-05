@@ -29,11 +29,13 @@ const lift = <A, B>(fab: PromiseBox<Application<A, B>>, fa: PromiseBox<A>): Prom
     fab = fab || Promise.resolve(identity as Application<A, B>);
     fa = fa || Promise.resolve();
 
-    return Promise.all([fab as Promise<Application<A, B>>, fa as Promise<A>])
+    const result = Promise.all([fab as Promise<Application<A, B>>, fa as Promise<A>])
     .then(([app, value]) => {
         app = app || identity as Application<A, B>;
         return app(value);
     });
+
+    return result;
 }
 
 export const applicative = appBase(functor, { pure, lift }) as IPlainArrayApplicative;

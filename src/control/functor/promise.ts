@@ -13,7 +13,9 @@ export interface IPromiseFunctor extends IFunctor<IsPromise> {
 const fmap = <A, B>(f: (a: A) => B, fa: PromiseBox<A>): PromiseBox<B> => {
     f = f || (identity as (a: A) => B);
     fa = fa || Promise.resolve();
-    return (fa as Promise<A>).then(f); 
+
+    const result = (fa as Promise<A>).then(f);
+    return result;
 };
 
 export const functor = baseFunctor<IsPromise>({ fmap }) as IPromiseFunctor;

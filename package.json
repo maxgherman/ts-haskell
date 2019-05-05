@@ -14,16 +14,16 @@
     "test:watch": "jest -o --expand --notify --watch"
   },
   "devDependencies": {
-    "@types/ramda": "0.25.50",
-    "@babel/core": "7.3.3",
-    "@babel/preset-env": "7.3.1",
-    "babel-jest": "24.1.0",
-    "jest": "24.1.0",
-    "jest-each": "24.0.0",
+    "@types/ramda": "0.26.8",
+    "@babel/core": "7.4.4",
+    "@babel/preset-env": "7.4.4",
+    "babel-jest": "24.8.0",
+    "jest": "24.8.0",
+    "jest-each": "24.8.0",
     "babel-plugin-module-resolver": "3.2.0",
     "rimraf": "2.6.3",
     "ramda": "0.26.1",
-    "typescript": "3.3.3"
+    "typescript": "3.4.5"
   },
   "author": "",
   "license": "MIT"
