@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf lib/*",
     "clean:pl": "rimraf lib/playground.js",
-    "prebuild": "npm run clean",
+    "prebuild": "npm run clean && npm run lint",
     "build": "tsc && npm run clean:pl",
     "trace": "tsc --traceResolution",
     "lint": "tslint 'src/**/*.ts' -p tsconfig.json",
