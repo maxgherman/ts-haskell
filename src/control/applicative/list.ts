@@ -16,7 +16,7 @@ export interface IListApplicative extends IApplicative<IsList> {
     '<*>'<A, B>(fab: ListBox<Application<A, B>>, fa: ListBox<A>): ListBox<B>
     liftA<A, B>(f: Application<A, B>, fa: ListBox<A>): ListBox<B>
     liftA2<A, B, C, X extends Application2<A, B, C>>(
-        abc: X, fa: ListBox<A>, fb: ListBox<B>): ListBox<C>;
+        abc: X, fa: ListBox<A>, fb: ListBox<B>): ListBox<C>
     liftA3<A, B, C, D>(
         f: Application3<A, B, C, D>,
         fa: ListBox<A>, fb: ListBox<B>,

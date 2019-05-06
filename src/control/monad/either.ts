@@ -51,6 +51,6 @@ const implementation = {
     isOfType<A>(a:A) {
         return a instanceof Either
     }
-} as IMonadBase<IsEither>;
+} as IMonadBase<IsEither>
 
-export const monad = <T>() => monadBase(implementation, applicative<T>()) as IEitherMonad<T>;
+export const monad = <T>() => monadBase(implementation, applicative<T>()) as IEitherMonad<T>

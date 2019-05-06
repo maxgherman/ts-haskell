@@ -20,7 +20,7 @@ export interface IPlainArrayApplicative extends IApplicative<IsPromise> {
         f: Application3<A, B, C, D>,
         fa: PromiseBox<A>, fb: PromiseBox<B>, fc: PromiseBox<C>): PromiseBox<D>
     '*>'<A, B>(fa: PromiseBox<A>, fb: PromiseBox<B>): PromiseBox<B>
-    '<*'<A, B>(fa: PromiseBox<A>, fb: PromiseBox<B>): PromiseBox<A>;
+    '<*'<A, B>(fa: PromiseBox<A>, fb: PromiseBox<B>): PromiseBox<A>
     '<**>'<A, B>(fa: PromiseBox<A>, fab: PromiseBox<Application<A, B>>): PromiseBox<B>
 }
 

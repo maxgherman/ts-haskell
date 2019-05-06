@@ -16,7 +16,7 @@ export interface IPlainArrayApplicative extends IApplicative<IsPlainArray> {
     '<*>'<A, B>(fab: ArrayBox<Application<A, B>>, fa: ArrayBox<A>): ArrayBox<B>
     liftA<A, B>(f: Application<A, B>, fa: ArrayBox<A>): ArrayBox<B>
     liftA2<A, B, C, X extends Application2<A, B, C>>(
-        abc: X, fa: ArrayBox<A>, fb: ArrayBox<B>): ArrayBox<C>;
+        abc: X, fa: ArrayBox<A>, fb: ArrayBox<B>): ArrayBox<C>
     liftA3<A, B, C, D>(
         f: Application3<A, B, C, D>,
         fa: ArrayBox<A>, fb: ArrayBox<B>,

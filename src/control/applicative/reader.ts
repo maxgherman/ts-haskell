@@ -16,7 +16,7 @@ export interface IReaderApplicative<T> extends IApplicative<IsReader> {
     '<*>'<A, B>(fab: ReaderBox<T, Application<A, B>>, fa: ReaderBox<T, A>): ReaderBox<T, B>
     liftA<A, B>(f: Application<A, B>, fa: ReaderBox<T, A>): ReaderBox<T, B>
     liftA2<A, B, C>(
-        abc: Application2<A, B, C>, fa: ReaderBox<T, A>, fb: ReaderBox<T, B>): ReaderBox<T, C>;
+        abc: Application2<A, B, C>, fa: ReaderBox<T, A>, fb: ReaderBox<T, B>): ReaderBox<T, C>
     liftA3<A, B, C, D>(
         f: Application3<A, B, C, D>,
         fa: ReaderBox<T, A>,

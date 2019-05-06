@@ -3,7 +3,7 @@ import { Box } from '@common/types/box'
 import { ISemigroup } from '@control/common/semigroup'
 
 export interface IMonoidBase<F> {
-    mempty<A>(): Box<F, A>;
+    mempty<A>(): Box<F, A>
     mconcat? : <A>(array: Box<F, A>[]) => Box<F, A>
 }
 

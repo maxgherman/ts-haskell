@@ -105,18 +105,20 @@ describe('Promise applicative', () => {
     });
 
     describe('Applicative second law (Homomorphism): pure f <*> pure x = pure (f x)', () => {
-        const f = x => x + 3;
-        const x = 7;
-        const arg1 = applicative.pure(f);
-        const arg2 = applicative.pure(x);
+        it('', () => {
+            const f = x => x + 3;
+            const x = 7;
+            const arg1 = applicative.pure(f);
+            const arg2 = applicative.pure(x);
 
-        const result1 = applicative.lift(arg1, arg2);
-        const result2 = applicative.pure(f(x));
+            const result1 = applicative.lift(arg1, arg2);
+            const result2 = applicative.pure(f(x));
 
-        return Promise.all([result1, result2])
-        .then(([value1, value2]) => {
-            expect(value1).toEqual(value2);
-            expect(value1).toEqual(10);
+            return Promise.all([result1, result2])
+            .then(([value1, value2]) => {
+                expect(value1).toEqual(value2);
+                expect(value1).toEqual(10);
+            });
         });
     });
 

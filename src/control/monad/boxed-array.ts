@@ -16,7 +16,7 @@ export interface IBoxedArrayMonad extends IMonad<IsBoxedArray> {
     '<*>'<A, B>(fab: BoxedArrayBox<Application<A, B>>, fa: BoxedArrayBox<A>): BoxedArrayBox<B>
     liftA<A, B>(f: Application<A, B>, fa: BoxedArrayBox<A>): BoxedArrayBox<B>
     liftA2<A, B, C, X extends Application2<A, B, C>>(
-        abc: X, fa: BoxedArrayBox<A>, fb: BoxedArrayBox<B>): BoxedArrayBox<C>;
+        abc: X, fa: BoxedArrayBox<A>, fb: BoxedArrayBox<B>): BoxedArrayBox<C>
     liftA3<A, B, C, D>(
         f: Application3<A, B, C, D>,
         fa: BoxedArrayBox<A>,

@@ -14,12 +14,11 @@
         "ter-indent": [true, 4,   { "SwitchCase": 1 }],
         "ter-arrow-parens": false,
         "trailing-comma": [false, {"multiline": "always", "singleline": "never"}],
-        "semicolon": [true, "never", "ignore-interfaces"],
-        "variable-name": [true, "allow-pascal-case"],
+        "semicolon": [true, "never"],
+        "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
         "function-name": false,
         "no-parameter-reassignment": false,
         "file-name-casing": [true, "kebab-case"],
         "align": [false, "parameters"]
     }
   }
-  

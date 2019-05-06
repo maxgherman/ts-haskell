@@ -93,7 +93,7 @@ wa<string[]>(plm).lift(
     Writer.from([(x: string) => x.toLowerCase() + 1, ['Test']]), Writer.from(['1', ['Test1']]))
 
 pa.lift<string, string[]>(
-    Promise.resolve<((string) => string[])>((x: string) => [x]), Promise.resolve('3'))
+    Promise.resolve<((x: string) => string[])>((x: string) => [x]), Promise.resolve('3'))
 
 plmonad['>>=']([1, 2, 3], (x) => [x, x])
 
