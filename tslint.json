@@ -1,0 +1,25 @@
+{
+    "$schema": "http://json.schemastore.org/tslint",
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint-config-airbnb"
+    ],
+    "linterOptions": {
+        "exclude": ["node_modules/**/*.*"]
+    },
+    "rules": {
+        "import-name": false,
+        "eofline": false,
+        "indent": [true, "spaces", 4],
+        "ter-indent": [true, 4,   { "SwitchCase": 1 }],
+        "ter-arrow-parens": false,
+        "trailing-comma": [false, {"multiline": "always", "singleline": "never"}],
+        "semicolon": [true, "never", "ignore-interfaces"],
+        "variable-name": [true, "allow-pascal-case"],
+        "function-name": false,
+        "no-parameter-reassignment": false,
+        "file-name-casing": [true, "kebab-case"],
+        "align": [false, "parameters"]
+    }
+  }
+  

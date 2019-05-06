@@ -1,5 +1,5 @@
-import { Box } from '@common/types/box';
+import { Box } from '@common/types/box'
 
 export class IsPlainArray {}
 
-export type ArrayBox<T> = Box<IsPlainArray, T> & Array<T>;
+export type ArrayBox<T> = Box<IsPlainArray, T> & T[]

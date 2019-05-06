@@ -1,5 +1,5 @@
-import { Box } from '@common/types/box';
-import { Writer } from '@data/writer';
+import { Box } from '@common/types/box'
+import { Writer } from '@data/writer'
 
 export class IsWriter {}
 

@@ -1,5 +1,5 @@
-import { Box } from '@common/types/box';
-import { Either } from '@data/either';
+import { Box } from '@common/types/box'
+import { Either } from '@data/either'
 
 export class IsEither {}
 

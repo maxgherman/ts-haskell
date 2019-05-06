@@ -9,6 +9,7 @@
     "prebuild": "npm run clean",
     "build": "tsc && npm run clean:pl",
     "trace": "tsc --traceResolution",
+    "lint": "tslint 'src/**/*.ts' -p tsconfig.json",
     "test": "jest",
     "test:cov": "jest --coverage",
     "test:watch": "jest -o --expand --notify --watch"
@@ -23,7 +24,9 @@
     "babel-plugin-module-resolver": "3.2.0",
     "rimraf": "2.6.3",
     "ramda": "0.26.1",
-    "typescript": "3.4.5"
+    "typescript": "3.4.5",
+    "tslint-config-airbnb": "5.11.1",
+    "tslint": "5.16.0"
   },
   "author": "",
   "license": "MIT"

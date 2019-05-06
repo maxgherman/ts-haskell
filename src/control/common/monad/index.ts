@@ -1,2 +1,2 @@
-export * from './monad';
-export * from './do-notation';
+export * from './monad'
+export * from './do-notation'
