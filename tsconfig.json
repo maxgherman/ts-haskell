@@ -1,25 +1,20 @@
 {
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "esnext",
-        "outDir": "lib",
-        "baseUrl": ".",
-        "paths": {
-            "@common/*": [
-                "src/common/*"
-            ],
-            "@data/*": [
-                "src/data/*"
-            ],
-            "@control/*": [
-                "src/control/*"
-            ]
+      "allowJs": true,
+      "baseUrl": ".",
+      "esModuleInterop": true,
+      "lib": ["esnext"],
+      "module": "amd",
+      "moduleResolution": "node",
+      "noEmit": true,
+      "plugins": [
+        {
+          "name": "deno_ls_plugin"
         }
+      ],
+      "pretty": true,
+      "resolveJsonModule": true,
+      "target": "esnext"
     },
-    "include": [
-        "src"
-    ],
-    "exclude": [
-        "node_modules"
-    ]
-}
+    "include": ["./**/*.ts"]
+  }  
