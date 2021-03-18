@@ -1,6 +1,6 @@
 export type Func = ((...args: unknown[]) => unknown);
 
-export type Slack<T> = () => T; // a synonym to Lazy
+export type Slack<T> = () => T; // synonym to Lazy
 
 // id :: a -> a
 export const id = <A>(x: A) => x;
