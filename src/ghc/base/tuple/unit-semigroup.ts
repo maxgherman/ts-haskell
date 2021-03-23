@@ -2,18 +2,18 @@ import {
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
-} from "./semigroup.ts";
-import { UnitBox } from "./tuple.ts";
-import { NonEmpty } from "./non-empty/list.ts";
+} from "../semigroup.ts";
+import { unit, UnitBox } from "./tuple.ts";
+import { NonEmpty } from "../non-empty/list.ts";
 
-export interface UnitSemigroup extends Semigroup {
+export interface UnitSemigroup extends Semigroup<unknown> {
   "<>"(a: UnitBox, b: UnitBox): UnitBox;
   sconcat(value: NonEmpty<UnitBox>): UnitBox;
   stimes(b: number, a: UnitBox): UnitBox;
 }
 
-const base: SemigroupBase = {
-  "<>": (_a: UnitBox, _b: UnitBox): UnitBox => [] as UnitBox,
+const base: SemigroupBase<unknown> = {
+  "<>": (_a: UnitBox, _b: UnitBox): UnitBox => unit(),
 };
 
 export const semigroup = createSemigroup(base) as UnitSemigroup;

@@ -1,6 +1,6 @@
 import { Box1, Type } from "../../../data/kind.ts";
 import { compose, Slack } from "../functions.ts";
-import { fst, snd } from "../tuple.ts";
+import { fst, snd } from "../tuple/tuple.ts";
 import {
   cons,
   head as listHead,
@@ -10,7 +10,7 @@ import {
   tail as listTail,
 } from "../list/list.ts";
 import { $case as listCase, _ as __, Case } from "../list/patterns.ts";
-import { just, MaybeBox, nothing } from "../maybe.ts";
+import { just, MaybeBox, nothing } from "../maybe/maybe.ts";
 
 export type NonEmpty<T> = Slack<[NonNullable<T>, List<T>]>;
 

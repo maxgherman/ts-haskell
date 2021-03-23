@@ -16,7 +16,7 @@ export interface NonEmptyFunctor extends Functor {
 }
 
 const fmap: FMap = {
-  // fmap :: ListBox f => (a -> b) ->  f a -> f b
+  // fmap :: NonEmptyBox f => (a -> b) ->  f a -> f b
   fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: NonEmptyBox<A>) => map(f, fa),
 };
 

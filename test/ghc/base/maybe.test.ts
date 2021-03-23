@@ -1,6 +1,10 @@
 import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { Func } from "../../../src/ghc/base/functions.ts";
-import { $case, just, kindOf, nothing } from "../../../src/ghc/base/maybe.ts";
+import {
+  $case,
+  just,
+  kindOf,
+  nothing,
+} from "../../../src/ghc/base/maybe/maybe.ts";
 
 const { asserts: { assertEquals, assertThrows } } = Rhum;
 

@@ -1,13 +1,13 @@
 import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
 import { compose, id } from "../../../src/ghc/base/functions.ts";
-import { functor } from "../../../src/ghc/base/maybe-functor.ts";
+import { functor } from "../../../src/ghc/base/maybe/maybe-functor.ts";
 import {
   $case,
   just,
   Maybe,
   MaybeBox,
   nothing,
-} from "../../../src/ghc/base/maybe.ts";
+} from "../../../src/ghc/base/maybe/maybe.ts";
 
 type FakeNothing = { isNothing: true };
 

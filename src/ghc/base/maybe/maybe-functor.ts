@@ -1,5 +1,5 @@
 import { $case, just, MaybeBox, nothing } from "./maybe.ts";
-import { FMap, Functor, functor as createFunctor } from "./functor.ts";
+import { FMap, Functor, functor as createFunctor } from "../functor.ts";
 
 export interface MaybeFunctor extends Functor {
   fmap<A, B>(f: (a: A) => B, fa: MaybeBox<A>): MaybeBox<B>;

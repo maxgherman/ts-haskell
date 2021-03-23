@@ -8,6 +8,7 @@ import {
   tail as listTail,
   toArray,
 } from "../../../src/ghc/base/list/list.ts";
+import { $case as listCase } from "../../../src/ghc/base/list/patterns.ts";
 import {
   $case,
   _,
@@ -129,6 +130,38 @@ Rhum.testSuite("NonEmpty", () => {
     assertEquals(result1, 2);
     assertEquals(result2, 4);
     assertEquals(result3, 7);
+  });
+
+  Rhum.testCase("$case rest", () => {
+    const empty = nil<number>();
+    const value = compose(cons(4), cons(3), cons(2), cons(1))(empty);
+
+    const result1 = $case([
+      [[_], (a) => listHead(a)],
+    ])(formList(value));
+
+    const result2 = $case([
+      [[_, _], (a, b) => `${a} ${listHead(b)}`],
+    ])(formList(value));
+
+    const result3 = $case([
+      [[_, _, _], (a, b, c) => `${a} ${b} ${listHead(c)}`],
+    ])(formList(value));
+
+    const result4 = $case([
+      [[_, _, _, _], (a, b, c, d) => `${a} ${b} ${c} ${d}`],
+    ])(formList(value));
+
+    const result5 = $case([
+      [[], (a) => a],
+      [[_, _, _], (a, b) => `${a} - ${b}`],
+    ])(formList(value));
+
+    assertEquals(result1, 4);
+    assertEquals(result2, "4 3");
+    assertEquals(result3, "4 3 2");
+    assertEquals(result4, "4 3 2 1");
+    assertEquals(result5, "4 - 3");
   });
 });
 

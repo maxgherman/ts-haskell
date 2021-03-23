@@ -1,32 +1,41 @@
-import { MinBox0 } from "../../data/kind.ts";
+import { Kind, MinBox0 } from "../../data/kind.ts";
 import { head, NonEmpty, tail } from "./non-empty/list.ts";
-import { List } from "./list/list.ts";
+import { head as listHead, List, tail as listTail } from "./list/list.ts";
 import { $case, _ } from "./list/patterns.ts";
 
-export type SemigroupBase = {
-  "<>"<A>(a: MinBox0<A>, b: MinBox0<A>): MinBox0<A>;
+export type SemigroupBase<T> = {
+  "<>"(a: MinBox0<T>, b: MinBox0<T>): MinBox0<T>;
 };
 
-export type Extensions = {
-  sconcat<A>(value: NonEmpty<MinBox0<A>>): MinBox0<A>;
-  stimes<A>(b: number, a: MinBox0<A>): MinBox0<A>;
+export type Extensions<T> = {
+  sconcat(value: NonEmpty<MinBox0<T>>): MinBox0<T>;
+  stimes(b: number, a: MinBox0<T>): MinBox0<T>;
 };
 
-export type Semigroup = SemigroupBase & Extensions;
+export type Semigroup<T> = SemigroupBase<T> & Extensions<T> & {
+  kind: (_: "*") => "Constraint";
+};
 
-const extensions = (base: SemigroupBase): Extensions => ({
-  sconcat<A>(value: NonEmpty<MinBox0<A>>): MinBox0<A> {
-    const go = <A>(b: MinBox0<A>, value: List<MinBox0<A>>): MinBox0<A> => {
-      return $case([
+export const kindOf = (_: Semigroup<unknown>): Kind => (_: "*") => "Constraint";
+
+const extensions = <T>(base: SemigroupBase<T>): Extensions<T> => ({
+  sconcat(value: NonEmpty<MinBox0<T>>): MinBox0<T> {
+    const go = (b: MinBox0<T>, value: List<MinBox0<T>>): MinBox0<T> =>
+      $case([
         [[], () => b],
-        [[_], (c, cs) => base["<>"](b, go<A>(c, cs))],
+        [
+          [_],
+          (head, tail) =>
+            tail
+              ? base["<>"](b, go(head, tail))
+              : base["<>"](b, go(listHead(head), listTail(head))),
+        ],
       ])(value);
-    };
 
     return go(head(value), tail(value));
   },
 
-  stimes<A>(b: number, a: MinBox0<A>): MinBox0<A> {
+  stimes(b: number, a: MinBox0<T>): MinBox0<T> {
     if (b < 0) {
       throw new Error("Exception: stimes, negative multiplier");
     }
@@ -36,11 +45,12 @@ const extensions = (base: SemigroupBase): Extensions => ({
     }
 
     return new Array(b).fill(a)
-      .reduce((acc, curr) => base["<>"]<A>(curr, acc));
+      .reduce((acc, curr) => base["<>"](curr, acc));
   },
 });
 
-export const semigroup = (base: SemigroupBase): Semigroup => ({
+export const semigroup = <T>(base: SemigroupBase<T>): Semigroup<T> => ({
   ...base,
   ...extensions(base),
+  kind: (_: "*") => "Constraint",
 });

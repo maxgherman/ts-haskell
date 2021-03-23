@@ -1,4 +1,4 @@
-import { Slack } from "../functions.ts";
+import { compose, Slack } from "../functions.ts";
 import { Box1, Kind, Type } from "../../../data/kind.ts";
 
 type Nil = [];
@@ -70,10 +70,20 @@ export const map = <T1, T2>(
   return cons(value)(rest);
 };
 
-export const toArray = <T>(list: List<T>): T[] => {
+export const toArray = <T>(list: List<T> | ListBox<T>): T[] => {
   if ($null(list)) {
     return [];
   }
 
   return [head(list)].concat(toArray(tail(list)));
+};
+
+export const concat = <T>(list1: List<T>, list2: List<T>): ListBox<T> => {
+  if ($null(list1)) {
+    return list2 as ListBox<T>;
+  }
+
+  return compose(cons(head(list1)!), (x: List<T>) => concat(tail(list1), x))(
+    list2,
+  );
 };

@@ -1,4 +1,4 @@
-import { Box1, Kind, Type } from "../../data/kind.ts";
+import { Box1, Kind, Type } from "../../../data/kind.ts";
 
 type Nothing = () => void;
 type Just<T> = () => NonNullable<T>;

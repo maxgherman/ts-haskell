@@ -2,6 +2,7 @@ import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
 import { compose, id } from "../../../src/ghc/base/functions.ts";
 import {
   $null,
+  concat,
   cons,
   head,
   map,
@@ -177,8 +178,10 @@ Rhum.testSuite("List", () => {
   });
 
   Rhum.testCase("Cons tail", () => {
-    const value = compose(cons(2), cons(1))(nil<number>());
-    assertEquals(toArray(tail(value)), [1]);
+    const value1 = compose(cons(2), cons(1))(nil<number>());
+    assertEquals(toArray(tail(value1)), [1]);
+    assertEquals(toArray(tail(tail(value1))), []);
+    assert($null(tail(tail(value1))));
   });
 
   Rhum.testCase("Cons map ", () => {
@@ -187,6 +190,25 @@ Rhum.testSuite("List", () => {
     const result = map((x) => x + 1, value);
 
     assertEquals(toArray(result), [4, 3, 2]);
+  });
+
+  Rhum.testCase("concat ", () => {
+    const nill1 = nil<number>();
+    const nill2 = nil<number>();
+    const cons1 = compose(cons(1))(nil<number>());
+    const cons2 = compose(cons(3), cons(2), cons(1))(nil<number>());
+
+    const result1 = concat(nill1, nill2);
+    const result2 = concat(nill1, cons1);
+    const result3 = concat(cons1, nill1);
+    const result4 = concat(cons1, cons2);
+    const result5 = concat(cons2, cons1);
+
+    assert($null(result1));
+    assertEquals(toArray(result2), [1]);
+    assertEquals(toArray(result3), [1]);
+    assertEquals(toArray(result4), [1, 3, 2, 1]);
+    assertEquals(toArray(result5), [3, 2, 1, 1]);
   });
 });
 
