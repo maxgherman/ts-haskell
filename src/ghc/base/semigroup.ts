@@ -18,7 +18,7 @@ export type Semigroup<T> = SemigroupBase<T> & Extensions<T> & {
 
 export const kindOf = (_: Semigroup<unknown>): Kind => (_: "*") => "Constraint";
 
-const extensions = <T>(base: SemigroupBase<T>): Extensions<T> => ({
+export const extensions = <T>(base: SemigroupBase<T>): Extensions<T> => ({
   sconcat(value: NonEmpty<MinBox0<T>>): MinBox0<T> {
     const go = (b: MinBox0<T>, value: List<MinBox0<T>>): MinBox0<T> =>
       $case([
@@ -49,8 +49,12 @@ const extensions = <T>(base: SemigroupBase<T>): Extensions<T> => ({
   },
 });
 
-export const semigroup = <T>(base: SemigroupBase<T>): Semigroup<T> => ({
+export const semigroup = <T>(
+  base: SemigroupBase<T>,
+  overrides?: Partial<Extensions<T>>,
+): Semigroup<T> => ({
   ...base,
   ...extensions(base),
+  ...overrides || {},
   kind: (_: "*") => "Constraint",
 });

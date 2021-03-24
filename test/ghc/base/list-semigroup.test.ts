@@ -9,7 +9,7 @@ import {
 } from "../../../src/ghc/base/list/list.ts";
 import { formList } from "../../../src/ghc/base/non-empty/list.ts";
 
-const { asserts: { assertEquals, assert, assertThrows } } = Rhum;
+const { asserts: { assertEquals, assertThrows } } = Rhum;
 const semigroup = createSemigroup<number>();
 
 const createList = (value: number) => cons(value)(nil());
@@ -30,8 +30,8 @@ Rhum.testSuite("ListSemigroup", () => {
   });
 
   Rhum.testCase("sconcat", () => {
-    const innerListHead = cons(createList(1))(nil());
-    const innerListTail = compose(
+    const innerList1 = cons(createList(1))(nil());
+    const innerList2 = compose(
       cons(createList(1)),
       cons(createList(2)),
       cons(createList(3)),
@@ -39,8 +39,8 @@ Rhum.testSuite("ListSemigroup", () => {
       nil(),
     );
 
-    const data1 = formList(innerListHead);
-    const data2 = formList(innerListTail);
+    const data1 = formList(innerList1);
+    const data2 = formList(innerList2);
 
     const result1 = semigroup.sconcat(data1);
     const result2 = semigroup.sconcat(data2);
@@ -104,3 +104,5 @@ Rhum.testSuite("ListSemigroup", () => {
     assertEquals(toArray(result3), [1, 2, 3, 4, 5, 6]);
   });
 });
+
+Rhum.run();

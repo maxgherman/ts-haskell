@@ -8,7 +8,6 @@ import { fst, snd, tuple2, Tuple2Box } from "./tuple.ts";
 import { NonEmpty } from "../non-empty/list.ts";
 
 export type TupleMiniBox<T1, T2> = Tuple2Box<MinBox0<T1>, MinBox0<T2>>;
-
 export interface Tuple2Semigroup<
   T1 extends Semigroup<T1>,
   T2 extends Semigroup<T2>,
@@ -25,7 +24,10 @@ export interface Tuple2Semigroup<
 const base = <
   T1 extends Semigroup<T1>,
   T2 extends Semigroup<T2>,
->(): SemigroupBase<TupleMiniBox<T1, T2>> => ({
+>(
+  innerSemigroup1: T1,
+  innerSemigroup2: T2,
+): SemigroupBase<TupleMiniBox<T1, T2>> => ({
   "<>"(
     a: Tuple2Box<T1, T2>,
     b: Tuple2Box<T1, T2>,
@@ -35,11 +37,15 @@ const base = <
     const b1 = fst(b);
     const b2 = snd(b);
 
-    return tuple2(a1["<>"](a1, b1), b1["<>"](a2, b2));
+    return tuple2(innerSemigroup1["<>"](a1, b1), innerSemigroup2["<>"](a2, b2));
   },
 });
 
 export const semigroup = <
   T1 extends Semigroup<T1>,
   T2 extends Semigroup<T2>,
->() => createSemigroup(base()) as Tuple2Semigroup<T1, T2>;
+>(innerSemigroup1: T1, innerSemigroup2: T2) =>
+  createSemigroup(base(innerSemigroup1, innerSemigroup2)) as Tuple2Semigroup<
+    T1,
+    T2
+  >;
