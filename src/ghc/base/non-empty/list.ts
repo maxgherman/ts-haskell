@@ -2,7 +2,7 @@ import { Box1, Type } from "../../../data/kind.ts";
 import { compose, Slack } from "../functions.ts";
 import { fst, snd } from "../tuple/tuple.ts";
 import {
-  cons,
+  cons as listCons,
   head as listHead,
   List,
   ListBox,
@@ -30,7 +30,10 @@ export const nonEmpty = <T>(list: List<T>): MaybeBox<NonEmptyBox<T>> =>
     ],
   ])(list);
 
-export const head = <T>(nonEmp: NonEmpty<T>): T => fst(nonEmp());
+export const cons = <T>(value: NonNullable<T>) =>
+  (list: ListBox<T>) => formList<T>(listCons(value)(list));
+
+export const head = <T>(nonEmp: NonEmpty<T>): NonNullable<T> => fst(nonEmp());
 
 export const tail = <T>(nonEmp: NonEmpty<T>): ListBox<T> =>
   snd(nonEmp()) as ListBox<T>;
@@ -53,7 +56,7 @@ export const formList = <T>(list: List<T>): NonEmptyBox<T> =>
 
 export const toList = <T>(nonEmp: NonEmpty<T>): ListBox<T> =>
   compose<NonEmpty<T>, [NonNullable<T>, List<T>], ListBox<T>>(
-    (source) => cons(fst(source))(snd(source)),
+    (source) => listCons(fst(source))(snd(source)),
     (value: NonEmpty<T>) => value(),
   )(nonEmp);
 
