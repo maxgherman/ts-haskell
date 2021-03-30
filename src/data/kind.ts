@@ -25,6 +25,8 @@ export type Box0<T> = Box<Kind1, T>;
 
 export type Box1<T> = Box<Kind2, T>;
 
+export type Box2<T> = Box<Kind3, T>;
+
 export type MinBox0<T> = Box<Kind1 | Kind2 | Kind3, T>;
 
 export type MinBox1<T> = Box<Kind2 | Kind3, T>;

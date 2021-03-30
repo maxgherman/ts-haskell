@@ -1,8 +1,8 @@
-import { Box0, Kind } from "../../../data/kind.ts";
+import { Box0, Box2, Kind } from "../../../data/kind.ts";
 
 export type UnitBox = [] & Box0<unknown>;
 
-export type Tuple2Box<T1, T2> = [T1, T2] & Box0<unknown>;
+export type Tuple2Box<T1, T2> = [T1, T2] & Box2<unknown>;
 
 export const fst = <T1, T2>(tuple: [T1, T2] | Tuple2Box<T1, T2>): T1 =>
   tuple[0];

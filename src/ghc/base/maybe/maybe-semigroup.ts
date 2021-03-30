@@ -1,6 +1,5 @@
 import { MinBox0 } from "../../../data/kind.ts";
 import {
-  Extensions,
   extensions,
   Semigroup,
   semigroup as createSemigroup,
