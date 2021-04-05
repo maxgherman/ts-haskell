@@ -1,13 +1,13 @@
 import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { compose, id } from "../../../src/ghc/base/functions.ts";
-import { cons, nil, toArray } from "../../../src/ghc/base/list/list.ts";
+import { compose, id } from "../../../../src/ghc/base/functions.ts";
+import { cons, nil, toArray } from "../../../../src/ghc/base/list/list.ts";
 import {
   formList,
   head,
   NonEmptyBox,
   tail,
-} from "../../../src/ghc/base/non-empty/list.ts";
-import { functor } from "../../../src/ghc/base/non-empty/list-functor.ts";
+} from "../../../../src/ghc/base/non-empty/list.ts";
+import { functor } from "../../../../src/ghc/base/non-empty/list-functor.ts";
 
 const { asserts: { assertEquals } } = Rhum;
 

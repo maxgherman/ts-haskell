@@ -4,7 +4,7 @@ import {
   just,
   kindOf,
   nothing,
-} from "../../../src/ghc/base/maybe/maybe.ts";
+} from "../../../../src/ghc/base/maybe/maybe.ts";
 
 const { asserts: { assertEquals, assertThrows } } = Rhum;
 

@@ -1,9 +1,9 @@
 import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { compose } from "../../../src/ghc/base/functions.ts";
-import { semigroup } from "../../../src/ghc/base/tuple/unit-semigroup.ts";
-import { unit } from "../../../src/ghc/base/tuple/tuple.ts";
-import { formList } from "../../../src/ghc/base/non-empty/list.ts";
-import { cons, nil } from "../../../src/ghc/base/list/list.ts";
+import { compose } from "../../../../src/ghc/base/functions.ts";
+import { semigroup } from "../../../../src/ghc/base/tuple/unit-semigroup.ts";
+import { unit } from "../../../../src/ghc/base/tuple/tuple.ts";
+import { formList } from "../../../../src/ghc/base/non-empty/list.ts";
+import { cons, nil } from "../../../../src/ghc/base/list/list.ts";
 
 const { asserts: { assertEquals, assertThrows } } = Rhum;
 

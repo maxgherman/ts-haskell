@@ -36,7 +36,7 @@ export const right = <TL, TR>(value: NonNullable<TR>): EitherBox<TL, TR> =>
 export const $case = <TL, TR, K>(
   caseOf: Case<TL, TR, K>,
 ) =>
-  (either: Either<TL, TR>): K => {
+  (either: Either<TL, TR> | EitherBox<TL, TR>): K => {
     const _either = either as InnerEither<TL, TR>;
 
     if (_either.from === "Left") {

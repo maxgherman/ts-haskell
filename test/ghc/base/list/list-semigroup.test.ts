@@ -1,13 +1,13 @@
 import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { compose } from "../../../src/ghc/base/functions.ts";
-import { semigroup as createSemigroup } from "../../../src/ghc/base/list/list-semigroup.ts";
+import { compose } from "../../../../src/ghc/base/functions.ts";
+import { semigroup as createSemigroup } from "../../../../src/ghc/base/list/list-semigroup.ts";
 import {
   cons,
   ListBox,
   nil,
   toArray,
-} from "../../../src/ghc/base/list/list.ts";
-import { formList } from "../../../src/ghc/base/non-empty/list.ts";
+} from "../../../../src/ghc/base/list/list.ts";
+import { formList } from "../../../../src/ghc/base/non-empty/list.ts";
 
 const { asserts: { assertEquals, assertThrows } } = Rhum;
 const semigroup = createSemigroup<number>();

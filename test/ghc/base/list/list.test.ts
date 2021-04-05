@@ -1,5 +1,5 @@
 import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { compose, id } from "../../../src/ghc/base/functions.ts";
+import { compose, id } from "../../../../src/ghc/base/functions.ts";
 import {
   $null,
   concat,
@@ -9,8 +9,8 @@ import {
   nil,
   tail,
   toArray,
-} from "../../../src/ghc/base/list/list.ts";
-import { $case, _ } from "../../../src/ghc/base/list/patterns.ts";
+} from "../../../../src/ghc/base/list/list.ts";
+import { $case, _ } from "../../../../src/ghc/base/list/patterns.ts";
 
 const { asserts: { assertEquals, assert, assertThrows } } = Rhum;
 
