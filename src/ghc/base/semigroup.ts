@@ -4,11 +4,15 @@ import { head as listHead, List, tail as listTail } from "./list/list.ts";
 import { $case, _ } from "./list/patterns.ts";
 
 export type SemigroupBase<T> = {
+  // (<>) :: a -> a -> a
   "<>"(a: MinBox0<T>, b: MinBox0<T>): MinBox0<T>;
 };
 
 export type Extensions<T> = {
+  // sconcat :: NonEmpty a -> a
   sconcat(value: NonEmpty<MinBox0<T>>): MinBox0<T>;
+
+  // stimes :: Integral b => b -> a -> a
   stimes(b: number, a: MinBox0<T>): MinBox0<T>;
 };
 

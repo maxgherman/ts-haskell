@@ -77,8 +77,14 @@ Rhum.testSuite("Either", () => {
     const leftValue = left<Error, string>(new Error());
     const rightValue = right<Error, string>("123");
 
-    assertEquals((kindOf<Error, string>(leftValue) as Func)("*"), "*");
-    assertEquals((kindOf<Error, string>(rightValue) as Func)("*"), "*");
+    assertEquals(
+      ((kindOf<Error, string>(leftValue) as Func)("*") as Func)("*"),
+      "*",
+    );
+    assertEquals(
+      ((kindOf<Error, string>(rightValue) as Func)("*") as Func)("*"),
+      "*",
+    );
   });
 });
 

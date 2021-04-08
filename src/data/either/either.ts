@@ -1,11 +1,11 @@
-import { Box1, Kind, Type } from "../../data/kind.ts";
+import { Box2, Kind, Type } from "../../data/kind.ts";
 
 export type Left<T> = () => NonNullable<T>;
 export type Right<T> = () => NonNullable<T>;
 
 export type Either<TL, TR> = Left<TL> | Right<TR>;
 
-export type EitherBox<T1, T2> = Box1<T2> & Either<T1, T2>;
+export type EitherBox<T1, T2> = Box2<T1, T2> & Either<T1, T2>;
 
 type InnerEither<TL, TR> = Left<TL> & Right<TR> & {
   from: "Left" | "Right";
@@ -16,12 +16,13 @@ type Case<TL, TR, K> = {
   right?: NonNullable<(_: TR) => K>;
 };
 
-export const kindOf = <TL, TR>(_: Either<TL, TR>): Kind => (_: "*") => "*";
+export const kindOf = <TL, TR>(_: Either<TL, TR>): Kind =>
+  (_: "*") => (_: "*") => "*";
 
 const createResult = <T>(value: NonNullable<T>, from: "Left" | "Right") => {
   const result = () => value;
   result.from = from;
-  result.kind = (_: "*") => "*" as Type;
+  result.kind = (_: "*") => (_: "*") => "*" as Type;
 
   return result;
 };

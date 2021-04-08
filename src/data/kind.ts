@@ -21,11 +21,11 @@ export type Box<K extends Kind, _> = {
   readonly kind: K;
 };
 
-export type Box0<T> = Box<Kind1, T>;
+export type Box0 = Box<Kind1, unknown>;
 
 export type Box1<T> = Box<Kind2, T>;
 
-export type Box2<T> = Box<Kind3, T>;
+export type Box2<T1, T2> = Box<Kind3, T1> & Box<Kind3, T2>;
 
 export type MinBox0<T> = Box<Kind1 | Kind2 | Kind3, T>;
 

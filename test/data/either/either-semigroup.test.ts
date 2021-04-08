@@ -83,3 +83,5 @@ Rhum.testSuite("EitherSemigroup", () => {
     assertEquals(caseString(result4), "value 1");
   });
 });
+
+Rhum.run();
