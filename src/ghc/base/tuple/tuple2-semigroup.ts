@@ -1,5 +1,6 @@
 import { MinBox0 } from "../../../data/kind.ts";
 import {
+  extensions,
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
@@ -38,11 +39,33 @@ const base = <T1 extends Semigroup<T1>, T2 extends Semigroup<T2>>(
   },
 });
 
-export const semigroup = <T1 extends Semigroup<T1>, T2 extends Semigroup<T2>>(
+const stimesTuple2 = <T1 extends Semigroup<T1>, T2 extends Semigroup<T2>>(
   innerSemigroup1: T1,
   innerSemigroup2: T2,
 ) =>
-  createSemigroup(base(innerSemigroup1, innerSemigroup2)) as Tuple2Semigroup<
+  (b: number, a: TupleMinBox<T1, T2>) =>
+    tuple2(
+      innerSemigroup1.stimes(b, fst(a)),
+      innerSemigroup2.stimes(b, snd(a)),
+    );
+
+export const semigroup = <T1 extends Semigroup<T1>, T2 extends Semigroup<T2>>(
+  innerSemigroup1: T1,
+  innerSemigroup2: T2,
+): Tuple2Semigroup<
+  T1,
+  T2
+> => {
+  const _base = base(innerSemigroup1, innerSemigroup2);
+  const baseExtensions = extensions(_base);
+
+  const overrides = {
+    ...baseExtensions,
+    stimes: stimesTuple2(innerSemigroup1, innerSemigroup2),
+  };
+
+  return createSemigroup(_base, overrides) as Tuple2Semigroup<
     T1,
     T2
   >;
+};
