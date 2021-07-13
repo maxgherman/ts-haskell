@@ -2,8 +2,8 @@ import {
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
-} from "../../ghc/base/semigroup.ts";
-import { NonEmpty } from "../../ghc/base/non-empty/list.ts";
+} from "ghc/base/semigroup.ts";
+import { NonEmpty } from "ghc/base/non-empty/list.ts";
 import { $case, EitherBox, right } from "./either.ts";
 
 export interface EitherSemigroup<T1, T2> extends Semigroup<EitherBox<T1, T2>> {

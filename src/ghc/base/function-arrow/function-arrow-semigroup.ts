@@ -1,11 +1,11 @@
-import { MinBox0 } from "../../../data/kind.ts";
+import { MinBox0 } from "data/kind.ts";
 import {
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
-} from "../../base/semigroup.ts";
-import { NonEmpty } from "../../base/non-empty/list.ts";
-import { FunctionArrowBox } from "../../prim/function-arrow/function-arrow.ts";
+} from "ghc/base/semigroup.ts";
+import { NonEmpty } from "ghc/base/non-empty/list.ts";
+import { FunctionArrowBox } from "ghc/prim/function-arrow/function-arrow.ts";
 
 export type FunctionArrowMinBox<A, B> = FunctionArrowBox<A, MinBox0<B>>;
 

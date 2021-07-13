@@ -1,11 +1,11 @@
-import { compose } from "../functions.ts";
+import { compose } from "ghc/base/functions.ts";
 import {
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
-} from "../semigroup.ts";
+} from "ghc/base/semigroup.ts";
 import { formList, head, NonEmpty, NonEmptyBox, tail } from "./list.ts";
-import { concat, cons, ListBox } from "../list/list.ts";
+import { concat, cons, ListBox } from "ghc/base/list/list.ts";
 
 export interface NonEmptySemigroup<T> extends Semigroup<NonEmptyBox<T>> {
   "<>"(a: NonEmptyBox<T>, b: NonEmptyBox<T>): NonEmptyBox<T>;

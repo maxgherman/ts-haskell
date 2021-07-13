@@ -1,14 +1,7 @@
-import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { compose, id } from "../../../../src/ghc/base/functions.ts";
-import {
-  cons,
-  head,
-  ListBox,
-  nil,
-  tail,
-  toArray,
-} from "../../../../src/ghc/base/list/list.ts";
-import { functor } from "../../../../src/ghc/base/list/list-functor.ts";
+import { Rhum } from "rhum/mod.ts";
+import { compose, id } from "ghc/base/functions.ts";
+import { cons, head, ListBox, nil, tail, toArray } from "ghc/base/list/list.ts";
+import { functor } from "ghc/base/list/list-functor.ts";
 
 const { asserts: { assertEquals } } = Rhum;
 

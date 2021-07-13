@@ -1,5 +1,5 @@
-import { MinBox1 } from "../../data/kind.ts";
-import { $const, flip } from "./functions.ts";
+import { MinBox1 } from "data/kind.ts";
+import { $const, flip } from "ghc/base/functions.ts";
 
 export type FMap = {
   // fmap :: Functor f => (a -> b) -> f a -> f b

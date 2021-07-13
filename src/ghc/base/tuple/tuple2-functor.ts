@@ -1,5 +1,5 @@
-import { compose } from "../functions.ts";
-import { FMap, Functor, functor as createFunctor } from "../functor.ts";
+import { compose } from "ghc/base/functions.ts";
+import { FMap, Functor, functor as createFunctor } from "ghc/base/functor.ts";
 import { curry, fst, snd, tuple2, Tuple2Box } from "./tuple.ts";
 
 export interface Tuple2Functor<T> extends Functor {

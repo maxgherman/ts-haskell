@@ -1,14 +1,9 @@
-import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { compose, id } from "../../../../src/ghc/base/functions.ts";
-import { functor as createFunctor } from "../../../../src/ghc/base/tuple/tuple2-functor.ts";
-import {
-  fst,
-  snd,
-  tuple2,
-  Tuple2Box,
-} from "../../../../src/ghc/base/tuple/tuple.ts";
+import { Rhum } from "rhum/mod.ts";
+import { compose, id } from "ghc/base/functions.ts";
+import { functor as createFunctor } from "ghc/base/tuple/tuple2-functor.ts";
+import { fst, snd, tuple2, Tuple2Box } from "ghc/base/tuple/tuple.ts";
 
-const { asserts: { assertEquals, assert } } = Rhum;
+const { asserts: { assertEquals } } = Rhum;
 
 const functor = createFunctor<string>();
 const fmapId = <T>(fa: Tuple2Box<string, T>) => functor.fmap(id, fa);

@@ -1,4 +1,4 @@
-import { FMap, Functor, functor as createFunctor } from "../functor.ts";
+import { FMap, Functor, functor as createFunctor } from "ghc/base/functor.ts";
 import { map, NonEmptyBox } from "./list.ts";
 
 export interface NonEmptyFunctor extends Functor {

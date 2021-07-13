@@ -1,4 +1,4 @@
-import { Box2 } from "../../../data/kind.ts";
+import { Box2 } from "data/kind.ts";
 
 export type FunctionArrow<A, B> = (_: A) => B;
 

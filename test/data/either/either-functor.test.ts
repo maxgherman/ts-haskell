@@ -1,12 +1,7 @@
-import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { compose, id } from "../../../src/ghc/base/functions.ts";
-import {
-  $case,
-  EitherBox,
-  left,
-  right,
-} from "../../../src/data/either/either.ts";
-import { functor as eitherF } from "../../../src/data/either/either-functor.ts";
+import { Rhum } from "rhum/mod.ts";
+import { compose, id } from "ghc/base/functions.ts";
+import { $case, EitherBox, left, right } from "data/either/either.ts";
+import { functor as eitherF } from "data/either/either-functor.ts";
 
 const { asserts: { assertEquals } } = Rhum;
 

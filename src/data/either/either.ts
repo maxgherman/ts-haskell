@@ -1,4 +1,4 @@
-import { Box2, Kind, Type } from "../../data/kind.ts";
+import { Box2, Kind, Type } from "data/kind.ts";
 
 export type Left<T> = () => NonNullable<T>;
 export type Right<T> = () => NonNullable<T>;

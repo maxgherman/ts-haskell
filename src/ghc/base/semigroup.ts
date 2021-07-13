@@ -1,7 +1,11 @@
-import { Kind, MinBox0 } from "../../data/kind.ts";
-import { head, NonEmpty, tail } from "./non-empty/list.ts";
-import { head as listHead, List, tail as listTail } from "./list/list.ts";
-import { $case, _ } from "./list/patterns.ts";
+import { Kind, MinBox0 } from "data/kind.ts";
+import { head, NonEmpty, tail } from "ghc/base/non-empty/list.ts";
+import {
+  head as listHead,
+  List,
+  tail as listTail,
+} from "ghc/base/list/list.ts";
+import { $case, _ } from "ghc/base/list/patterns.ts";
 
 export type SemigroupBase<T> = {
   // (<>) :: a -> a -> a

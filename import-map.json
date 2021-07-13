@@ -1,0 +1,7 @@
+{
+    "imports": {
+        "rhum/": "https://deno.land/x/rhum@v1.1.10/",
+        "ghc/": "./src/ghc/",
+        "data/": "./src/data/"
+    }
+  }

@@ -2,9 +2,9 @@ import {
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
-} from "../semigroup.ts";
-import { NonEmpty } from "../non-empty/list.ts";
-import { concat, ListBox } from "../list/list.ts";
+} from "ghc/base/semigroup.ts";
+import { NonEmpty } from "ghc/base/non-empty/list.ts";
+import { concat, ListBox } from "ghc/base/list/list.ts";
 
 export interface ListSemigroup<T> extends Semigroup<ListBox<T>> {
   "<>"(a: ListBox<T>, b: ListBox<T>): ListBox<T>;

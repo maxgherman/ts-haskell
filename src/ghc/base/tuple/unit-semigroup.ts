@@ -2,9 +2,9 @@ import {
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
-} from "../semigroup.ts";
+} from "ghc/base/semigroup.ts";
 import { unit, UnitBox } from "./tuple.ts";
-import { NonEmpty } from "../non-empty/list.ts";
+import { NonEmpty } from "ghc/base/non-empty/list.ts";
 
 export interface UnitSemigroup extends Semigroup<UnitBox> {
   "<>"(a: UnitBox, b: UnitBox): UnitBox;

@@ -1,11 +1,11 @@
-import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { compose, id } from "../../../src/ghc/base/functions.ts";
-import { semigroup as createSemigroup } from "../../../src/data/either/either-semigroup.ts";
-import { $case, left, right } from "../../../src/data/either/either.ts";
-import { formList } from "../../../src/ghc/base/non-empty/list.ts";
-import { cons, nil } from "../../../src/ghc/base/list/list.ts";
+import { Rhum } from "rhum/mod.ts";
+import { compose, id } from "ghc/base/functions.ts";
+import { semigroup as createSemigroup } from "data/either/either-semigroup.ts";
+import { $case, left, right } from "data/either/either.ts";
+import { formList } from "ghc/base/non-empty/list.ts";
+import { cons, nil } from "ghc/base/list/list.ts";
 
-const { asserts: { assertEquals, assertThrows } } = Rhum;
+const { asserts: { assertEquals } } = Rhum;
 
 const semigroup = createSemigroup<Error, string>();
 

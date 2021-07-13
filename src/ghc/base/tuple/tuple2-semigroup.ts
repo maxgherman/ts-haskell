@@ -1,12 +1,12 @@
-import { MinBox0 } from "../../../data/kind.ts";
+import { MinBox0 } from "data/kind.ts";
 import {
   extensions,
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
-} from "../semigroup.ts";
+} from "ghc/base/semigroup.ts";
 import { fst, snd, tuple2, Tuple2Box } from "./tuple.ts";
-import { NonEmpty } from "../non-empty/list.ts";
+import { NonEmpty } from "ghc/base/non-empty/list.ts";
 
 export type TupleMinBox<T1, T2> = Tuple2Box<MinBox0<T1>, MinBox0<T2>>;
 export interface Tuple2Semigroup<

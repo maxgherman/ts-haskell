@@ -1,9 +1,5 @@
 import { $case, EitherBox, left, right } from "./either.ts";
-import {
-  FMap,
-  Functor,
-  functor as createFunctor,
-} from "../../ghc/base/functor.ts";
+import { FMap, Functor, functor as createFunctor } from "ghc/base/functor.ts";
 
 export interface EitherFunctor<T> extends Functor {
   fmap<A, B>(f: (a: A) => B, fa: EitherBox<T, A>): EitherBox<T, B>;

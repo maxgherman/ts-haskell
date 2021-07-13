@@ -1,4 +1,4 @@
-import { Box0, Box2, Kind } from "../../../data/kind.ts";
+import { Box0, Box2, Kind } from "data/kind.ts";
 
 export type UnitBox = [] & Box0;
 

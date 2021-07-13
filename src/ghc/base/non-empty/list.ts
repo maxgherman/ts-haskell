@@ -1,6 +1,6 @@
-import { Box1, Type } from "../../../data/kind.ts";
-import { compose, Slack } from "../functions.ts";
-import { fst, snd } from "../tuple/tuple.ts";
+import { Box1, Type } from "data/kind.ts";
+import { compose, Slack } from "ghc/base/functions.ts";
+import { fst, snd } from "ghc/base/tuple/tuple.ts";
 import {
   cons as listCons,
   head as listHead,
@@ -8,9 +8,9 @@ import {
   ListBox,
   map as listMap,
   tail as listTail,
-} from "../list/list.ts";
-import { $case as listCase, _ as __, Case } from "../list/patterns.ts";
-import { just, MaybeBox, nothing } from "../maybe/maybe.ts";
+} from "ghc/base/list/list.ts";
+import { $case as listCase, _ as __, Case } from "ghc/base/list/patterns.ts";
+import { just, MaybeBox, nothing } from "ghc/base/maybe/maybe.ts";
 
 export type NonEmpty<T> = Slack<[NonNullable<T>, List<T>]>;
 

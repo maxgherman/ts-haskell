@@ -1,6 +1,6 @@
-import { Rhum } from "https://deno.land/x/rhum@v1.1.7/mod.ts";
-import { Func } from "../../../src/ghc/base/functions.ts";
-import { $case, kindOf, left, right } from "../../../src/data/either/either.ts";
+import { Rhum } from "rhum/mod.ts";
+import { Func } from "ghc/base/functions.ts";
+import { $case, kindOf, left, right } from "data/either/either.ts";
 
 const { asserts: { assertEquals, assertThrows } } = Rhum;
 

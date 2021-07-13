@@ -1,5 +1,5 @@
-import { compose, Slack } from "../functions.ts";
-import { Box1, Kind, Type } from "../../../data/kind.ts";
+import { compose, Slack } from "ghc/base/functions.ts";
+import { Box1, Kind, Type } from "data/kind.ts";
 
 type Nil = [];
 type ListItem<T> = {

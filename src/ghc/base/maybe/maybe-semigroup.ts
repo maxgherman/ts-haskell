@@ -1,11 +1,11 @@
-import { MinBox0 } from "../../../data/kind.ts";
+import { MinBox0 } from "data/kind.ts";
 import {
   extensions,
   Semigroup,
   semigroup as createSemigroup,
   SemigroupBase,
-} from "../semigroup.ts";
-import { NonEmpty } from "../non-empty/list.ts";
+} from "ghc/base/semigroup.ts";
+import { NonEmpty } from "ghc/base/non-empty/list.ts";
 import { $case, just, MaybeBox, nothing } from "./maybe.ts";
 export interface MaybeSemigroup<T extends Semigroup<T>>
   extends Semigroup<MaybeBox<T>> {
