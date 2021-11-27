@@ -1,2 +1,2 @@
-export * from "./either.ts";
-export * from "./either-functor.ts";
+export * from './either'
+export * from './either-functor'

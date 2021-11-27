@@ -1,74 +1,70 @@
-import { Rhum } from "rhum/mod.ts";
-import { $case, just, kindOf, nothing } from "ghc/base/maybe/maybe.ts";
+import tap from 'tap'
+import { $case, just, kindOf, nothing } from 'ghc/base/maybe/maybe'
 
-const { asserts: { assertEquals, assertThrows } } = Rhum;
+tap.test('Maybe', async (t) => {
+    t.test('Nothing constructor', async (t) => {
+        const value = nothing<number>()
+        const result = value()
 
-Rhum.testSuite("Maybe", () => {
-  Rhum.testCase("Nothing constructor", () => {
-    const value = nothing<number>();
-    const result = value();
+        t.equal(result, undefined)
+    })
 
-    assertEquals(result, undefined);
-  });
+    t.test('Nothing $case', async (t) => {
+        const value = nothing<string>()
 
-  Rhum.testCase("Nothing $case", () => {
-    const value = nothing<string>();
+        const result = $case({
+            nothing: () => 123,
+            just: (x) => Number(x),
+        })(value)
 
-    const result = $case({
-      nothing: () => 123,
-      just: (x) => Number(x),
-    })(value);
+        t.equal(result, 123)
+    })
 
-    assertEquals(result, 123);
-  });
+    t.test('Nothing $case missing pattern', async (t) => {
+        const value = nothing<string>()
 
-  Rhum.testCase("Nothing $case missing pattern", () => {
-    const value = nothing<string>();
+        const result = () =>
+            $case({
+                just: (x) => `${x} 123`,
+            })(value)
 
-    const result = () =>
-      $case({
-        just: (x) => `${x} 123`,
-      })(value);
+        t.throws(() => result())
+    })
 
-    assertThrows(() => result());
-  });
+    t.test('Just constructor', async (t) => {
+        const value = just<number>(123)
+        const result = value()
 
-  Rhum.testCase("Just constructor", () => {
-    const value = just<number>(123);
-    const result = value();
+        t.equal(result, 123)
+    })
 
-    assertEquals(result, 123);
-  });
+    t.test('Just $case', async (t) => {
+        const value = just<string>('123')
 
-  Rhum.testCase("Just $case", () => {
-    const value = just<string>("123");
+        const result = $case({
+            nothing: () => '0',
+            just: (x) => `${x} 123`,
+        })(value)
 
-    const result = $case({
-      nothing: () => "0",
-      just: (x) => `${x} 123`,
-    })(value);
+        t.equal(result, '123 123')
+    })
 
-    assertEquals(result, "123 123");
-  });
+    t.test('Just $case missing pattern', async (t) => {
+        const value = just<string>('123')
 
-  Rhum.testCase("Just $case missing pattern", () => {
-    const value = just<string>("123");
+        const result = () =>
+            $case({
+                nothing: () => '123',
+            })(value)
 
-    const result = () =>
-      $case({
-        nothing: () => "123",
-      })(value);
+        t.throws(() => result())
+    })
 
-    assertThrows(() => result());
-  });
+    t.test('kind', async (t) => {
+        const justValue = just<string>('123')
+        const nothingValue = nothing<string>()
 
-  Rhum.testCase("kind", () => {
-    const justValue = just<string>("123");
-    const nothingValue = nothing<string>();
-
-    assertEquals(kindOf(justValue), "*");
-    assertEquals(kindOf(nothingValue), "*");
-  });
-});
-
-Rhum.run();
+        t.equal(kindOf(justValue), '*')
+        t.equal(kindOf(nothingValue), '*')
+    })
+})

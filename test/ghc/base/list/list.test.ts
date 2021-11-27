@@ -1,215 +1,186 @@
-import { Rhum } from "rhum/mod.ts";
-import { compose, id } from "ghc/base/functions.ts";
-import {
-  $null,
-  concat,
-  cons,
-  head,
-  map,
-  nil,
-  tail,
-  toArray,
-} from "ghc/base/list/list.ts";
-import { $case, _ } from "ghc/base/list/patterns.ts";
+import tap from 'tap'
+import { compose, id } from 'ghc/base/functions'
+import { $null, concat, cons, head, map, nil, tail, toArray } from 'ghc/base/list/list'
+import { $case, _ } from 'ghc/base/list/patterns'
 
-const { asserts: { assertEquals, assert, assertThrows } } = Rhum;
+tap.test('List', async (t) => {
+    t.test('Nil constructor', async (t) => {
+        const value = nil<number>()
+        const result = value()
 
-Rhum.testSuite("List", () => {
-  Rhum.testCase("Nil constructor", () => {
-    const value = nil<number>();
-    const result = value();
+        t.same(result, [])
+        t.same(toArray(value), [])
+    })
 
-    assertEquals(result, []);
-    assertEquals(toArray(value), []);
-  });
+    t.test('Nil $null', async (t) => {
+        const value = nil<number>()
 
-  Rhum.testCase("Nil $null", () => {
-    const value = nil<number>();
+        t.ok($null(value))
+    })
 
-    assert($null(value));
-  });
+    t.test('Nil $case', async (t) => {
+        const value = nil<string>()
 
-  Rhum.testCase("Nil $case", () => {
-    const value = nil<string>();
+        const result1 = $case([[[], () => 123]])(value)
 
-    const result1 = $case([
-      [[], () => 123],
-    ])(value);
+        const result2 = $case([
+            [[], () => 123],
+            [[], () => 123],
+        ])(value)
 
-    const result2 = $case([
-      [[], () => 123],
-      [[], () => 123],
-    ])(value);
+        const result3 = $case([
+            [[_], id],
+            [[_, _], (_, __) => 1],
+            [[], () => 123],
+        ])(value)
 
-    const result3 = $case([
-      [[_], id],
-      [[_, _], (a, b) => 1],
-      [[], () => 123],
-    ])(value);
+        const result4 = $case([
+            [[_], id],
+            [[_, _], (_, __) => 1],
+        ])
 
-    const result4 = $case([
-      [[_], id],
-      [[_, _], (a, b) => 1],
-    ]);
+        const result5 = $case([])
 
-    const result5 = $case([]);
+        t.equal(result1, 123)
+        t.equal(result2, 123)
+        t.equal(result3, 123)
+        t.throws(() => result4(value))
+        t.throws(() => result5(value))
+    })
 
-    assertEquals(result1, 123);
-    assertEquals(result2, 123);
-    assertEquals(result3, 123);
-    assertThrows(() => result4(value));
-    assertThrows(() => result5(value));
-  });
+    t.test('Nil head', async (t) => {
+        const value = nil<number>()
 
-  Rhum.testCase("Nil head", () => {
-    const value = nil<number>();
+        t.throws(() => head(value))
+    })
 
-    assertThrows(() => head(value));
-  });
+    t.test('Nil tail', async (t) => {
+        const value = nil<number>()
 
-  Rhum.testCase("Nil tail", () => {
-    const value = nil<number>();
+        t.throws(() => tail(value))
+    })
 
-    assertThrows(() => tail(value));
-  });
+    t.test('Nil map ', async (t) => {
+        const value = nil<number>()
 
-  Rhum.testCase("Nil map ", () => {
-    const value = nil<number>();
+        const result = map((x) => x + 1, value)
 
-    const result = map((x) => x + 1, value);
+        t.same(toArray(result), [])
+    })
 
-    assertEquals(toArray(result), []);
-  });
+    t.test('Cons constructor', async (t) => {
+        const empty = nil<number>()
+        const result1 = cons(3)(cons(2)(cons(1)(empty)))
+        const result2 = compose(cons(3), cons(2), cons<number>(1))(empty)
 
-  Rhum.testCase("Cons constructor", () => {
-    const empty = nil<number>();
-    const result1 = cons(3)(cons(2)(cons(1)(empty)));
-    const result2 = compose(cons(3), cons(2), cons<number>(1))(empty);
+        t.same(toArray(result1), [3, 2, 1])
+        t.same(toArray(result2), [3, 2, 1])
+    })
 
-    assertEquals(toArray(result1), [3, 2, 1]);
-    assertEquals(toArray(result2), [3, 2, 1]);
-  });
+    t.test('Cons $case', async (t) => {
+        const empty = nil<number>()
+        const value1 = cons(1)(empty)
+        const value2 = cons(2)(cons(1)(empty))
+        const value3 = cons(3)(cons(2)(cons(1)(empty)))
 
-  Rhum.testCase("Cons $case", () => {
-    const empty = nil<number>();
-    const value1 = cons(1)(empty);
-    const value2 = cons(2)(cons(1)(empty));
-    const value3 = cons(3)(cons(2)(cons(1)(empty)));
+        const result1 = $case([
+            [[_, _], (a, b) => a + b],
+            [[_, _, _], (a, b, c) => a + b + c],
+            [[_], (a) => a + 10],
+        ])(value1)
 
-    const result1 = $case([
-      [[_, _], (a, b) => a + b],
-      [[_, _, _], (a, b, c) => a + b + c],
-      [[_], (a) => a + 10],
-    ])(value1);
+        const result2 = $case([
+            [[], () => {}],
+            [[_, _], (a, b) => a + b + 10],
+        ])(value2)
 
-    const result2 = $case([
-      [[], () => {}],
-      [[_, _], (a, b) => a + b + 10],
-    ])(value2);
+        const result3 = $case([
+            [[_, _, _], (a, b, c) => a + b + c],
+            [[_], (a) => a + 10],
+        ])(value3)
 
-    const result3 = $case([
-      [[_, _, _], (a, b, c) => a + b + c],
-      [[_], (a) => a + 10],
-    ])(value3);
+        t.equal(result1, 1 + 10)
+        t.equal(result2, 2 + 1 + 10)
+        t.equal(result3, 3 + 2 + 1)
+    })
 
-    assertEquals(result1, 1 + 10);
-    assertEquals(result2, 2 + 1 + 10);
-    assertEquals(result3, 3 + 2 + 1);
-  });
+    t.test('Cons $case rest', async (t) => {
+        const empty = nil<number>()
+        const value = compose(cons(4), cons(3), cons(2), cons(1))(empty)
 
-  Rhum.testCase("Cons $case rest", () => {
-    const empty = nil<number>();
-    const value = compose(cons(4), cons(3), cons(2), cons(1))(empty);
+        const result1 = $case([[[_], (a) => head(a)]])(value)
 
-    const result1 = $case([
-      [[_], (a) => head(a)],
-    ])(value);
+        const result2 = $case([[[_, _], (a, b) => `${a} ${head(b)}`]])(value)
 
-    const result2 = $case([
-      [[_, _], (a, b) => `${a} ${head(b)}`],
-    ])(value);
+        const result3 = $case([[[_, _, _], (a, b, c) => `${a} ${b} ${head(c)}`]])(value)
 
-    const result3 = $case([
-      [[_, _, _], (a, b, c) => `${a} ${b} ${head(c)}`],
-    ])(value);
+        const result4 = $case([[[_, _, _, _], (a, b, c, d) => `${a} ${b} ${c} ${d}`]])(value)
 
-    const result4 = $case([
-      [[_, _, _, _], (a, b, c, d) => `${a} ${b} ${c} ${d}`],
-    ])(value);
+        const result5 = $case([
+            [[], (a) => a],
+            [[_, _, _], (a, b) => `${a} - ${b}`],
+        ])(value)
 
-    const result5 = $case([
-      [[], (a) => a],
-      [[_, _, _], (a, b) => `${a} - ${b}`],
-    ])(value);
+        t.equal(result1, 4)
+        t.equal(result2, '4 3')
+        t.equal(result3, '4 3 2')
+        t.equal(result4, '4 3 2 1')
+        t.equal(result5, '4 - 3')
+    })
 
-    assertEquals(result1, 4);
-    assertEquals(result2, "4 3");
-    assertEquals(result3, "4 3 2");
-    assertEquals(result4, "4 3 2 1");
-    assertEquals(result5, "4 - 3");
-  });
+    t.test('Cons $case rest exact', async (t) => {
+        const empty = nil<number>()
+        const value1 = cons(1)(empty)
+        const value2 = compose(cons(1), cons(2))(empty)
+        const value3 = compose(cons(1), cons(2), cons(3))(empty)
 
-  Rhum.testCase("Cons $case rest exact", () => {
-    const empty = nil<number>();
-    const value1 = cons(1)(empty);
-    const value2 = compose(cons(1), cons(2))(empty);
-    const value3 = compose(cons(1), cons(2), cons(3))(empty);
+        const result1 = $case([[[_], (a, b) => ({ a, b: $null(b) })]])(value1)
 
-    const result1 = $case([
-      [[_], (a, b) => ({ a, b: $null(b) })],
-    ])(value1);
+        const result2 = $case([[[_, _], (a, b, c) => ({ a, b, c: $null(c) })]])(value2)
 
-    const result2 = $case([
-      [[_, _], (a, b, c) => ({ a, b, c: $null(c) })],
-    ])(value2);
+        const result3 = $case([[[_, _, _], (a, b, c, d) => ({ a, b, c, d: $null(d) })]])(value3)
 
-    const result3 = $case([
-      [[_, _, _], (a, b, c, d) => ({ a, b, c, d: $null(d) })],
-    ])(value3);
+        t.same(result1, { a: 1, b: true })
+        t.same(result2, { a: 1, b: 2, c: true })
+        t.same(result3, { a: 1, b: 2, c: 3, d: true })
+    })
 
-    assertEquals(result1, { a: 1, b: true });
-    assertEquals(result2, { a: 1, b: 2, c: true });
-    assertEquals(result3, { a: 1, b: 2, c: 3, d: true });
-  });
+    t.test('Cons head', async (t) => {
+        const value = compose(cons(2), cons(1))(nil<number>())
+        t.equal(head(value), 2)
+    })
 
-  Rhum.testCase("Cons head", () => {
-    const value = compose(cons(2), cons(1))(nil<number>());
-    assertEquals(head(value), 2);
-  });
+    t.test('Cons tail', async (t) => {
+        const value1 = compose(cons(2), cons(1))(nil<number>())
+        t.same(toArray(tail(value1)), [1])
+        t.same(toArray(tail(tail(value1))), [])
+        t.ok($null(tail(tail(value1))))
+    })
 
-  Rhum.testCase("Cons tail", () => {
-    const value1 = compose(cons(2), cons(1))(nil<number>());
-    assertEquals(toArray(tail(value1)), [1]);
-    assertEquals(toArray(tail(tail(value1))), []);
-    assert($null(tail(tail(value1))));
-  });
+    t.test('Cons map ', async (t) => {
+        const value = compose(cons(3), cons(2), cons(1))(nil<number>())
 
-  Rhum.testCase("Cons map ", () => {
-    const value = compose(cons(3), cons(2), cons(1))(nil<number>());
+        const result = map((x) => x + 1, value)
 
-    const result = map((x) => x + 1, value);
+        t.same(toArray(result), [4, 3, 2])
+    })
 
-    assertEquals(toArray(result), [4, 3, 2]);
-  });
+    t.test('concat ', async (t) => {
+        const nill1 = nil<number>()
+        const nill2 = nil<number>()
+        const cons1 = compose(cons(1))(nil<number>())
+        const cons2 = compose(cons(3), cons(2), cons(1))(nil<number>())
 
-  Rhum.testCase("concat ", () => {
-    const nill1 = nil<number>();
-    const nill2 = nil<number>();
-    const cons1 = compose(cons(1))(nil<number>());
-    const cons2 = compose(cons(3), cons(2), cons(1))(nil<number>());
+        const result1 = concat(nill1, nill2)
+        const result2 = concat(nill1, cons1)
+        const result3 = concat(cons1, nill1)
+        const result4 = concat(cons1, cons2)
+        const result5 = concat(cons2, cons1)
 
-    const result1 = concat(nill1, nill2);
-    const result2 = concat(nill1, cons1);
-    const result3 = concat(cons1, nill1);
-    const result4 = concat(cons1, cons2);
-    const result5 = concat(cons2, cons1);
-
-    assert($null(result1));
-    assertEquals(toArray(result2), [1]);
-    assertEquals(toArray(result3), [1]);
-    assertEquals(toArray(result4), [1, 3, 2, 1]);
-    assertEquals(toArray(result5), [3, 2, 1, 1]);
-  });
-});
-
-Rhum.run();
+        t.ok($null(result1))
+        t.same(toArray(result2), [1])
+        t.same(toArray(result3), [1])
+        t.same(toArray(result4), [1, 3, 2, 1])
+        t.same(toArray(result5), [3, 2, 1, 1])
+    })
+})

@@ -1,91 +1,81 @@
-import { Rhum } from "rhum/mod.ts";
-import { Func } from "ghc/base/functions.ts";
-import { $case, kindOf, left, right } from "data/either/either.ts";
+import tap from 'tap'
+import { Func } from 'ghc/base/functions'
+import { $case, kindOf, left, right } from 'data/either/either'
 
-const { asserts: { assertEquals, assertThrows } } = Rhum;
+tap.test('Either', async (t) => {
+    t.test('Left constructor', async (t) => {
+        const boxedValue = new Error()
 
-Rhum.testSuite("Either", () => {
-  Rhum.testCase("Left constructor", () => {
-    const boxedValue = new Error();
+        const value = left<Error, string>(boxedValue)
+        const result = value()
 
-    const value = left<Error, string>(boxedValue);
-    const result = value();
+        t.equal(result, boxedValue)
+    })
 
-    assertEquals(result, boxedValue);
-  });
+    t.test('Left $case', async (t) => {
+        const boxedValue = new Error()
 
-  Rhum.testCase("Left $case", () => {
-    const boxedValue = new Error();
+        const value = left<Error, string>(boxedValue)
 
-    const value = left<Error, string>(boxedValue);
+        const result = $case({
+            left: (x) => x,
+            right: (_: string) => {},
+        })(value)
 
-    const result = $case({
-      left: (x) => x,
-      right: (_: string) => {},
-    })(value);
+        t.equal(result, boxedValue)
+    })
 
-    assertEquals(result, boxedValue);
-  });
+    t.test('Left $case missing pattern', async (t) => {
+        const boxedValue = new Error()
+        const value = left<Error, string>(boxedValue)
 
-  Rhum.testCase("Left $case missing pattern", () => {
-    const boxedValue = new Error();
-    const value = left<Error, string>(boxedValue);
+        const result = () =>
+            $case({
+                right: (_: string) => {},
+            })(value)
 
-    const result = () =>
-      $case({
-        right: (_: string) => {},
-      })(value);
+        t.throws(() => result())
+    })
 
-    assertThrows(() => result());
-  });
+    t.test('Right constructor', async (t) => {
+        const boxedValue = 123
 
-  Rhum.testCase("Right constructor", () => {
-    const boxedValue = 123;
+        const value = right<Error, number>(boxedValue)
+        const result = value()
 
-    const value = right<Error, number>(boxedValue);
-    const result = value();
+        t.equal(result, boxedValue)
+    })
 
-    assertEquals(result, boxedValue);
-  });
+    t.test('Right $case', async (t) => {
+        const boxedValue = 123
 
-  Rhum.testCase("Right $case", () => {
-    const boxedValue = 123;
+        const value = right<Error, number>(boxedValue)
 
-    const value = right<Error, number>(boxedValue);
+        const result = $case({
+            left: () => 0,
+            right: (x: number) => x + 1,
+        })(value)
 
-    const result = $case({
-      left: () => 0,
-      right: (x: number) => x + 1,
-    })(value);
+        t.equal(result, boxedValue + 1)
+    })
 
-    assertEquals(result, boxedValue + 1);
-  });
+    t.test('Right $case missing pattern', async (t) => {
+        const boxedValue = 123
+        const value = right<string, number>(boxedValue)
 
-  Rhum.testCase("Right $case missing pattern", () => {
-    const boxedValue = 123;
-    const value = right<string, number>(boxedValue);
+        const result = () =>
+            $case({
+                left: (x: string) => Number(x),
+            })(value)
 
-    const result = () =>
-      $case({
-        left: (x: string) => Number(x),
-      })(value);
+        t.throws(() => result())
+    })
 
-    assertThrows(() => result());
-  });
+    t.test('kind', async (t) => {
+        const leftValue = left<Error, string>(new Error())
+        const rightValue = right<Error, string>('123')
 
-  Rhum.testCase("kind", () => {
-    const leftValue = left<Error, string>(new Error());
-    const rightValue = right<Error, string>("123");
-
-    assertEquals(
-      ((kindOf<Error, string>(leftValue) as Func)("*") as Func)("*"),
-      "*",
-    );
-    assertEquals(
-      ((kindOf<Error, string>(rightValue) as Func)("*") as Func)("*"),
-      "*",
-    );
-  });
-});
-
-Rhum.run();
+        t.equal(((kindOf<Error, string>(leftValue) as Func)('*') as Func)('*'), '*')
+        t.equal(((kindOf<Error, string>(rightValue) as Func)('*') as Func)('*'), '*')
+    })
+})
