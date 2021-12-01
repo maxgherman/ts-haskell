@@ -1,9 +1,12 @@
+// instance (Semigroup a, Semigroup b) => Semigroup (a, b) -- Defined in ‘GHC.Base’
+
 import { MinBox0 } from 'data/kind'
 import { extensions, Semigroup, semigroup as createSemigroup, SemigroupBase } from 'ghc/base/semigroup'
 import { fst, snd, tuple2, Tuple2Box } from './tuple'
 import { NonEmpty } from 'ghc/base/non-empty/list'
 
 export type TupleMinBox<T1, T2> = Tuple2Box<MinBox0<T1>, MinBox0<T2>>
+
 export interface Tuple2Semigroup<T1 extends Semigroup<T1>, T2 extends Semigroup<T2>>
     extends Semigroup<TupleMinBox<T1, T2>> {
     '<>'(a: TupleMinBox<T1, T2>, b: TupleMinBox<T1, T2>): TupleMinBox<T1, T2>

@@ -1,3 +1,5 @@
+// instance Semigroup a => Semigroup (Maybe a) -- Defined in ‘GHC.Base’
+
 import { MinBox0 } from 'data/kind'
 import { extensions, Semigroup, semigroup as createSemigroup, SemigroupBase } from 'ghc/base/semigroup'
 import { NonEmpty } from 'ghc/base/non-empty/list'
