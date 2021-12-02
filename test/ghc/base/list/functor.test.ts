@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
 import { cons, head, ListBox, nil, tail, toArray } from 'ghc/base/list/list'
-import { functor } from 'ghc/base/list/list-functor'
+import { functor } from 'ghc/base/list/functor'
 
 const empty = nil<number>()
 const list3 = cons(3)(nil())

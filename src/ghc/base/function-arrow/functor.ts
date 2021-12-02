@@ -1,5 +1,5 @@
 import { FMap, Functor, functor as createFunctor } from 'ghc/base/functor'
-import { FunctionArrowBox, withKind } from 'ghc/prim/function-arrow/function-arrow'
+import { FunctionArrowBox, withKind } from 'ghc/prim/function-arrow'
 
 export interface FunctionArrowFunctor<T> extends Functor {
     fmap<A, B>(f: (a: A) => B, fa: FunctionArrowBox<T, A>): FunctionArrowBox<T, B>

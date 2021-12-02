@@ -1,6 +1,6 @@
 import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
-import { semigroup as createSemigroup } from 'data/either/either-semigroup'
+import { semigroup as createSemigroup } from 'data/either/semigroup'
 import { $case, left, right } from 'data/either/either'
 import { formList } from 'ghc/base/non-empty/list'
 import { cons, nil } from 'ghc/base/list/list'

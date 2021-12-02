@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose, Func } from 'ghc/base/functions'
 import { $null, cons, head as listHead, List, nil, tail as listTail, toArray } from 'ghc/base/list/list'
-import { $case, _, formList, head, map, NonEmpty, nonEmpty, tail, toList, NonEmptyBox } from 'ghc/base/non-empty/list'
+import { $case, _, formList, head, map, NonEmpty, nonEmpty, tail, toList } from 'ghc/base/non-empty/list'
 
 tap.test('NonEmpty', async (t) => {
     t.test('nonEmpty', async (t) => {

@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
-import { functor as createFunctor } from 'ghc/base/function-arrow/function-arrow-functor'
-import { FunctionArrowBox, withKind } from 'ghc/prim/function-arrow/function-arrow'
+import { functor as createFunctor } from 'ghc/base/function-arrow/functor'
+import { FunctionArrowBox, withKind } from 'ghc/prim/function-arrow'
 
 const functor = createFunctor<number>()
 const add1Arrow = withKind((x: number) => x.toString() + '1')

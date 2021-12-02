@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
 import { $case, EitherBox, left, right } from 'data/either/either'
-import { functor as eitherF } from 'data/either/either-functor'
+import { functor as eitherF } from 'data/either/functor'
 
 const functor = eitherF<Error>()
 const leftValue = <TL, TR>(x: EitherBox<TL, TR>) => $case<TL, TR, TL>({ left: id })(x)

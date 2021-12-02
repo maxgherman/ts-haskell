@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose } from 'ghc/base/functions'
 import { cons, nil, $null, toArray } from 'ghc/base/list/list'
-import { monoid as createMonoid } from 'ghc/base/list/list-monoid'
+import { monoid as createMonoid } from 'ghc/base/list/monoid'
 
 const monoid = createMonoid<string>()
 

@@ -1,6 +1,6 @@
 import tap from 'tap'
 import { compose } from 'ghc/base/functions'
-import { semigroup as createSemigroup } from 'ghc/base/non-empty/list-semigroup'
+import { semigroup as createSemigroup } from 'ghc/base/non-empty/semigroup'
 import { cons, formList, NonEmptyBox, toList } from 'ghc/base/non-empty/list'
 import { cons as listCons, ListBox, nil, toArray } from 'ghc/base/list/list'
 

@@ -1,8 +1,8 @@
 import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
-import { semigroup as createSemigroup } from 'ghc/base/maybe/maybe-semigroup'
+import { semigroup as createSemigroup } from 'ghc/base/maybe/semigroup'
 import { $case, just, nothing } from 'ghc/base/maybe/maybe'
-import { ListSemigroup, semigroup as createListSemigroup } from 'ghc/base/list/list-semigroup'
+import { ListSemigroup, semigroup as createListSemigroup } from 'ghc/base/list/semigroup'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
 import { formList } from 'ghc/base/non-empty/list'
 

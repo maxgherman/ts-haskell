@@ -1,7 +1,7 @@
 // instance Monoid [a] -- Defined in ‘GHC.Base’
 
 import { Monoid, monoid as createMonoid, MonoidBase } from 'ghc/base/monoid'
-import { semigroup } from './list-semigroup'
+import { semigroup } from './semigroup'
 import { List, nil, ListBox } from 'ghc/base/list/list'
 
 export interface MonoidList<T> extends Monoid<ListBox<T>> {

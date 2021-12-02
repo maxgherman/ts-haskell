@@ -2,7 +2,7 @@ import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
 import { cons, nil, toArray } from 'ghc/base/list/list'
 import { formList, head, NonEmptyBox, tail } from 'ghc/base/non-empty/list'
-import { functor } from 'ghc/base/non-empty/list-functor'
+import { functor } from 'ghc/base/non-empty/functor'
 
 const nonEmpty3: NonEmptyBox<number> = compose(formList, cons(3))(nil<number>())
 

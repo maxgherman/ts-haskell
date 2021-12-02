@@ -1,7 +1,7 @@
 import tap from 'tap'
-import { semigroup as createSemigroup } from 'ghc/base/function-arrow/function-arrow-semigroup'
-import { FunctionArrowBox, withKind } from 'ghc/prim/function-arrow/function-arrow'
-import { semigroup as createListSemigroup, ListSemigroup } from 'ghc/base/list/list-semigroup'
+import { semigroup as createSemigroup } from 'ghc/base/function-arrow/semigroup'
+import { FunctionArrowBox, withKind } from 'ghc/prim/function-arrow'
+import { semigroup as createListSemigroup, ListSemigroup } from 'ghc/base/list/semigroup'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
 import { formList } from 'ghc/base/non-empty/list'
 

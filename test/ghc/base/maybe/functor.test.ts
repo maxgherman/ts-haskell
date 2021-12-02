@@ -1,6 +1,6 @@
 import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
-import { functor } from 'ghc/base/maybe/maybe-functor'
+import { functor } from 'ghc/base/maybe/functor'
 import { $case, just, Maybe, MaybeBox, nothing } from 'ghc/base/maybe/maybe'
 
 type FakeNothing = { isNothing: true }
