@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint './src/**/*.ts' --max-warnings=0",
-    "test": "tap --node-arg=\"-r\"  --node-arg=\"tsconfig-paths/register\" --ts"
+    "test": "tap --node-arg=\"-r\"  --node-arg=\"tsconfig-paths/register\" --ts",
+    "test:ci": "npm test -- --no-check-coverage"
   },
   "repository": {
     "type": "git",
