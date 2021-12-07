@@ -18,7 +18,7 @@ const base = <T>(baseSemigroup: Semigroup<T>): MonoidBase<MaybeBox<T>> => ({
     mempty: nothing(),
 })
 
-export const monoid = <T extends Semigroup<T>>(baseSemigroup: T): MaybeMonoid<T> => {
+export const monoid = <T>(baseSemigroup: Semigroup<T>): MaybeMonoid<T> => {
     const baseMonoid = base(baseSemigroup)
     return createMonoid(baseMonoid) as MaybeMonoid<T>
 }

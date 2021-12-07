@@ -13,10 +13,10 @@ export interface FunctionArrowSemigroup<A, B> extends Semigroup<FunctionArrowMin
     stimes(b: number, a: FunctionArrowMinBox<A, B>): FunctionArrowMinBox<A, B>
 }
 
-const base = <A, B extends Semigroup<B>>(innerSemigroup: B): SemigroupBase<FunctionArrowMinBox<A, B>> => ({
+const base = <A, B>(innerSemigroup: Semigroup<B>): SemigroupBase<FunctionArrowMinBox<A, B>> => ({
     '<>': (a: FunctionArrowMinBox<A, B>, b: FunctionArrowMinBox<A, B>): FunctionArrowMinBox<A, B> =>
         ((x: A) => innerSemigroup['<>'](a(x), b(x))) as FunctionArrowMinBox<A, B>,
 })
 
-export const semigroup = <A, B extends Semigroup<B>>(innerSemigroup: B) =>
+export const semigroup = <A, B>(innerSemigroup: Semigroup<B>) =>
     createSemigroup(base<A, B>(innerSemigroup)) as FunctionArrowSemigroup<A, B>

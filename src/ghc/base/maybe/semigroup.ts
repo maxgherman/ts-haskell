@@ -38,8 +38,8 @@ const stimesMaybe =
         })(a)
     }
 
-export const semigroup = <T extends Semigroup<T>>(innerSemigroup: T) => {
-    const _base = base<T>(innerSemigroup)
+export const semigroup = <T>(innerSemigroup: Semigroup<T>) => {
+    const _base = base(innerSemigroup)
     const baseExtensions = extensions(_base)
 
     const overrides = {

@@ -4,7 +4,7 @@ import { Monoid, monoid as createMonoid, MonoidBase } from 'ghc/base/monoid'
 import { semigroup } from './semigroup'
 import { List, nil, ListBox } from 'ghc/base/list/list'
 
-export interface MonoidList<T> extends Monoid<ListBox<T>> {
+export interface ListMonoid<T> extends Monoid<ListBox<T>> {
     readonly mempty: ListBox<T>
     '<>'(a: ListBox<T>, b: ListBox<T>): ListBox<T>
     mappend(a: ListBox<T>, b: ListBox<T>): ListBox<T>
@@ -16,6 +16,6 @@ const base = <T>(): MonoidBase<ListBox<T>> => ({
     mempty: nil(),
 })
 
-export const monoid = <T>(): MonoidList<T> => {
-    return createMonoid(base<T>()) as MonoidList<T>
+export const monoid = <T>(): ListMonoid<T> => {
+    return createMonoid(base<T>()) as ListMonoid<T>
 }

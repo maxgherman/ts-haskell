@@ -1,11 +1,4 @@
 {
-    // "deno.enable": true,
-    // "deno.lint": true,
-    // "deno.codeLens.implementations": true,
-    // "editor.formatOnSave": true,
-    // "deno.unstable": true,
-    // "deno.importMap": "./importmap.json",
-
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
