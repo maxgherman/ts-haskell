@@ -7,6 +7,7 @@
     "build": "tsc",
     "lint": "eslint './src/**/*.ts' --max-warnings=0",
     "test": "tap --node-arg=\"-r\"  --node-arg=\"tsconfig-paths/register\" --ts",
+    "test:w": "npm test -- --watch --no-check-coverage --no-coverage-report",
     "test:ci": "npm test -- --no-check-coverage"
   },
   "repository": {

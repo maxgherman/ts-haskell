@@ -1,11 +1,11 @@
 import tap from 'tap'
 import { compose } from 'ghc/base/functions'
-import { cons, nil, $null, toArray, List, ListBox } from 'ghc/base/list/list'
+import { cons, nil, toArray, List, ListBox } from 'ghc/base/list/list'
 import { monoid as createMonoid } from 'ghc/base/function-arrow/monoid'
 import type { FunctionArrowMinBox } from 'ghc/base/function-arrow/semigroup'
-import { monoid as innerMonoid, MaybeMonoid } from 'ghc/base/maybe/monoid'
-import { $case, Maybe, MaybeBox, just } from 'ghc/base/maybe/maybe'
-import { semigroup, ListSemigroup } from 'ghc/base/list/semigroup'
+import { monoid as innerMonoid } from 'ghc/base/maybe/monoid'
+import { $case, MaybeBox, just } from 'ghc/base/maybe/maybe'
+import { semigroup } from 'ghc/base/list/semigroup'
 import { withKind } from 'ghc/prim/function-arrow'
 
 const baseSemigroup = semigroup<number>()
