@@ -1,4 +1,4 @@
-import { FMap, Functor, functor as createFunctor } from 'ghc/base/functor'
+import { FunctorBase, Functor, functor as createFunctor } from 'ghc/base/functor'
 import { map, NonEmptyBox } from './list'
 
 export interface NonEmptyFunctor extends Functor {
@@ -15,7 +15,7 @@ export interface NonEmptyFunctor extends Functor {
     void<A>(fa: NonEmptyBox<A>): NonEmptyBox<[]>
 }
 
-const fmap: FMap = {
+const fmap: FunctorBase = {
     // fmap :: NonEmptyBox f => (a -> b) ->  f a -> f b
     fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: NonEmptyBox<A>) => map(f, fa),
 }

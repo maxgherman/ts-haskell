@@ -8,7 +8,7 @@ export type Kind1 =
 
 export type Kind2 =
     | ((_: Type) => Type) // ex. []
-    | ((_: Type) => (_: Type) => Constraint) // ex. Functor
+    | ((_: (_: '*') => '*') => Constraint) // ex. Functor
 
 export type Kind3 = (_: Type) => (_: Type) => Type // ex. (,), Either
 

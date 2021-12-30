@@ -1,5 +1,5 @@
 import { $case, just, MaybeBox, nothing } from './maybe'
-import { FMap, Functor, functor as createFunctor } from 'ghc/base/functor'
+import { FunctorBase, Functor, functor as createFunctor } from 'ghc/base/functor'
 
 export interface MaybeFunctor extends Functor {
     fmap<A, B>(f: (a: A) => B, fa: MaybeBox<A>): MaybeBox<B>
@@ -15,7 +15,7 @@ export interface MaybeFunctor extends Functor {
     void<A>(fa: MaybeBox<A>): MaybeBox<[]>
 }
 
-const fmap: FMap = {
+const fmap: FunctorBase = {
     // fmap :: MaybeBox f => (a -> b) ->  f a -> f b
     fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: MaybeBox<A>) =>
         $case<A, MaybeBox<B>>({

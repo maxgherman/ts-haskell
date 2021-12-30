@@ -1,6 +1,6 @@
 import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
-import { $null, concat, cons, head, map, nil, tail, toArray } from 'ghc/base/list/list'
+import { $null, concat, cons, head, map, nil, tail, take, repeat, toArray } from 'ghc/base/list/list'
 import { $case, _ } from 'ghc/base/list/patterns'
 
 tap.test('List', async (t) => {
@@ -182,5 +182,21 @@ tap.test('List', async (t) => {
         t.same(toArray(result3), [1])
         t.same(toArray(result4), [1, 3, 2, 1])
         t.same(toArray(result5), [3, 2, 1, 1])
+    })
+
+    t.test('take', async (t) => {
+        const nill = nil<number>()
+        const cons1 = compose(cons(1))(nil<number>())
+        const cons2 = compose(cons(3), cons(2), cons(1))(nil<number>())
+
+        t.same(toArray(take(3, nill)), [])
+        t.same(toArray(take(5, cons1)), [1])
+        t.same(toArray(take(3, cons2)), [3, 2, 1])
+    })
+
+    t.test('repeat', async (t) => {
+        const list = repeat(3)
+
+        t.same(toArray(take(5, list)), [3, 3, 3, 3, 3])
     })
 })

@@ -1,4 +1,4 @@
-import { compose, Slack } from 'ghc/base/functions'
+import { Slack } from 'ghc/base/functions'
 import { Box1, Kind, Type } from 'data/kind'
 
 type Nil = []
@@ -80,5 +80,27 @@ export const concat = <T>(list1: List<T>, list2: List<T>): ListBox<T> => {
         return list2 as ListBox<T>
     }
 
-    return compose(cons(head(list1) as NonNullable<T>), (x: List<T>) => concat(tail(list1), x))(list2)
+    const newHead = head(list1) as NonNullable<T>
+    const newTail = concat(tail(list1), list2)
+    return cons(newHead)(newTail)
+}
+
+export const take = <T>(n: number, list: List<T>): List<T> => {
+    if (n <= 0) {
+        return nil<T>()
+    }
+
+    if ($null(list)) {
+        return nil<T>()
+    }
+
+    const next = take(n - 1, tail(list))
+    return cons(head(list) as NonNullable<T>)(next)
+}
+
+export const repeat = <T>(a: NonNullable<T>): List<T> => {
+    return () => ({
+        head: a,
+        tail: repeat(a),
+    })
 }

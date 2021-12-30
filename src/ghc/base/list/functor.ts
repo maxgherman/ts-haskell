@@ -1,4 +1,4 @@
-import { FMap, Functor, functor as createFunctor } from 'ghc/base/functor'
+import { FunctorBase, Functor, functor as createFunctor } from 'ghc/base/functor'
 import { ListBox, map } from './list'
 
 export interface ListFunctor extends Functor {
@@ -15,7 +15,7 @@ export interface ListFunctor extends Functor {
     void<A>(fa: ListBox<A>): ListBox<[]>
 }
 
-const fmap: FMap = {
+const fmap: FunctorBase = {
     // fmap :: ListBox f => (a -> b) ->  f a -> f b
     fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: ListBox<A>) => map(f, fa),
 }

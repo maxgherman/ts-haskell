@@ -1,5 +1,5 @@
 import { $case, EitherBox, left, right } from './either'
-import { FMap, Functor, functor as createFunctor } from 'ghc/base/functor'
+import { FunctorBase, Functor, functor as createFunctor } from 'ghc/base/functor'
 
 export interface EitherFunctor<T> extends Functor {
     fmap<A, B>(f: (a: A) => B, fa: EitherBox<T, A>): EitherBox<T, B>
@@ -15,7 +15,7 @@ export interface EitherFunctor<T> extends Functor {
     void<A>(fa: EitherBox<T, A>): EitherBox<T, []>
 }
 
-const fmap = <T>(): FMap => ({
+const fmap = <T>(): FunctorBase => ({
     // fmap :: EitherBox f => (a -> b) ->  f a -> f b
     fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: EitherBox<T, A>) => {
         return $case({

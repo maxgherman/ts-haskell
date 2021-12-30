@@ -1,5 +1,5 @@
 import { PromiseBox } from './promise'
-import { FMap, Functor, functor as createFunctor } from 'ghc/base/functor'
+import { FunctorBase, Functor, functor as createFunctor } from 'ghc/base/functor'
 
 export interface MaybeFunctor extends Functor {
     fmap<A, B>(f: (a: A) => B, fa: PromiseBox<A>): PromiseBox<B>
@@ -15,7 +15,7 @@ export interface MaybeFunctor extends Functor {
     void<A>(fa: PromiseBox<A>): PromiseBox<[]>
 }
 
-const fmap: FMap = {
+const fmap: FunctorBase = {
     // fmap :: PromiseBox f => (a -> b) ->  f a -> f b
     fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: PromiseBox<A>): PromiseBox<B> => fa.then(f) as PromiseBox<B>,
 }

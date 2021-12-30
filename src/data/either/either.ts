@@ -21,7 +21,7 @@ export const kindOf =
     <TL, TR>(_: Either<TL, TR>): Kind =>
     (_: '*') =>
     (_: '*') =>
-        '*'
+        '*' as Type
 
 const createResult = <T>(value: NonNullable<T>, from: 'Left' | 'Right') => {
     const result = () => value

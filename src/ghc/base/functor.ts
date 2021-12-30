@@ -1,12 +1,12 @@
-import { MinBox1 } from 'data/kind'
+import { MinBox1, Kind, Constraint } from 'data/kind'
 import { $const, flip } from 'ghc/base/functions'
 
-export type FMap = {
+export type FunctorBase = {
     // fmap :: Functor f => (a -> b) -> f a -> f b
     fmap<A, B>(f: (a: A) => B, fa: MinBox1<A>): MinBox1<B>
 }
 
-export type Extensions = {
+export type Functor = FunctorBase & {
     // <$> :: Functor f => (a -> b) -> f a -> f b
     '<$>'<A, B>(f: (a: A) => B, fa: MinBox1<A>): MinBox1<B>
 
@@ -21,11 +21,18 @@ export type Extensions = {
 
     // void :: Functor f => f a -> f ()
     void<A>(fa: MinBox1<A>): MinBox1<[]>
+
+    kind: (_: (_: '*') => '*') => Constraint
 }
 
-export type Functor = FMap & Extensions
+type Extensions = Omit<Functor, 'fmap' | 'kind'>
 
-const extensions: (_: FMap) => Extensions = (base: FMap) => {
+export const kindOf =
+    (_: Functor): Kind =>
+    (_: (_: '*') => '*') =>
+        'Constraint' as Constraint
+
+const extensions: (_: FunctorBase) => Extensions = (base: FunctorBase) => {
     const fmapDotConst = (x: unknown, y: MinBox1<unknown>) => base.fmap($const(x), y)
 
     return {
@@ -46,11 +53,14 @@ const extensions: (_: FMap) => Extensions = (base: FMap) => {
     }
 }
 
-export const functor = (base: FMap): Functor => {
+export const functor = (base: FunctorBase): Functor => {
     const extended = extensions(base)
 
-    return {
+    const result: Functor = {
         ...base,
         ...extended,
+        kind: kindOf(null as unknown as Functor) as (_: (_: '*') => '*') => 'Constraint',
     }
+
+    return result
 }

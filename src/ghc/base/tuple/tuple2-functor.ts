@@ -1,5 +1,5 @@
 import { compose } from 'ghc/base/functions'
-import { FMap, Functor, functor as createFunctor } from 'ghc/base/functor'
+import { FunctorBase, Functor, functor as createFunctor } from 'ghc/base/functor'
 import { curry, fst, snd, tuple2, Tuple2Box } from './tuple'
 
 export interface Tuple2Functor<T> extends Functor {
@@ -16,7 +16,7 @@ export interface Tuple2Functor<T> extends Functor {
     void<A>(fa: Tuple2Box<T, A>): Tuple2Box<T, []>
 }
 
-const fmap = <T>(): FMap => ({
+const fmap = <T>(): FunctorBase => ({
     // fmap :: Tuple2Box f => (a -> b) ->  f a -> f b
     fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: Tuple2Box<T, A>): Tuple2Box<T, B> =>
         compose<Tuple2Box<T, A>, A, B, Tuple2Box<T, B>>(curry(tuple2)(fst(fa)), f, snd)(fa),
