@@ -17,6 +17,14 @@ export const flip =
     (y: B, x: A) =>
         f(x, y)
 
+export type Dot<A, B, C> = (f: (_: B) => C) => (g: (_: A) => B) => (a: A) => C
+
+export const dot =
+    <B, C>(f: (_: B) => C) =>
+    <A>(g: (_: A) => B) =>
+    (a: A): C =>
+        f(g(a))
+
 export function compose<T0, T1>(f0: (x: T0) => T1): (x: T0) => T1
 
 export function compose<T0 extends unknown[], T1>(f0: (...args: T0) => T1): (...args: T0) => T1

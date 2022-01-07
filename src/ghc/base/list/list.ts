@@ -61,18 +61,14 @@ export const map = <T1, T2>(f: (_: T1) => NonNullable<T2>, list: List<T1>): List
         return nil()
     }
 
-    const value = f(head(list))
-    const rest = map(f, tail(list))
+    const result = () => ({
+        head: f(head(list)),
+        tail: map(f, tail(list)),
+    })
 
-    return cons(value)(rest)
-}
+    result.kind = (_: '*') => '*' as Type
 
-export const toArray = <T>(list: List<T> | ListBox<T>): T[] => {
-    if ($null(list)) {
-        return []
-    }
-
-    return [head(list)].concat(toArray(tail(list)))
+    return result
 }
 
 export const concat = <T>(list1: List<T>, list2: List<T>): ListBox<T> => {
@@ -80,12 +76,17 @@ export const concat = <T>(list1: List<T>, list2: List<T>): ListBox<T> => {
         return list2 as ListBox<T>
     }
 
-    const newHead = head(list1) as NonNullable<T>
-    const newTail = concat(tail(list1), list2)
-    return cons(newHead)(newTail)
+    const result = () => ({
+        head: head(list1) as NonNullable<T>,
+        tail: concat(tail(list1), list2),
+    })
+
+    result.kind = (_: '*') => '*' as Type
+
+    return result
 }
 
-export const take = <T>(n: number, list: List<T>): List<T> => {
+export const take = <T>(n: number, list: List<T>): ListBox<T> => {
     if (n <= 0) {
         return nil<T>()
     }
@@ -98,9 +99,21 @@ export const take = <T>(n: number, list: List<T>): List<T> => {
     return cons(head(list) as NonNullable<T>)(next)
 }
 
-export const repeat = <T>(a: NonNullable<T>): List<T> => {
-    return () => ({
+export const repeat = <T>(a: NonNullable<T>): ListBox<T> => {
+    const result = () => ({
         head: a,
         tail: repeat(a),
     })
+
+    result.kind = (_: '*') => '*' as Type
+
+    return result
+}
+
+export const toArray = <T>(list: List<T> | ListBox<T>): T[] => {
+    if ($null(list)) {
+        return []
+    }
+
+    return [head(list)].concat(toArray(tail(list)))
 }

@@ -1,5 +1,8 @@
+// instance Applicative [] -- Defined in ‘GHC.Base’
+
 import { applicative as createApplicative, Applicative, BaseImplementation } from 'ghc/base/applicative'
 import { ListBox, cons, nil } from 'ghc/base/list/list'
+import { comp } from 'ghc/base/list/comprehension'
 import { functor } from 'ghc/base/list/functor'
 import type { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
 
@@ -29,10 +32,21 @@ export interface ListApplicative extends Applicative {
     void<A>(fa: ListBox<A>): ListBox<[]>
 }
 
-// const baseImplementation: BaseImplementation = {
-//     // pure x = [x]
-//     pure: <A>(a: NonNullable<A>): ListBox<A> => cons(a)(nil()),
+const baseImplementation: BaseImplementation = {
+    // pure x = [x]
+    pure: <A>(a: NonNullable<A>): ListBox<A> => cons(a)(nil()),
 
-//     // fs <*> xs = [f x | f <- fs, x <- xs]
-//     '<*>': <A, B>(f: ListBox<FunctionArrow<A, B>>, fa: ListBox<A>): ListBox<B> => {},
-// }
+    // fs <*> xs = [f x | f <- fs, x <- xs]
+    '<*>': <A, B>(f: ListBox<FunctionArrow<A, B>>, fa: ListBox<A>): ListBox<B> => {
+        return comp((f, x) => f(x), [f, fa])
+    },
+
+    // liftA2 f xs ys = [f x y | x <- xs, y <- ys]
+    liftA2: <A, B, C>(f: FunctionArrow2<A, B, C>, fa: ListBox<A>, fb: ListBox<B>): ListBox<C> =>
+        comp((x, y) => f(x)(y), [fa, fb]),
+}
+
+export const applicative = createApplicative(baseImplementation, functor) as ListApplicative
+
+// [y | _ <- xs, y <- ys]
+applicative['*>'] = <A, B>(fa: ListBox<A>, fb: ListBox<B>): ListBox<B> => comp((_, y) => y, [fa, fb])

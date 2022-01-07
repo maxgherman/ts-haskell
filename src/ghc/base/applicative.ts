@@ -4,9 +4,11 @@ import { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
 import { id, $const } from 'ghc/base/functions'
 
 export type ApplicativeBase = Functor & {
+    // embed pure expressions
     // pure :: Functor f => a -> f a
     pure<A>(a: A): MinBox1<A>
 
+    // sequential computation
     // (<*>) :: Functor f => f (a -> b) -> f a -> f b
     '<*>'<A, B>(f: MinBox1<FunctionArrow<A, B>>, fa: MinBox1<A>): MinBox1<B>
 
@@ -37,13 +39,14 @@ const extensions = (base: ApplicativeBase) => {
         // u <* v = liftA2 const u v
         '<*': <A, B>(fa: MinBox1<A>, fb: MinBox1<B>): MinBox1<A> => base.liftA2($const, fa, fb),
 
+        // (<**>) = liftA2 (\a f -> f a)
         '<**>': <A, B>(fa: MinBox1<A>, f: MinBox1<FunctionArrow<A, B>>): MinBox1<B> =>
             base.liftA2(
                 <A, C>(a: A) =>
                     (b: (_: A) => C) =>
                         b(a) as C,
-                f,
                 fa,
+                f,
             ),
     }
 }
