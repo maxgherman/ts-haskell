@@ -1,3 +1,5 @@
+// instance Functor (Either a) -- Defined in ‘Data.Either’
+
 import { $case, EitherBox, left, right } from './either'
 import { FunctorBase, Functor, functor as createFunctor } from 'ghc/base/functor'
 

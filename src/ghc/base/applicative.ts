@@ -34,7 +34,7 @@ export type BaseImplementation = Pick<ApplicativeBase, 'pure'> &
 const extensions = (base: ApplicativeBase) => {
     return {
         // u *> v = (id <$ u) <*> v
-        '*>': <A, B>(fa: MinBox1<A>, fb: MinBox1<B>): MinBox1<B> => base['<*>'](base['<$'](id, fb), fa),
+        '*>': <A, B>(fa: MinBox1<A>, fb: MinBox1<B>): MinBox1<B> => base['<*>'](base['<$'](id, fa), fb),
 
         // u <* v = liftA2 const u v
         '<*': <A, B>(fa: MinBox1<A>, fb: MinBox1<B>): MinBox1<A> => base.liftA2($const, fa, fb),

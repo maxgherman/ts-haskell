@@ -1,3 +1,5 @@
+// instance Semigroup (Either a b) -- Defined in ‘Data.Either’
+
 import { Semigroup, semigroup as createSemigroup, SemigroupBase } from 'ghc/base/semigroup'
 import { NonEmpty } from 'ghc/base/non-empty/list'
 import { $case, EitherBox, right } from './either'

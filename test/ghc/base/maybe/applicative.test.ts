@@ -73,7 +73,7 @@ tap.test('Maybe applicative', async (t) => {
         t.equal(getValue(result4), undefined)
     })
 
-    t.test('*>', async (t) => {
+    t.test('<*', async (t) => {
         const value1 = just(2)
         const value2 = just(3)
         const valueNothing = nothing()
@@ -120,7 +120,7 @@ tap.test('Maybe applicative', async (t) => {
     })
 
     t.test('Applicative first law (Identity): pure id <*> v = v', async (t) => {
-        t.test('empty', async (t) => {
+        t.test('nothing', async (t) => {
             const v = nothing<number>()
             const pureId = applicative.pure<FunctionArrow<number, number>>(id)
             const result = applicative['<*>'](pureId, v)
@@ -129,7 +129,7 @@ tap.test('Maybe applicative', async (t) => {
             t.equal(getValue(result), undefined)
         })
 
-        t.test('non - empty', async (t) => {
+        t.test('just', async (t) => {
             const v = just(123)
             const pureId = applicative.pure<FunctionArrow<number, number>>(id)
             const result = applicative['<*>'](pureId, v)
@@ -151,7 +151,7 @@ tap.test('Maybe applicative', async (t) => {
 
     // ($) :: (a -> b) -> a -> b
     t.test('Applicative third law (Interchange): u <*> pure y = pure ($ y) <*> u', async (t) => {
-        t.test('empty', async (t) => {
+        t.test('nothing', async (t) => {
             const u = nothing<FunctionArrow<number, number>>()
             const y = 123
             const $y = (f: FunctionArrow<number, number>) => f(y)
@@ -163,7 +163,7 @@ tap.test('Maybe applicative', async (t) => {
             t.same(getValue(right), undefined)
         })
 
-        t.test('non - empty', async (t) => {
+        t.test('just', async (t) => {
             const app: FunctionArrow<number, number> = (x: number) => x * 2
             const u = just(app)
             const y = 123
@@ -180,7 +180,7 @@ tap.test('Maybe applicative', async (t) => {
     t.test('Applicative forth law (Composition): pure (.) <*> u <*> v <*> w = u <*> (v <*> w)', async (t) => {
         const pureDot = applicative.pure(dot) as MaybeBox<Dot<number, number, number>>
 
-        t.test('no - empty', async (t) => {
+        t.test('just', async (t) => {
             const app1: FunctionArrow<number, number> = (x: number) => x * 2
             const app2: FunctionArrow<number, number> = (x: number) => x - 3
             const v = just(app1)
@@ -194,7 +194,7 @@ tap.test('Maybe applicative', async (t) => {
             t.same(getValue(right), 17)
         })
 
-        t.test('empty', async (t) => {
+        t.test('nothing', async (t) => {
             const appC =
                 <A, B>(x: MaybeBox<FunctionArrow<A, B>>) =>
                 (y: MaybeBox<A>) =>
