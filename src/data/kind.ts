@@ -18,11 +18,19 @@ export type Box<K extends Kind, _> = {
     readonly kind: K
 }
 
-export type Box0 = Box<Kind1, unknown>
+type BuildBox<Ts extends unknown[] = []> = Ts extends { length: 0 }
+    ? Box<Kind1, Ts>
+    : Ts extends { length: 1 }
+    ? Box<Kind2, Ts>
+    : Ts extends { length: 2 }
+    ? Box<Kind3, Ts>
+    : never
 
-export type Box1<T> = Box<Kind2, T>
+export type Box0 = BuildBox<[]>
 
-export type Box2<T1, T2> = Box<Kind3, T1> & Box<Kind3, T2>
+export type Box1<T> = BuildBox<[T]>
+
+export type Box2<T1, T2> = BuildBox<[T1, T2]>
 
 export type MinBox0<T> = Box<Kind1 | Kind2 | Kind3, T>
 

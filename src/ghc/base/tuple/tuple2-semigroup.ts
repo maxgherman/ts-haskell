@@ -7,7 +7,7 @@ import { NonEmpty } from 'ghc/base/non-empty/list'
 
 export type TupleMinBox<T1, T2> = Tuple2Box<MinBox0<T1>, MinBox0<T2>>
 
-export interface Tuple2Semigroup<T1, T2> extends Semigroup<TupleMinBox<T1, T2>>, Semigroup<TupleMinBox<T1, T2>> {
+export interface Tuple2Semigroup<T1, T2> extends Semigroup<TupleMinBox<T1, T2>> {
     '<>'(a: TupleMinBox<T1, T2>, b: TupleMinBox<T1, T2>): TupleMinBox<T1, T2>
 
     sconcat(value: NonEmpty<TupleMinBox<T1, T2>>): TupleMinBox<T1, T2>
