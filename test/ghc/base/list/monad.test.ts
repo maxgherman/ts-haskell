@@ -1,0 +1,71 @@
+import tap from 'tap'
+import { compose } from 'ghc/base/functions'
+import { monad } from 'ghc/base/list/monad'
+import { toArray, cons, nil, repeat, take } from 'ghc/base/list/list'
+
+tap.test('List monad', async (t) => {
+    t.test('return', async (t) => {
+        const result = monad.pure(3)
+
+        t.same(toArray(result), [3])
+    })
+
+    t.test('>>=', async (t) => {
+        const list1 = compose(cons(1), cons(2), cons(3))(nil())
+        const list2 = repeat(3)
+        const f = (x: number) => compose(cons(x - 1), cons(x), cons(x + 1))(nil())
+
+        const result1 = monad['>>='](list1, f)
+        const result2 = take(5, monad['>>='](list2, f))
+
+        t.same(toArray(result1), [0, 1, 2, 1, 2, 3, 2, 3, 4])
+        t.same(toArray(result2), [2, 3, 4, 2, 3])
+    })
+
+    t.test('>>', async (t) => {
+        const list1 = compose(cons(1), cons(2))(nil())
+        const list2 = compose(cons(4), cons(5), cons(6))(nil())
+        const list3 = repeat(3)
+
+        const result1 = monad['>>'](list1, list2)
+        const result2 = take(5, monad['>>'](list1, list3))
+        const result3 = take(5, monad['>>'](list3, list1))
+
+        t.same(toArray(result1), [4, 5, 6, 4, 5, 6])
+        t.same(toArray(result2), [3, 3, 3, 3, 3])
+        t.same(toArray(result3), [1, 2, 1, 2, 1])
+    })
+
+    t.test('Monad first law (Left identity): return a >>= h = h a', async (t) => {
+        const a = 123
+        const returnA = monad.return(a)
+        const h = (x: number) => compose(cons(x / 2))(nil())
+
+        const left = monad['>>='](returnA, h)
+        const right = h(a)
+
+        t.same(toArray(left), toArray(right))
+        t.same(toArray(left), [61.5])
+    })
+
+    t.test('Monad second law (Right identity): m >>= return = m', async (t) => {
+        const m = compose(cons(1), cons(2), cons(3))(nil())
+
+        const left = monad['>>='](m, monad.return)
+
+        t.same(toArray(left), toArray(m))
+        t.same(toArray(m), [1, 2, 3])
+    })
+
+    t.test('Monad thrird law (Associativity): (m >>= g) >>=	h =	m >>= ((x) -> g x >>= h)', async (t) => {
+        const m = compose(cons(1), cons(2), cons(3))(nil())
+        const g = (x: number) => compose(cons(x), cons(x - 2))(nil())
+        const h = (x: number) => compose(cons(x + 1), cons(x + 2))(nil())
+
+        const left = monad['>>='](monad['>>='](m, g), h)
+        const right = monad['>>='](m, (x: number) => monad['>>='](g(x), h))
+
+        t.same(toArray(left), toArray(right))
+        t.same(toArray(left), [2, 3, 0, 1, 3, 4, 1, 2, 4, 5, 2, 3])
+    })
+})

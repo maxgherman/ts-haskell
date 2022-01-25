@@ -7,7 +7,7 @@ import { functor } from 'ghc/base/list/functor'
 import type { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
 
 export interface ListApplicative extends Applicative {
-    pure<A>(a: A): ListBox<A>
+    pure<A>(a: NonNullable<A>): ListBox<A>
 
     '<*>'<A, B>(f: ListBox<FunctionArrow<A, B>>, fa: ListBox<A>): ListBox<B>
 

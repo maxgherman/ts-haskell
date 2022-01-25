@@ -6,7 +6,7 @@ import { id, $const } from 'ghc/base/functions'
 export type ApplicativeBase = Functor & {
     // embed pure expressions
     // pure :: Functor f => a -> f a
-    pure<A>(a: A): MinBox1<A>
+    pure<A>(a: NonNullable<A>): MinBox1<A>
 
     // sequential computation
     // (<*>) :: Functor f => f (a -> b) -> f a -> f b
