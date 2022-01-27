@@ -2,6 +2,7 @@ import tap from 'tap'
 import { id } from 'ghc/base/functions'
 import { monad } from 'ghc/base/maybe/monad'
 import { just, nothing, MaybeBox, $case } from 'ghc/base/maybe/maybe'
+import { doNotation } from 'ghc/base/monad/do-notation'
 
 const getValue = <A>(box: MaybeBox<A>): A | undefined =>
     $case<A, A | undefined>({
@@ -108,5 +109,16 @@ tap.test('List monad', async (t) => {
             t.equal(getValue(left3), getValue(right3))
             t.equal(getValue(left3), undefined)
         })
+    })
+
+    t.test('do-notation', async (t) => {
+        const result = doNotation<MaybeBox<number>>(function* (): Generator<MaybeBox<number>, number, number> {
+            const value1 = yield just(5)
+            const value2 = yield just(6)
+            const value3 = yield just(7)
+            return value1 + value2 + value3
+        }, monad)
+
+        t.equal(getValue(result), 5 + 6 + 7)
     })
 })

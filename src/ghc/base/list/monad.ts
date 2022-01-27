@@ -1,17 +1,17 @@
 // instance Monad [] -- Defined in ‘GHC.Base’
 
-import { MinBox1, Type } from 'data/kind'
+import { Type } from 'data/kind'
 import { ListBox, nil, head, $null, tail } from 'ghc/base/list/list'
-import { MonadBase, Monad, monad as createMonad } from 'ghc/base/monad/monad'
+import { Monad, monad as createMonad } from 'ghc/base/monad/monad'
 import { applicative } from 'ghc/base/list/applicative'
 import { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
 
-export interface ListMonad extends Omit<Monad, '>>=' | '>>'> {
-    '>>=': <A, B>(ma: ListBox<A>, f: FunctionArrow<A, ListBox<B>>) => ListBox<B>
+export interface ListMonad extends Monad {
+    '>>='<A, B>(ma: ListBox<A>, f: FunctionArrow<A, ListBox<B>>): ListBox<B>
 
-    '>>': <A, B>(ma: ListBox<A>, mb: ListBox<B>) => ListBox<B>
+    '>>'<A, B>(ma: ListBox<A>, mb: ListBox<B>): ListBox<B>
 
-    return: <A>(a: NonNullable<A>) => ListBox<A>
+    return<A>(a: NonNullable<A>): ListBox<A>
 
     pure<A>(a: NonNullable<A>): ListBox<A>
 
@@ -38,18 +38,9 @@ export interface ListMonad extends Omit<Monad, '>>=' | '>>'> {
     void<A>(fa: ListBox<A>): ListBox<[]>
 }
 
-type ListMonadBase = MonadBase & {
-    '>>=': <A, B>(ma: ListBox<A>, f: FunctionArrow<A, ListBox<B>>) => ListBox<B>
-}
-
-const baseImplementation: ListMonadBase = {
-    ...applicative,
-
+const baseImplementation = {
     // xs >>= f = [y | x <- xs, y <- f x]
-    '>>=': <A, B>(ma: MinBox1<A>, f: FunctionArrow<A, MinBox1<B>>): ListBox<B> => {
-        const p1 = ma as ListBox<A>
-        const p2 = f as FunctionArrow<A, ListBox<B>>
-
+    '>>=': <A, B>(ma: ListBox<A>, f: FunctionArrow<A, ListBox<B>>): ListBox<B> => {
         const computation = (innerList: ListBox<B>, ma: ListBox<A>, f: FunctionArrow<A, ListBox<B>>): ListBox<B> => {
             if (!$null(innerList)) {
                 const result = () => ({
@@ -69,11 +60,11 @@ const baseImplementation: ListMonadBase = {
             return computation(next, tail(ma), f)
         }
 
-        return computation(nil<B>(), p1, p2)
+        return computation(nil<B>(), ma, f)
     },
 }
 
-export const monad = createMonad(baseImplementation, applicative) as Omit<Monad, '>>=' | '>>'> as ListMonad
+export const monad = createMonad(baseImplementation, applicative) as ListMonad
 
 // (>>) = (*>)
 monad['>>'] = monad['*>']

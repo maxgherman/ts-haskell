@@ -1,7 +1,8 @@
 import tap from 'tap'
 import { compose } from 'ghc/base/functions'
 import { monad } from 'ghc/base/list/monad'
-import { toArray, cons, nil, repeat, take } from 'ghc/base/list/list'
+import { toArray, cons, nil, repeat, take, ListBox } from 'ghc/base/list/list'
+import { doNotation } from 'ghc/base/monad/do-notation'
 
 tap.test('List monad', async (t) => {
     t.test('return', async (t) => {
@@ -67,5 +68,15 @@ tap.test('List monad', async (t) => {
 
         t.same(toArray(left), toArray(right))
         t.same(toArray(left), [2, 3, 0, 1, 3, 4, 1, 2, 4, 5, 2, 3])
+    })
+
+    t.test('do-notation', async (t) => {
+        const result = doNotation<ListBox<number>>(function* (): Generator<ListBox<number>, number, number> {
+            const value1 = yield cons(5)(cons(6)(nil()))
+            const value2 = yield cons(7)(cons(8)(nil()))
+            return value1 + value2
+        }, monad)
+
+        t.same(toArray(result), [12, 13, 13, 14])
     })
 })
