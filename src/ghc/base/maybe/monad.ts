@@ -1,6 +1,5 @@
 // instance Monad Maybe -- Defined in ‘GHC.Base’
 
-import { MinBox1 } from 'data/kind'
 import { Monad, monad as createMonad } from 'ghc/base/monad/monad'
 import { applicative } from 'ghc/base/maybe/applicative'
 import { MaybeBox, $case, nothing } from 'ghc/base/maybe/maybe'
@@ -39,16 +38,11 @@ export interface MaybeMonad extends Monad {
 }
 
 const baseImplementation = {
-    // xs >>= f = [y | x <- xs, y <- f x]
-    '>>=': <A, B>(ma: MinBox1<A>, f: FunctionArrow<A, MinBox1<B>>): MaybeBox<B> => {
-        const p1 = ma as MaybeBox<A>
-        const p2 = f as FunctionArrow<A, MaybeBox<B>>
-
-        return $case<A, MaybeBox<B>>({
-            just: (x) => p2(x),
+    '>>=': <A, B>(ma: MaybeBox<A>, f: FunctionArrow<A, MaybeBox<B>>): MaybeBox<B> =>
+        $case<A, MaybeBox<B>>({
+            just: (x) => f(x),
             nothing: () => nothing<B>(),
-        })(p1)
-    },
+        })(ma),
 }
 
 export const monad = createMonad(baseImplementation, applicative) as MaybeMonad
