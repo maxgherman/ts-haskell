@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
 import { cons, nil, toArray } from 'ghc/base/list/list'
-import { formList, head, NonEmptyBox, tail } from 'ghc/base/non-empty/list'
+import { formList, head, NonEmptyBox, tail, toList } from 'ghc/base/non-empty/list'
 import { functor } from 'ghc/base/non-empty/functor'
 
 const nonEmpty3: NonEmptyBox<number> = compose(formList, cons(3))(nil<number>())
@@ -41,13 +41,14 @@ tap.test('NonEmpty functor', async (t) => {
 
     t.test('Functor first law: fmap id = id', async (t) => {
         const fmapId = (fa: NonEmptyBox<number>): NonEmptyBox<number> => functor.fmap<number, number>(id, fa)
+        const list = compose(formList, cons(3), cons(2), cons(1))(nil<number>())
 
         t.test('non - empty', async (t) => {
-            const result = fmapId(nonEmpty3)
-            const expected = id(nonEmpty3)
+            const result = fmapId(list)
+            const expected = id(list)
 
-            t.equal(head(result), 3)
-            t.equal(head(result), head(expected))
+            t.same(toArray(toList(result)), [3, 2, 1])
+            t.same(toArray(toList(result)), toArray(toList(expected)))
         })
     })
 
@@ -59,13 +60,14 @@ tap.test('NonEmpty functor', async (t) => {
         const fB = (fb: NonEmptyBox<number>) => functor.fmap(b, fb)
         const fAB = (fab: NonEmptyBox<number>) => functor.fmap(ab, fab)
         const fAfB = compose(fA, fB)
+        const list = compose(formList, cons(3), cons(2), cons(1))(nil<number>())
 
         t.test('non - empty', async (t) => {
-            const one = fAB(nonEmpty3)
-            const two = fAfB(nonEmpty3)
+            const one = fAB(list)
+            const two = fAfB(list)
 
-            t.equal(head(one), 11)
-            t.equal(head(one), head(two))
+            t.same(toArray(toList(one)), [11, 8, 5])
+            t.same(toArray(toList(one)), toArray(toList(two)))
         })
     })
 })

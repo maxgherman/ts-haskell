@@ -71,12 +71,26 @@ tap.test('List monad', async (t) => {
     })
 
     t.test('do-notation', async (t) => {
-        const result = doNotation<ListBox<number>>(function* (): Generator<ListBox<number>, number, number> {
+        const result1 = doNotation<ListBox<number>>(function* (): Generator<ListBox<number>, number, number> {
             const value1 = yield cons(5)(cons(6)(nil()))
             const value2 = yield cons(7)(cons(8)(nil()))
             return value1 + value2
         }, monad)
 
-        t.same(toArray(result), [12, 13, 13, 14])
+        const result2 = doNotation<ListBox<number>>(function* (): Generator<ListBox<number>, number, number> {
+            const value1 = yield repeat(3)
+            const value2 = yield cons(7)(cons(8)(nil()))
+            return value1 + value2
+        }, monad)
+
+        const result3 = doNotation<ListBox<number>>(function* (): Generator<ListBox<number>, number, number> {
+            const value1 = yield repeat(3)
+            const value2 = yield repeat(5)
+            return value1 + value2
+        }, monad)
+
+        t.same(toArray(result1), [12, 13, 13, 14])
+        t.same(toArray(take(5, result2)), [10, 11, 10, 11, 10])
+        t.same(toArray(take(5, result3)), [8, 8, 8, 8, 8])
     })
 })

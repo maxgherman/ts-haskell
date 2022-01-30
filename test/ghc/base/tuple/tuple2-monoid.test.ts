@@ -2,7 +2,7 @@ import tap from 'tap'
 import { compose } from 'ghc/base/functions'
 import { monoid as createMonoid } from 'ghc/base/tuple/tuple2-monoid'
 import { TupleMinBox } from 'ghc/base/tuple/tuple2-semigroup'
-import { tuple2, fst, snd, Tuple2Box } from 'ghc/base/tuple/tuple'
+import { tuple2, fst, snd } from 'ghc/base/tuple/tuple'
 import { monoid as listMonoid } from 'ghc/base/list/monoid'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
 
