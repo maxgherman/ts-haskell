@@ -4,7 +4,7 @@ import { monoid } from 'ghc/base/tuple/unit-monoid'
 import { unit } from 'ghc/base/tuple/tuple'
 import { cons, nil } from 'ghc/base/list/list'
 
-tap.test('UnitMonoid', async (t) => {
+tap.test('Unit monoid', async (t) => {
     t.test('mempty', async (t) => {
         t.same(monoid.mempty, [])
     })

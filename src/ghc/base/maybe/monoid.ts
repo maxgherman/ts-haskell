@@ -10,7 +10,7 @@ export interface MaybeMonoid<T> extends Monoid<MaybeBox<T>> {
     readonly mempty: MaybeBox<T>
     '<>'(a: MaybeBox<T>, b: MaybeBox<T>): MaybeBox<T>
     mappend(a: MaybeBox<T>, b: MaybeBox<T>): MaybeBox<T>
-    mconcat: (_: List<MaybeBox<T>>) => MaybeBox<T>
+    mconcat(_: List<MaybeBox<T>>): MaybeBox<T>
 }
 
 const base = <T>(baseSemigroup: Semigroup<T>): MonoidBase<MaybeBox<T>> => ({

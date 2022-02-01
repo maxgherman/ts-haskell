@@ -1,8 +1,12 @@
-import { Box0, Box2, Kind } from 'data/kind'
+import { Box0, Box2, Kind, MinBox0 } from 'data/kind'
 
 export type UnitBox = [] & Box0
 
 export type Tuple2Box<T1, T2> = [T1, T2] & Box2<T1, T2>
+
+export type TupleMinBox<T1, T2> = Tuple2Box<MinBox0<T1>, MinBox0<T2>>
+
+export type Tuple2BoxT<T, A> = Tuple2Box<MinBox0<T>, A>
 
 export const fst = <T1, T2>(tuple: [T1, T2] | Tuple2Box<T1, T2>): T1 => tuple[0]
 

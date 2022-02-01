@@ -7,15 +7,15 @@ export type MonoidBase<T> = Semigroup<T> & {
 }
 
 export type Monoid<T> = MonoidBase<T> & {
-    '<>'(a: T, b: T): MinBox0<T>
-    mappend(a: T, b: T): MinBox0<T>
-    mconcat: (_: List<T>) => MinBox0<T>
+    '<>'(a: MinBox0<T>, b: MinBox0<T>): MinBox0<T>
+    mappend(a: MinBox0<T>, b: MinBox0<T>): MinBox0<T>
+    mconcat(_: List<MinBox0<T>>): MinBox0<T>
 }
 
 const mappend =
     <T>(semigroup: Semigroup<T>) =>
-    (a: T, b: T): MinBox0<T> =>
-        semigroup['<>'](a as T & MinBox0<T>, b as T & MinBox0<T>)
+    (a: MinBox0<T>, b: MinBox0<T>): MinBox0<T> =>
+        semigroup['<>'](a, b)
 
 // mconcat = foldr '(<>)' mempty
 const mconcat =
@@ -34,7 +34,7 @@ const mconcat =
         return foldr(semigroup['<>'], list)
     }
 
-export const monoid = <T>(monoidBase: MonoidBase<T>) => {
+export const monoid = <T>(monoidBase: MonoidBase<T>): Monoid<T> => {
     return {
         ...monoidBase,
         mappend: mappend(monoidBase),

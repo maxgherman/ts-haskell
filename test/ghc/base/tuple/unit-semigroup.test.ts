@@ -5,7 +5,7 @@ import { unit } from 'ghc/base/tuple/tuple'
 import { formList } from 'ghc/base/non-empty/list'
 import { cons, nil } from 'ghc/base/list/list'
 
-tap.test('UnitSemigroup', async (t) => {
+tap.test('Unit semigroup', async (t) => {
     t.test('<>', async (t) => {
         const result = semigroup['<>'](unit(), unit())
         t.same(result, [])

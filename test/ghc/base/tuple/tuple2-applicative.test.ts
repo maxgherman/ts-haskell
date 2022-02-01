@@ -13,7 +13,7 @@ const baseMonoid = listMonoid<string>()
 const innerMonoid = promiseMonoid(baseMonoid)
 const applicative = createApplicative(innerMonoid)
 
-tap.test('List applicative', async (t) => {
+tap.test('Tuple2 applicative', async (t) => {
     t.test('pure', async (t) => {
         const result = applicative.pure(3)
         const first = await (fst(result) as PromiseBox<ListBox<string>>)

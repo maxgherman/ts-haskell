@@ -1,8 +1,7 @@
 import tap from 'tap'
 import { compose } from 'ghc/base/functions'
 import { monoid as createMonoid } from 'ghc/base/tuple/tuple2-monoid'
-import { TupleMinBox } from 'ghc/base/tuple/tuple2-semigroup'
-import { tuple2, fst, snd } from 'ghc/base/tuple/tuple'
+import { tuple2, fst, snd, TupleMinBox } from 'ghc/base/tuple/tuple'
 import { monoid as listMonoid } from 'ghc/base/list/monoid'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
 
@@ -15,7 +14,7 @@ const getValue = (value: TupleMinBox<ListBox<number>, ListBox<string>>) => [
     toArray(snd(value) as ListBox<number>),
 ]
 
-tap.test('Tuple2Monoid', async (t) => {
+tap.test('Tuple2 monoid', async (t) => {
     t.test('mempty', async (t) => {
         t.same(getValue(monoid.mempty), [[], []])
     })

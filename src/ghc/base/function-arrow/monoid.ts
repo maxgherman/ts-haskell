@@ -9,7 +9,7 @@ export interface FunctionArrowMonoid<A, B> extends Monoid<FunctionArrowMinBox<A,
     readonly mempty: FunctionArrowMinBox<A, B>
     '<>'(a: FunctionArrowMinBox<A, B>, b: FunctionArrowMinBox<A, B>): FunctionArrowMinBox<A, B>
     mappend(a: FunctionArrowMinBox<A, B>, b: FunctionArrowMinBox<A, B>): FunctionArrowMinBox<A, B>
-    mconcat: (_: List<FunctionArrowMinBox<A, B>>) => FunctionArrowMinBox<A, B>
+    mconcat(_: List<FunctionArrowMinBox<A, B>>): FunctionArrowMinBox<A, B>
 }
 
 const base = <A, B>(innerMonoid: Monoid<B>): MonoidBase<FunctionArrowMinBox<A, B>> => ({

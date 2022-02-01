@@ -8,7 +8,7 @@ export interface ListMonoid<T> extends Monoid<ListBox<T>> {
     readonly mempty: ListBox<T>
     '<>'(a: ListBox<T>, b: ListBox<T>): ListBox<T>
     mappend(a: ListBox<T>, b: ListBox<T>): ListBox<T>
-    mconcat: (_: List<ListBox<T>>) => ListBox<T>
+    mconcat(_: List<ListBox<T>>): ListBox<T>
 }
 
 const base = <T>(): MonoidBase<ListBox<T>> => ({

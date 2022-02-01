@@ -18,7 +18,7 @@ const caseArray = maybeCase<ListBox<string>, string>({
 
 const createList = <T>(value: NonNullable<T>[]) => value.reduceRight((acc, curr) => cons(curr)(acc), nil<T>())
 
-tap.test('Tuple2Semigroup', async (t) => {
+tap.test('Tuple2 semigroup', async (t) => {
     t.test('<>', async (t) => {
         const list1 = createList([1, 2])
         const list2 = createList(['3', '4'])

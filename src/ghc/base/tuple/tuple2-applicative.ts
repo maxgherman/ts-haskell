@@ -1,14 +1,11 @@
 // instance Monoid a => Applicative ((,) a) -- Defined in ‘GHC.Base’
 
-import { MinBox0 } from 'data/kind'
 import { applicative as createApplicative, Applicative, BaseImplementation } from 'ghc/base/applicative'
 import { functor as createFunctor } from 'ghc/base/tuple/tuple2-functor'
 import { Monoid } from 'ghc/base/monoid'
 import type { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
-import { curry, fst, snd, tuple2, Tuple2Box } from './tuple'
+import { curry, fst, snd, tuple2, Tuple2BoxT } from './tuple'
 import { compose } from '../functions'
-
-export type Tuple2BoxT<T, A> = Tuple2Box<MinBox0<T>, A>
 
 export interface Tuple2Applicative<T> extends Applicative {
     pure<A>(a: A): Tuple2BoxT<T, A>
