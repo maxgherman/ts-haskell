@@ -26,11 +26,11 @@ tap.test('Tuple2 applicative', async (t) => {
     t.test('<*>', async (t) => {
         const app: FunctionArrow<number, number> = (x: number) => x * 2
         const f = tuple2(
-            Promise.resolve(compose(cons('1'), cons('2'), cons('3'))(nil())) as PromiseBox<ListBox<string>>,
+            Promise.resolve(compose(cons<string>('1'), cons<string>('2'), cons('3'))(nil())) as PromiseBox<ListBox<string>>,
             app,
         )
         const fa = tuple2(
-            Promise.resolve(compose(cons('4'), cons('5'), cons('6'))(nil())) as PromiseBox<ListBox<string>>,
+            Promise.resolve(compose(cons<string>('4'), cons<string>('5'), cons('6'))(nil())) as PromiseBox<ListBox<string>>,
             11,
         )
 
@@ -88,7 +88,7 @@ tap.test('Tuple2 applicative', async (t) => {
     })
 
     t.test('<**>', async (t) => {
-        const fa = tuple2(Promise.resolve(compose(cons('1'), cons('2'))(nil())) as PromiseBox<ListBox<string>>, 11)
+        const fa = tuple2(Promise.resolve(compose(cons<string>('1'), cons('2'))(nil())) as PromiseBox<ListBox<string>>, 11)
         const app: FunctionArrow<number, number> = (x: number) => x * 3
         const f = tuple2(Promise.resolve(compose(cons('3'))(nil())) as PromiseBox<ListBox<string>>, app)
 
@@ -103,7 +103,7 @@ tap.test('Tuple2 applicative', async (t) => {
 
     t.test('fmap', async (t) => {
         const app: FunctionArrow<number, number> = (x: number) => x * 2
-        const fa = tuple2(Promise.resolve(compose(cons('1'), cons('2'))(nil())) as PromiseBox<ListBox<string>>, 11)
+        const fa = tuple2(Promise.resolve(compose(cons<string>('1'), cons('2'))(nil())) as PromiseBox<ListBox<string>>, 11)
 
         const result = applicative.fmap(app, fa)
 
@@ -152,7 +152,7 @@ tap.test('Tuple2 applicative', async (t) => {
     // ($) :: (a -> b) -> a -> b
     t.test('Applicative third law (Interchange): u <*> pure y = pure ($ y) <*> u', async (t) => {
         const app1: FunctionArrow<number, number> = (x: number) => x * 2
-        const u = tuple2(Promise.resolve(compose(cons('1'), cons('2'))(nil())) as PromiseBox<ListBox<string>>, app1)
+        const u = tuple2(Promise.resolve(compose(cons<string>('1'), cons('2'))(nil())) as PromiseBox<ListBox<string>>, app1)
 
         const y = 123
         const $y = (f: FunctionArrow<number, number>) => f(y)
@@ -178,9 +178,9 @@ tap.test('Tuple2 applicative', async (t) => {
 
         const app1: FunctionArrow<number, number> = (x: number) => x * 2
         const app3: FunctionArrow<number, number> = (x: number) => x - 3
-        const v = tuple2(Promise.resolve(compose(cons('1'), cons('2'))(nil())) as PromiseBox<ListBox<string>>, app1)
-        const u = tuple2(Promise.resolve(compose(cons('3'), cons('4'))(nil())) as PromiseBox<ListBox<string>>, app3)
-        const w = tuple2(Promise.resolve(compose(cons('5'), cons('6'))(nil())) as PromiseBox<ListBox<string>>, 7)
+        const v = tuple2(Promise.resolve(compose(cons<string>('1'), cons('2'))(nil())) as PromiseBox<ListBox<string>>, app1)
+        const u = tuple2(Promise.resolve(compose(cons<string>('3'), cons('4'))(nil())) as PromiseBox<ListBox<string>>, app3)
+        const w = tuple2(Promise.resolve(compose(cons<string>('5'), cons('6'))(nil())) as PromiseBox<ListBox<string>>, 7)
 
         const right = applicative['<*>'](u, applicative['<*>'](v, w))
         const left = applicative['<*>'](applicative['<*>'](applicative['<*>'](pureDot, u), v), w)

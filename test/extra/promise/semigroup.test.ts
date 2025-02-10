@@ -11,8 +11,8 @@ const semigroup = createSemigroup<ListBox<number>>(innerSemigroup)
 
 tap.test('PromiseSemigroup', async (t) => {
     t.test('<>', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2), cons(3))(nil<number>())) as PromiseBox<ListBox<number>>
-        const part2 = Promise.resolve(compose(cons(4), cons(5), cons(6))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part2 = Promise.resolve(compose(cons<number>(4), cons<number>(5), cons<number>(6))(nil<number>())) as PromiseBox<ListBox<number>>
 
         const result = semigroup['<>'](part1, part2)
 
@@ -22,9 +22,9 @@ tap.test('PromiseSemigroup', async (t) => {
     })
 
     t.test('sconcat', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2))(nil<number>())) as PromiseBox<ListBox<number>>
-        const part2 = Promise.resolve(compose(cons(3), cons(4))(nil<number>())) as PromiseBox<ListBox<number>>
-        const part3 = Promise.resolve(compose(cons(5), cons(6))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part2 = Promise.resolve(compose(cons<number>(3), cons<number>(4))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part3 = Promise.resolve(compose(cons<number>(5), cons<number>(6))(nil<number>())) as PromiseBox<ListBox<number>>
 
         const value = formList(compose(cons(part1), cons(part2), cons(part3))(nil<PromiseBox<ListBox<number>>>()))
 
@@ -37,7 +37,7 @@ tap.test('PromiseSemigroup', async (t) => {
 
     t.test('stimes', async (t) => {
         const partNil = Promise.resolve(nil<number>()) as PromiseBox<ListBox<number>>
-        const part1 = Promise.resolve(compose(cons(1), cons(2))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2))(nil<number>())) as PromiseBox<ListBox<number>>
 
         const result1 = semigroup.stimes(3, partNil)
         const result2 = semigroup.stimes(3, part1)
@@ -52,9 +52,9 @@ tap.test('PromiseSemigroup', async (t) => {
     })
 
     t.test('semigroup law: (x <> y) <> z = x <> (y <> z)', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2))(nil<number>())) as PromiseBox<ListBox<number>>
-        const part2 = Promise.resolve(compose(cons(3), cons(4))(nil<number>())) as PromiseBox<ListBox<number>>
-        const part3 = Promise.resolve(compose(cons(5), cons(6))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part2 = Promise.resolve(compose(cons<number>(3), cons<number>(4))(nil<number>())) as PromiseBox<ListBox<number>>
+        const part3 = Promise.resolve(compose(cons<number>(5), cons<number>(6))(nil<number>())) as PromiseBox<ListBox<number>>
 
         const result1 = semigroup['<>'](semigroup['<>'](part1, part2), part3)
         const result2 = semigroup['<>'](part1, semigroup['<>'](part2, part3))

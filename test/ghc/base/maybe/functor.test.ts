@@ -5,9 +5,9 @@ import { $case, just, Maybe, MaybeBox, nothing } from 'ghc/base/maybe/maybe'
 
 type FakeNothing = { isNothing: true }
 
-const $just = <T>(maybe: Maybe<T>) => $case({ just: id })(maybe)
-const $nothing = <T>(maybe: Maybe<T>) => $case({ nothing: () => ({ isNothing: true } as FakeNothing) })(maybe)
-const ofJust = <T>(x: NonNullable<T>) => just(x)
+const $just = (maybe: Maybe<number>) => $case({ just: id })(maybe)
+const $nothing = (maybe: Maybe<number>) => $case({ nothing: () => ({ isNothing: true } as FakeNothing) })(maybe)
+const ofJust = (x: NonNullable<number>) => just(x)
 
 const fmapId = <T>(fa: MaybeBox<T>) => functor.fmap(id, fa)
 
@@ -58,8 +58,8 @@ tap.test('Maybe functor', async (t) => {
     })
 
     t.test('void - Just', async (t) => {
-        const result = compose<number, MaybeBox<number>, MaybeBox<[]>, []>(
-            $just as (x: MaybeBox<[]>) => [],
+        const result = compose(
+            $just,
             functor.void,
             ofJust,
         )(3)

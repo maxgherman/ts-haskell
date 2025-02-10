@@ -11,10 +11,10 @@ const createList = (value: number) => cons(value)(nil())
 tap.test('ListSemigroup', async (t) => {
     t.test('<>', async (t) => {
         const result1 = semigroup['<>'](nil(), nil())
-        const result2 = semigroup['<>'](nil(), cons(1)(cons(2)(nil())))
-        const result3 = semigroup['<>'](cons(1)(cons(2)(nil())), nil())
-        const result4 = semigroup['<>'](cons(1)(cons(2)(nil())), cons(3)(nil()))
-        const result5 = semigroup['<>'](cons(3)(nil()), cons(1)(cons(2)(nil())))
+        const result2 = semigroup['<>'](nil(), cons<number>(1)(cons(2)(nil())))
+        const result3 = semigroup['<>'](cons<number>(1)(cons<number>(2)(nil())), nil())
+        const result4 = semigroup['<>'](cons<number>(1)(cons(2)(nil())), cons(3)(nil()))
+        const result5 = semigroup['<>'](cons<number>(3)(nil()), cons<number>(1)(cons(2)(nil())))
 
         t.same(toArray(result1), [])
         t.same(toArray(result2), [1, 2])
@@ -40,7 +40,8 @@ tap.test('ListSemigroup', async (t) => {
     t.test('stimes', async (t) => {
         const result1 = compose((x: ListBox<number>) => semigroup.stimes(10, x), cons(1))(nil())
 
-        const result2 = compose((x: ListBox<number>) => semigroup.stimes(0, x), cons(1), cons(2), cons(3))(nil())
+        const result2 = compose((x: ListBox<number>) =>
+            semigroup.stimes(0, x), cons<number>(1), cons<number>(2), cons(3))(nil())
 
         const result3 = semigroup.stimes(20, nil())
         const result4 = () => semigroup.stimes(-1, nil())
@@ -53,9 +54,9 @@ tap.test('ListSemigroup', async (t) => {
 
     t.test('semigroup law - associativity: (x <> y) <> z = x <> (y <> z)', async (t) => {
         const empty = nil<number>()
-        const list1 = compose(cons(1), cons(2), cons(3))(nil<number>())
-        const list2 = compose(cons(4), cons(5))(nil<number>())
-        const list3 = compose(cons(6))(nil<number>())
+        const list1 = compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())
+        const list2 = compose(cons<number>(4), cons<number>(5))(nil())
+        const list3 = compose(cons<number>(6))(nil())
 
         const result1 = compose(
             (x: ListBox<number>) => semigroup['<>'](x, empty),

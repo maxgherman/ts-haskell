@@ -19,7 +19,7 @@ tap.test('Tuple2 monad', async (t) => {
     })
 
     t.test('>>=', async (t) => {
-        const list = tuple2(compose(cons(1), cons(2))(nil()), 1)
+        const list = tuple2(compose(cons<number>(1), cons(2))(nil()), 1)
         const f = (x: number) => tuple2(compose(cons(x - 1), cons(x), cons(x + 1))(nil()), 3)
 
         const [first, second] = monad['>>='](list, f)
@@ -29,8 +29,9 @@ tap.test('Tuple2 monad', async (t) => {
     })
 
     t.test('>>', async (t) => {
-        const list1: Tuple2BoxT<ListBox<number>, number> = tuple2(compose(cons(1), cons(2))(nil()), 5)
-        const list2: Tuple2BoxT<ListBox<number>, number> = tuple2(compose(cons(4), cons(5), cons(6))(nil()), 7)
+        const list1: Tuple2BoxT<ListBox<number>, number> = tuple2(compose(cons<number>(1), cons(2))(nil()), 5)
+        const list2: Tuple2BoxT<ListBox<number>, number> =
+            tuple2(compose(cons<number>(4), cons<number>(5), cons(6))(nil()), 7)
 
         const [first, second] = monad['>>'](list1, list2)
 
@@ -54,7 +55,7 @@ tap.test('Tuple2 monad', async (t) => {
     })
 
     t.test('Monad second law (Right identity): m >>= return = m', async (t) => {
-        const m = tuple2(compose(cons(1), cons(2), cons(3))(nil()), 'test')
+        const m = tuple2(compose(cons<number>(1), cons<number>(2), cons(3))(nil()), 'test')
 
         const [first, second] = monad['>>='](m, monad.return)
         const [mFirst, mSecond] = m
@@ -66,8 +67,8 @@ tap.test('Tuple2 monad', async (t) => {
         t.equal(second, 'test')
     })
 
-    t.test('Monad thrird law (Associativity): (m >>= g) >>=	h =	m >>= ((x) -> g x >>= h)', async (t) => {
-        const m = tuple2(compose(cons(1), cons(2), cons(3))(nil()), 1)
+    t.test('Monad third law (Associativity): (m >>= g) >>=	h =	m >>= ((x) -> g x >>= h)', async (t) => {
+        const m = tuple2(compose(cons<number>(1), cons<number>(2), cons(3))(nil()), 1)
         const g = (x: number) => tuple2(compose(cons(x), cons(x + x))(nil()), 2) as Tuple2BoxT<ListBox<number>, number>
         const h = (x: number) =>
             tuple2(compose(cons(x + 1), cons(x + 2))(nil()), 3) as Tuple2BoxT<ListBox<number>, number>
@@ -88,8 +89,8 @@ tap.test('Tuple2 monad', async (t) => {
             number,
             number
         > {
-            const value1 = yield tuple2(cons(5)(cons(6)(nil())), 10)
-            const value2 = yield tuple2(cons(7)(cons(8)(nil())), 11)
+            const value1 = yield tuple2(cons<number>(5)(cons(6)(nil())), 10)
+            const value2 = yield tuple2(cons<number>(7)(cons(8)(nil())), 11)
 
             return value1 + value2
         },

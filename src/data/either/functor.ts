@@ -21,7 +21,7 @@ const fmap = <T>(): FunctorBase => ({
     // fmap :: EitherBox f => (a -> b) ->  f a -> f b
     fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: EitherBox<T, A>) => {
         return $case({
-            left: (x) => left(x as unknown),
+            left: (x) => left(x as object),
             right: (x: A) => right(f(x)),
         })(fa) as EitherBox<T, B>
     },

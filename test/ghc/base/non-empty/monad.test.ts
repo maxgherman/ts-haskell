@@ -14,7 +14,7 @@ tap.test('NonEmpty monad', async (t) => {
     })
 
     t.test('>>=', async (t) => {
-        const list = compose(formList, cons(1), cons(2), cons(3))(nil())
+        const list = compose(formList, cons<number>(1), cons<number>(2), cons<number>(3))(nil())
         const f = (x: number) => compose(formList, cons(x - 1), cons(x), cons(x + 1))(nil())
 
         const result = monad['>>='](list, f)
@@ -23,8 +23,8 @@ tap.test('NonEmpty monad', async (t) => {
     })
 
     t.test('>>', async (t) => {
-        const list1 = compose(formList, cons(1), cons(2))(nil())
-        const list2 = compose(formList, cons(4), cons(5), cons(6))(nil())
+        const list1 = compose(formList, cons<number>(1), cons(2))(nil())
+        const list2 = compose(formList, cons<number>(4), cons<number>(5), cons(6))(nil())
 
         const result1 = monad['>>'](list1, list2)
 
@@ -44,7 +44,7 @@ tap.test('NonEmpty monad', async (t) => {
     })
 
     t.test('Monad second law (Right identity): m >>= return = m', async (t) => {
-        const m = compose(formList, cons(1), cons(2), cons(3))(nil())
+        const m = compose(formList, cons<number>(1), cons<number>(2), cons(3))(nil())
 
         const left = monad['>>='](m, monad.return)
 
@@ -53,7 +53,7 @@ tap.test('NonEmpty monad', async (t) => {
     })
 
     t.test('Monad thrird law (Associativity): (m >>= g) >>=	h =	m >>= ((x) -> g x >>= h)', async (t) => {
-        const m = compose(formList, cons(1), cons(2), cons(3))(nil())
+        const m = compose(formList, cons<number>(1), cons<number>(2), cons<number>(3))(nil())
         const g = (x: number) => compose(formList, cons(x), cons(x - 2))(nil())
         const h = (x: number) => compose(formList, cons(x + 1), cons(x + 2))(nil())
 
@@ -66,14 +66,14 @@ tap.test('NonEmpty monad', async (t) => {
 
     t.test('do-notation', async (t) => {
         const result1 = doNotation<NonEmptyBox<number>>(function* (): Generator<NonEmptyBox<number>, number, number> {
-            const value1 = yield compose(formList, cons(5), cons(6))(nil())
-            const value2 = yield compose(formList, cons(7), cons(8))(nil())
+            const value1 = yield compose(formList, cons<number>(5), cons(6))(nil())
+            const value2 = yield compose(formList, cons<number>(7), cons(8))(nil())
             return value1 + value2
         }, monad)
 
         const result2 = doNotation<NonEmptyBox<number>>(function* (): Generator<NonEmptyBox<number>, number, number> {
             const value1 = yield formList(repeat(3))
-            const value2 = yield compose(formList, cons(7), cons(8))(nil())
+            const value2 = yield compose(formList, cons<number>(7), cons(8))(nil())
             return value1 + value2
         }, monad)
 

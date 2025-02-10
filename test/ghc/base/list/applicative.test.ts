@@ -15,7 +15,7 @@ tap.test('List applicative', async (t) => {
         const app1: FunctionArrow<number, number> = (x: number) => x * 2
         const app2: FunctionArrow<number, number> = (x: number) => x + 1
         const applicationList = compose(cons(app1), cons(app2))(nil())
-        const valuesList = compose(cons(1), cons(2), cons(3))(nil())
+        const valuesList = compose(cons<number>(1), cons<number>(2), cons(3))(nil())
 
         const result = applicative['<*>'](applicationList, valuesList)
 
@@ -28,8 +28,8 @@ tap.test('List applicative', async (t) => {
             (y: number): string =>
                 `(${x},${y})`
 
-        const list1 = compose(cons(1), cons(2))(nil())
-        const list2 = compose(cons(3), cons(4))(nil())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
+        const list2 = compose(cons<number>(3), cons(4))(nil())
 
         const result = applicative.liftA2(app, list1, list2)
 
@@ -37,8 +37,8 @@ tap.test('List applicative', async (t) => {
     })
 
     t.test('*>', async (t) => {
-        const list1 = compose(cons(1), cons(2))(nil())
-        const list2 = compose(cons(3), cons(4))(nil())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
+        const list2 = compose(cons<number>(3), cons(4))(nil())
 
         const result = applicative['*>'](list1, list2)
 
@@ -46,8 +46,8 @@ tap.test('List applicative', async (t) => {
     })
 
     t.test('<*', async (t) => {
-        const list1 = compose(cons(1), cons(2))(nil())
-        const list2 = compose(cons(3), cons(4))(nil())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
+        const list2 = compose(cons<number>(3), cons(4))(nil())
 
         const result = applicative['<*'](list1, list2)
 
@@ -59,7 +59,7 @@ tap.test('List applicative', async (t) => {
         const app2: FunctionArrow<number, number> = (x: number) => x + 1
         const applicationList = compose(cons(app1), cons(app2))(nil())
 
-        const list1 = compose(cons(1), cons(2))(nil())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
 
         const result = applicative['<**>'](list1, applicationList)
 
@@ -141,7 +141,7 @@ tap.test('List applicative', async (t) => {
             const app3: FunctionArrow<number, number> = (x: number) => x - 3
             const v = compose(cons(app1), cons(app2))(nil())
             const u = cons(app3)(nil())
-            const w = compose(cons(1), cons(2))(nil())
+            const w = compose(cons<number>(1), cons(2))(nil())
 
             const right = applicative['<*>'](u, applicative['<*>'](v, w))
             const left = applicative['<*>'](applicative['<*>'](applicative['<*>'](pureDot, u), v), w)

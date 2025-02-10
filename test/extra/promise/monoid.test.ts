@@ -16,8 +16,8 @@ tap.test('PromiseMonoid', async (t) => {
     })
 
     t.test('<>', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2), cons(3))(nil())) as PromiseBox<ListBox<number>>
-        const part2 = Promise.resolve(compose(cons(4), cons(5), cons(6))(nil())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())) as PromiseBox<ListBox<number>>
+        const part2 = Promise.resolve(compose(cons<number>(4), cons<number>(5), cons<number>(6))(nil())) as PromiseBox<ListBox<number>>
         const part3 = Promise.resolve(nil<number>()) as PromiseBox<ListBox<number>>
 
         const result1 = monoid['<>'](part1, part2)
@@ -32,8 +32,8 @@ tap.test('PromiseMonoid', async (t) => {
     })
 
     t.test('mappend', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2), cons(3))(nil())) as PromiseBox<ListBox<number>>
-        const part2 = Promise.resolve(compose(cons(4), cons(5), cons(6))(nil())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())) as PromiseBox<ListBox<number>>
+        const part2 = Promise.resolve(compose(cons<number>(4), cons<number>(5), cons<number>(6))(nil())) as PromiseBox<ListBox<number>>
         const part3 = Promise.resolve(nil<number>()) as PromiseBox<ListBox<number>>
 
         const result1 = monoid.mappend(part1, part2)
@@ -48,11 +48,14 @@ tap.test('PromiseMonoid', async (t) => {
     })
 
     t.test('mconcat', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2))(nil()))
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2))(nil()))
         const part2 = Promise.resolve(compose(cons(3))(nil()))
         const part3 = Promise.resolve(nil<number>())
 
-        const list = compose(cons(part1), cons(part2), cons(part3))(nil()) as List<PromiseBox<ListBox<number>>>
+        const list = compose(
+            cons<Promise<ListBox<number>>>(part1),
+            cons<Promise<ListBox<number>>>(part2),
+            cons<Promise<ListBox<number>>>(part3))(nil()) as List<PromiseBox<ListBox<number>>>
         const result1 = monoid.mconcat(list)
         const result2 = monoid.mconcat(nil())
 
@@ -63,9 +66,9 @@ tap.test('PromiseMonoid', async (t) => {
     })
 
     t.test('Monoid law - associativity : (x <> y) <> z = x <> (y <> z)', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2))(nil())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons(2))(nil())) as PromiseBox<ListBox<number>>
         const part2 = Promise.resolve(compose(cons(3))(nil())) as PromiseBox<ListBox<number>>
-        const part3 = Promise.resolve(compose(cons(4), cons(5))(nil())) as PromiseBox<ListBox<number>>
+        const part3 = Promise.resolve(compose(cons<number>(4), cons(5))(nil())) as PromiseBox<ListBox<number>>
 
         const result1 = monoid['<>'](monoid['<>'](part1, part2), part3)
         const result2 = monoid['<>'](part1, monoid['<>'](part2, part3))
@@ -77,7 +80,7 @@ tap.test('PromiseMonoid', async (t) => {
     })
 
     t.test('Monoid law - right identity: mempty <> x = x', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2))(nil())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons(2))(nil())) as PromiseBox<ListBox<number>>
         const part2 = Promise.resolve(nil<number>()) as PromiseBox<ListBox<number>>
 
         const result1 = monoid['<>'](monoid.mempty, part1)
@@ -90,7 +93,7 @@ tap.test('PromiseMonoid', async (t) => {
     })
 
     t.test('Monoid law - left identity: x <> mempty = x', async (t) => {
-        const part1 = Promise.resolve(compose(cons(1), cons(2))(nil())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons(2))(nil())) as PromiseBox<ListBox<number>>
         const part2 = Promise.resolve(nil<number>()) as PromiseBox<ListBox<number>>
 
         const result1 = monoid['<>'](part1, monoid.mempty)

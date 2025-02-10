@@ -21,10 +21,10 @@ export type Box<K extends Kind, _> = {
 type BuildBox<Ts extends unknown[] = []> = Ts extends { length: 0 }
     ? Box<Kind1, Ts>
     : Ts extends { length: 1 }
-    ? Box<Kind2, Ts>
-    : Ts extends { length: 2 }
-    ? Box<Kind3, Ts>
-    : never
+      ? Box<Kind2, Ts>
+      : Ts extends { length: 2 }
+        ? Box<Kind3, Ts>
+        : never
 
 export type Box0 = BuildBox<[]>
 

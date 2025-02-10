@@ -12,7 +12,7 @@ tap.test('List monad', async (t) => {
     })
 
     t.test('>>=', async (t) => {
-        const list1 = compose(cons(1), cons(2), cons(3))(nil())
+        const list1 = compose(cons<number>(1), cons<number>(2), cons(3))(nil())
         const list2 = repeat(3)
         const f = (x: number) => compose(cons(x - 1), cons(x), cons(x + 1))(nil())
 
@@ -24,8 +24,8 @@ tap.test('List monad', async (t) => {
     })
 
     t.test('>>', async (t) => {
-        const list1 = compose(cons(1), cons(2))(nil())
-        const list2 = compose(cons(4), cons(5), cons(6))(nil())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
+        const list2 = compose(cons<number>(4), cons<number>(5), cons<number>(6))(nil())
         const list3 = repeat(3)
 
         const result1 = monad['>>'](list1, list2)
@@ -50,7 +50,7 @@ tap.test('List monad', async (t) => {
     })
 
     t.test('Monad second law (Right identity): m >>= return = m', async (t) => {
-        const m = compose(cons(1), cons(2), cons(3))(nil())
+        const m = compose(cons<number>(1), cons<number>(2), cons(3))(nil())
 
         const left = monad['>>='](m, monad.return)
 
@@ -59,7 +59,7 @@ tap.test('List monad', async (t) => {
     })
 
     t.test('Monad thrird law (Associativity): (m >>= g) >>=	h =	m >>= ((x) -> g x >>= h)', async (t) => {
-        const m = compose(cons(1), cons(2), cons(3))(nil())
+        const m = compose(cons<number>(1), cons<number>(2), cons(3))(nil())
         const g = (x: number) => compose(cons(x), cons(x - 2))(nil())
         const h = (x: number) => compose(cons(x + 1), cons(x + 2))(nil())
 
@@ -72,14 +72,14 @@ tap.test('List monad', async (t) => {
 
     t.test('do-notation', async (t) => {
         const result1 = doNotation<ListBox<number>>(function* (): Generator<ListBox<number>, number, number> {
-            const value1 = yield cons(5)(cons(6)(nil()))
-            const value2 = yield cons(7)(cons(8)(nil()))
+            const value1 = yield cons<number>(5)(cons(6)(nil()))
+            const value2 = yield cons<number>(7)(cons(8)(nil()))
             return value1 + value2
         }, monad)
 
         const result2 = doNotation<ListBox<number>>(function* (): Generator<ListBox<number>, number, number> {
             const value1 = yield repeat(3)
-            const value2 = yield cons(7)(cons(8)(nil()))
+            const value2 = yield cons<number>(7)(cons(8)(nil()))
             return value1 + value2
         }, monad)
 

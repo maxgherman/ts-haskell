@@ -6,9 +6,9 @@ import { $case, _, formList, head, map, NonEmpty, nonEmpty, tail, toList } from 
 tap.test('NonEmpty', async (t) => {
     t.test('nonEmpty', async (t) => {
         const value0 = compose(nonEmpty)(nil<number>())
-        const value1 = compose(nonEmpty, cons(1))(nil<number>())
-        const value2 = compose(nonEmpty, cons(1), cons(2))(nil<number>())
-        const value3 = compose(nonEmpty, cons(1), cons(2), cons(3))(nil<number>())
+        const value1 = compose(nonEmpty, cons<number>(1))(nil())
+        const value2 = compose(nonEmpty, cons<number>(1), cons(2))(nil())
+        const value3 = compose(nonEmpty, cons<number>(1), cons<number>(2), cons(3))(nil())
 
         t.equal(value0(), undefined)
 
@@ -32,7 +32,7 @@ tap.test('NonEmpty', async (t) => {
 
     t.test('tail', async (t) => {
         const list1: NonEmpty<number> = () => [1, nil<number>()]
-        const list2: NonEmpty<number> = () => [1, cons(3)(nil<number>())]
+        const list2: NonEmpty<number> = () => [1, cons<number>(3)(nil())]
 
         const result1 = tail(list1)
         const result2 = tail(list2)
@@ -43,7 +43,7 @@ tap.test('NonEmpty', async (t) => {
 
     t.test('fromList', async (t) => {
         const list1 = nil<number>()
-        const list2 = cons(2)(cons(3)(nil<number>()))
+        const list2 = cons<number>(2)(cons<number>(3)(nil()))
 
         const result2 = formList(list2)
 
@@ -54,7 +54,7 @@ tap.test('NonEmpty', async (t) => {
     })
 
     t.test('toListList', async (t) => {
-        const list: NonEmpty<number> = () => [0, compose(cons(1), cons(2), cons(3))(nil<number>())]
+        const list: NonEmpty<number> = () => [0, compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())]
 
         const result = toList(list)
 
@@ -62,7 +62,7 @@ tap.test('NonEmpty', async (t) => {
     })
 
     t.test('map', async (t) => {
-        const list: NonEmpty<number> = () => [0, compose(cons(1), cons(2), cons(3))(nil<number>())]
+        const list: NonEmpty<number> = () => [0, compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())]
 
         const result = map((x) => x + 1, list)
 
@@ -70,9 +70,9 @@ tap.test('NonEmpty', async (t) => {
     })
 
     t.test('$case', async (t) => {
-        const value1 = compose(formList, cons(1))(nil<number>())
-        const value2 = compose(formList, cons(1), cons(2))(nil<number>())
-        const value3 = compose(formList, cons(1), cons(2), cons(3))(nil<number>())
+        const value1 = compose(formList, cons<number>(1))(nil())
+        const value2 = compose(formList, cons<number>(1), cons(2))(nil())
+        const value3 = compose(formList, cons<number>(1), cons<number>(2), cons<number>(3))(nil())
 
         const result0 = $case([
             [
@@ -124,7 +124,7 @@ tap.test('NonEmpty', async (t) => {
 
     t.test('$case rest', async (t) => {
         const empty = nil<number>()
-        const value = compose(cons(4), cons(3), cons(2), cons(1))(empty)
+        const value = compose(cons<number>(4), cons<number>(3), cons<number>(2), cons<number>(1))(empty)
 
         const result1 = $case([[[_], (a) => listHead(a)]])(formList(value))
 

@@ -70,8 +70,8 @@ tap.test('List', async (t) => {
 
     t.test('Cons constructor', async (t) => {
         const empty = nil<number>()
-        const result1 = cons(3)(cons(2)(cons(1)(empty)))
-        const result2 = compose(cons(3), cons(2), cons<number>(1))(empty)
+        const result1 = cons<number>(3)(cons<number>(2)(cons<number>(1)(empty)))
+        const result2 = compose(cons<number>(3), cons<number>(2), cons<number>(1))(empty)
 
         t.same(toArray(result1), [3, 2, 1])
         t.same(toArray(result2), [3, 2, 1])
@@ -79,9 +79,9 @@ tap.test('List', async (t) => {
 
     t.test('Cons $case', async (t) => {
         const empty = nil<number>()
-        const value1 = cons(1)(empty)
-        const value2 = cons(2)(cons(1)(empty))
-        const value3 = cons(3)(cons(2)(cons(1)(empty)))
+        const value1 = cons<number>(1)(empty)
+        const value2 = cons<number>(2)(cons<number>(1)(empty))
+        const value3 = cons<number>(3)(cons<number>(2)(cons<number>(1)(empty)))
 
         const result1 = $case([
             [[_, _], (a, b) => a + b],
@@ -106,7 +106,7 @@ tap.test('List', async (t) => {
 
     t.test('Cons $case rest', async (t) => {
         const empty = nil<number>()
-        const value = compose(cons(4), cons(3), cons(2), cons(1))(empty)
+        const value = compose(cons<number>(4), cons<number>(3), cons<number>(2), cons<number>(1))(empty)
 
         const result1 = $case([[[_], (a) => head(a)]])(value)
 
@@ -130,9 +130,9 @@ tap.test('List', async (t) => {
 
     t.test('Cons $case rest exact', async (t) => {
         const empty = nil<number>()
-        const value1 = cons(1)(empty)
-        const value2 = compose(cons(1), cons(2))(empty)
-        const value3 = compose(cons(1), cons(2), cons(3))(empty)
+        const value1 = cons<number>(1)(empty)
+        const value2 = compose(cons<number>(1), cons<number>(2))(empty)
+        const value3 = compose(cons<number>(1), cons<number>(2), cons<number>(3))(empty)
 
         const result1 = $case([[[_], (a, b) => ({ a, b: $null(b) })]])(value1)
 
@@ -146,19 +146,19 @@ tap.test('List', async (t) => {
     })
 
     t.test('Cons head', async (t) => {
-        const value = compose(cons(2), cons(1))(nil<number>())
+        const value = compose(cons<number>(2), cons<number>(1))(nil())
         t.equal(head(value), 2)
     })
 
     t.test('Cons tail', async (t) => {
-        const value1 = compose(cons(2), cons(1))(nil<number>())
+        const value1 = compose(cons<number>(2), cons<number>(1))(nil())
         t.same(toArray(tail(value1)), [1])
         t.same(toArray(tail(tail(value1))), [])
         t.ok($null(tail(tail(value1))))
     })
 
     t.test('Cons map ', async (t) => {
-        const value = compose(cons(3), cons(2), cons(1))(nil<number>())
+        const value = compose(cons<number>(3), cons<number>(2), cons<number>(1))(nil())
 
         const result = map((x) => x + 1, value)
 
@@ -168,8 +168,8 @@ tap.test('List', async (t) => {
     t.test('concat ', async (t) => {
         const nill1 = nil<number>()
         const nill2 = nil<number>()
-        const cons1 = compose(cons(1))(nil<number>())
-        const cons2 = compose(cons(3), cons(2), cons(1))(nil<number>())
+        const cons1 = compose(cons<number>(1))(nil())
+        const cons2 = compose(cons<number>(3), cons<number>(2), cons<number>(1))(nil())
 
         const result1 = concat(nill1, nill2)
         const result2 = concat(nill1, cons1)
@@ -186,8 +186,8 @@ tap.test('List', async (t) => {
 
     t.test('take', async (t) => {
         const nill = nil<number>()
-        const cons1 = compose(cons(1))(nil<number>())
-        const cons2 = compose(cons(3), cons(2), cons(1))(nil<number>())
+        const cons1 = compose(cons<number>(1))(nil())
+        const cons2 = compose(cons<number>(3), cons<number>(2), cons<number>(1))(nil())
 
         t.same(toArray(take(3, nill)), [])
         t.same(toArray(take(5, cons1)), [1])

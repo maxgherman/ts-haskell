@@ -21,7 +21,7 @@ const createList = (value: string) => value.split('').reduceRight((acc, curr) =>
 
 tap.test('MaybeSemigroup', async (t) => {
     t.test('<>', async (t) => {
-        const list = compose(cons('1'), cons('2'))(nil())
+        const list = compose(cons<string>('1'), cons('2'))(nil())
         const result1 = semigroup['<>'](nothing(), nothing())
         const result2 = semigroup['<>'](nothing(), just(list))
         const result3 = semigroup['<>'](just(list), nothing())

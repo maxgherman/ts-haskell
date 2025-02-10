@@ -13,7 +13,7 @@ tap.test('List comprehensions', async (t) => {
     })
 
     t.test('comp finite list', async (t) => {
-        const list = compose(cons(1), cons(2), cons(3))(nil<number>())
+        const list = compose(cons<number>(1), cons<number>(2), cons(3))(nil())
 
         const result = comp((x: number) => x + 1, [list])
 
@@ -21,9 +21,9 @@ tap.test('List comprehensions', async (t) => {
     })
 
     t.test('comp finite lists', async (t) => {
-        const list1 = compose(cons(1), cons(2))(nil<number>())
-        const list2 = compose(cons(3))(nil<number>())
-        const list3 = compose(cons(5), cons(6), cons(7))(nil<number>())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
+        const list2 = compose(cons<number>(3))(nil())
+        const list3 = compose(cons<number>(5), cons<number>(6), cons(7))(nil())
 
         const result = comp((x1: number, x2: number, x3: number) => `${x1} ${x2} ${x3}`, [list1, list2, list3])
 
@@ -51,7 +51,7 @@ tap.test('List comprehensions', async (t) => {
 
     t.test('comp mixed list', async (t) => {
         const list1 = repeat(3)
-        const list2 = compose(cons(1), cons(2))(nil<number>())
+        const list2 = compose(cons<number>(1), cons(2))(nil())
 
         const result = comp((x1: number, x2: number) => [x1, x2], [list1, list2])
         const value = compose(toArray, (list: List<number[]>) => take(5, list))(result)
@@ -66,9 +66,9 @@ tap.test('List comprehensions', async (t) => {
     })
 
     t.test('composite comprehensions', async (t) => {
-        const list1 = compose(cons(1), cons(2))(nil<number>())
-        const list2 = compose(cons(3), cons(4))(nil<number>())
-        const list3 = compose(cons(5), cons(6))(nil<number>())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
+        const list2 = compose(cons<number>(3), cons(4))(nil())
+        const list3 = compose(cons<number>(5), cons(6))(nil())
 
         const comp1 = comp((x1: number, x2: number) => `${x1} - ${x2}`, [list1, list2])
         const result = comp((x1: string, x2: number) => `${x1} | ${x2}`, [comp1, list3])
@@ -86,9 +86,9 @@ tap.test('List comprehensions', async (t) => {
     })
 
     t.test('comp filters', async (t) => {
-        const list1 = compose(cons(1), cons(2))(nil<number>())
-        const list2 = compose(cons(3))(nil<number>())
-        const list3 = compose(cons(5), cons(6), cons(7))(nil<number>())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
+        const list2 = compose(cons<number>(3))(nil())
+        const list3 = compose(cons<number>(5), cons<number>(6), cons(7))(nil())
 
         const result = comp(
             (x1: number, x2: number, x3: number) => `${x1} ${x2} ${x3}`,
@@ -108,9 +108,9 @@ tap.test('List comprehensions', async (t) => {
     })
 
     t.test('comp multiple filters', async (t) => {
-        const list1 = compose(cons(1), cons(2))(nil<number>())
-        const list2 = compose(cons(3))(nil<number>())
-        const list3 = compose(cons(5), cons(6), cons(7))(nil<number>())
+        const list1 = compose(cons<number>(1), cons(2))(nil())
+        const list2 = compose(cons<number>(3))(nil())
+        const list3 = compose(cons<number>(5), cons<number>(6), cons(7))(nil())
 
         const result = comp(
             (x1: number, x2: number, x3: number) => `${x1} ${x2} ${x3}`,

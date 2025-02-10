@@ -11,8 +11,8 @@ tap.test('ListMonoid', async (t) => {
     })
 
     t.test('<>', async (t) => {
-        const part1 = compose(cons('1'), cons('2'), cons('3'))(nil())
-        const part2 = compose(cons('4'), cons('5'), cons('6'))(nil())
+        const part1 = compose(cons<string>('1'), cons<string>('2'), cons('3'))(nil())
+        const part2 = compose(cons<string>('4'), cons<string>('5'), cons('6'))(nil())
         const part3 = nil<string>()
 
         const result1 = monoid['<>'](part1, part2)
@@ -25,8 +25,8 @@ tap.test('ListMonoid', async (t) => {
     })
 
     t.test('mappend', async (t) => {
-        const part1 = compose(cons('1'), cons('2'), cons('3'))(nil())
-        const part2 = compose(cons('4'), cons('5'), cons('6'))(nil())
+        const part1 = compose(cons<string>('1'), cons<string>('2'), cons('3'))(nil())
+        const part2 = compose(cons<string>('4'), cons<string>('5'), cons('6'))(nil())
         const part3 = nil<string>()
 
         const result1 = monoid.mappend(part1, part2)
@@ -39,8 +39,8 @@ tap.test('ListMonoid', async (t) => {
     })
 
     t.test('mconcat', async (t) => {
-        const part1 = compose(cons('1'), cons('2'))(nil())
-        const part2 = compose(cons('3'))(nil())
+        const part1 = compose(cons<string>('1'), cons('2'))(nil())
+        const part2 = compose(cons<string>('3'))(nil())
         const part3 = nil<string>()
 
         const list = compose(cons(part1), cons(part2), cons(part3))(nil())
@@ -52,9 +52,9 @@ tap.test('ListMonoid', async (t) => {
     })
 
     t.test('Monoid law - associativity : (x <> y) <> z = x <> (y <> z)', async (t) => {
-        const part1 = compose(cons('1'), cons('2'))(nil())
-        const part2 = compose(cons('3'))(nil())
-        const part3 = compose(cons('4'), cons('5'))(nil())
+        const part1 = compose(cons<string>('1'), cons('2'))(nil())
+        const part2 = compose(cons<string>('3'))(nil())
+        const part3 = compose(cons<string>('4'), cons('5'))(nil())
 
         const result1 = monoid['<>'](monoid['<>'](part1, part2), part3)
         const result2 = monoid['<>'](part1, monoid['<>'](part2, part3))
@@ -64,7 +64,7 @@ tap.test('ListMonoid', async (t) => {
     })
 
     t.test('Monoid law - right identity: mempty <> x = x', async (t) => {
-        const part1 = compose(cons('1'), cons('2'))(nil())
+        const part1 = compose(cons<string>('1'), cons('2'))(nil())
         const part2 = nil<string>()
 
         const result1 = monoid['<>'](monoid.mempty, part1)
@@ -75,7 +75,7 @@ tap.test('ListMonoid', async (t) => {
     })
 
     t.test('Monoid law - left identity: x <> mempty = x', async (t) => {
-        const part1 = compose(cons('1'), cons('2'))(nil())
+        const part1 = compose(cons<string>('1'), cons('2'))(nil())
         const part2 = nil<string>()
 
         const result1 = monoid['<>'](part1, monoid.mempty)
