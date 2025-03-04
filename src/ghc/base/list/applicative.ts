@@ -37,7 +37,7 @@ const baseImplementation: BaseImplementation = {
     pure: <A>(a: NonNullable<A>): ListBox<A> => cons(a)(nil()),
 
     // fs <*> xs = [f x | f <- fs, x <- xs]
-    '<*>': <A, B>(f: ListBox<FunctionArrow<A, B>>, fa: ListBox<A>): ListBox<B> => comp((f, x) => f(x), [f, fa]),
+    //'<*>': <A, B>(f: ListBox<FunctionArrow<A, B>>, fa: ListBox<A>): ListBox<B> => comp((f, x) => f(x), [f, fa]),
 
     // liftA2 f xs ys = [f x y | x <- xs, y <- ys]
     liftA2: <A, B, C>(f: FunctionArrow2<A, B, C>, fa: ListBox<A>, fb: ListBox<B>): ListBox<C> =>

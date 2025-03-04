@@ -70,10 +70,12 @@ tap.test('MaybeSemigroup', async (t) => {
         const result1 = semigroup.stimes(10, nothing())
         const result2 = semigroup.stimes(3, just(createList('test ')))
         const result3 = () => semigroup.stimes(-1, just(createList('test')))
+        const result4 = semigroup.stimes(0, just(createList('test')))
 
         t.equal(caseNothing(result1), 'nothing')
         t.equal(caseArray(result2), 'test test test ')
         t.throws(result3)
+        t.equal(caseNothing(result4), 'nothing')
     })
 
     t.test('semigroup law - associativity: (x <> y) <> z = x <> (y <> z)', async (t) => {

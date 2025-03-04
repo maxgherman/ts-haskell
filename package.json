@@ -7,7 +7,7 @@
     "build": "tsc",
     "lint": "eslint './src/**/*.ts' --max-warnings=0",
     "test": "tap run --node-arg=\"-r\"  --node-arg=\"tsconfig-paths/register\"",
-    "test:ci": "tap run --node-arg=\"-r\"  --node-arg=\"tsconfig-paths/register\" --disable-coverage"
+    "coverage:html": "tap report html"
   },
   "repository": {
     "type": "git",

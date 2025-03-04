@@ -7,11 +7,13 @@ tap.test('List comprehensions', async (t) => {
     t.test('comp empty list', async (t) => {
         const list = nil<number>()
 
-        const result = comp((x: number) => x + 1, [list])
+        const result1 = comp((x: number) => x + 1, [list])
+        const result2 = comp((x: number) => x + 1, [] as unknown as [List<number>])
 
-        t.same(toArray(result), [])
+        t.same(toArray(result1), [])
+        t.same(toArray(result2), [NaN])
     })
-
+    
     t.test('comp finite list', async (t) => {
         const list = compose(cons<number>(1), cons<number>(2), cons(3))(nil())
 
@@ -119,5 +121,13 @@ tap.test('List comprehensions', async (t) => {
         )
 
         t.same(toArray(result), ['1 3 7', '2 3 7'])
+    })
+
+    t.test('comp list kind', async (t) => {
+        const list = compose(cons<number>(1), cons<number>(2), cons(3))(nil())
+
+        const result = comp((x: number) => x + 1, [list])
+
+        t.equal(result.kind('*' as ( "*" & ((_: "*") => "*"))), '*');
     })
 })

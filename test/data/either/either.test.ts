@@ -37,6 +37,21 @@ tap.test('Either', async (t) => {
         t.throws(() => result())
     })
 
+    t.test('$case Non-exhaustive patterns for Either', async (t) => {
+        const boxedValue = new Error()
+        const value = left<Error, string>(boxedValue)
+
+        const f = (value as unknown as { from: string })
+        f.from = 'test';
+
+        const result = () =>
+            $case({
+                right: (_: string) => {},
+            })(value)
+
+        t.throws(() => result())
+    })
+
     t.test('Right constructor', async (t) => {
         const boxedValue = 123
 
@@ -74,6 +89,9 @@ tap.test('Either', async (t) => {
     t.test('kind', async (t) => {
         const leftValue = left<Error, string>(new Error())
         const rightValue = right<Error, string>('123')
+   
+        t.equal(leftValue.kind('*')('*'), '*')
+        t.equal(rightValue.kind('*')('*'), '*')
 
         t.equal(((kindOf<Error, string>(leftValue) as Func)('*') as Func)('*'), '*')
         t.equal(((kindOf<Error, string>(rightValue) as Func)('*') as Func)('*'), '*')

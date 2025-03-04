@@ -70,8 +70,9 @@ export const $case =
         for (const pattern of caseOf) {
             const matchResult = matchPattern(pattern[0], list)
             if (matchResult.result) {
+
                 const result = (
-                    matchResult.rest ? [...matchResult.value, matchResult.rest] : [...matchResult.value]
+                    [...matchResult.value, matchResult.rest]
                 ) as never[]
 
                 return pattern[1](...result)

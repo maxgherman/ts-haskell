@@ -51,9 +51,11 @@ tap.test('EitherSemigroup', async (t) => {
     t.test('stimes', async (t) => {
         const result1 = semigroup.stimes(10, left<Error, string>(new Error('test error')))
         const result2 = semigroup.stimes(10, right<Error, string>('Test'))
+        const result3 = () => semigroup.stimes(-1, right<Error, string>('Test'))
 
         t.equal(caseErrorMessage(result1), 'test error')
         t.equal(caseString(result2), 'Test')
+        t.throws(result3)
     })
 
     t.test('semigroup law: (x <> y) <> z = x <> (y <> z)', async (t) => {
