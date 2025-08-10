@@ -1,5 +1,5 @@
 import tap from 'tap'
-import { compose, id } from 'ghc/base/functions'
+import { compose } from 'ghc/base/functions'
 import { semigroup as createSemigroup } from 'ghc/base/maybe/semigroup'
 import { $case, just, nothing } from 'ghc/base/maybe/maybe'
 import { ListSemigroup, semigroup as createListSemigroup } from 'ghc/base/list/semigroup'
@@ -35,7 +35,7 @@ tap.test('MaybeSemigroup', async (t) => {
 
     t.test('sconcat', async (t) => {
         const value1 = compose(formList, cons(nothing()), nil)()
-        const value2 = compose(formList, cons(nothing()), cons(nothing()), nil)(id)
+        const value2 = compose(formList, cons(nothing()), cons(nothing()), nil)()
 
         const value3 = compose(
             formList,
@@ -43,7 +43,7 @@ tap.test('MaybeSemigroup', async (t) => {
             cons(just(createList(' '))),
             cons(just(createList('world'))),
             nil,
-        )(id)
+        )()
 
         const value4 = compose(
             formList,
@@ -53,7 +53,7 @@ tap.test('MaybeSemigroup', async (t) => {
             cons(just(createList(' world'))),
             cons(nothing()),
             nil,
-        )(id)
+        )()
 
         const result1 = semigroup.sconcat(value1)
         const result2 = semigroup.sconcat(value2)

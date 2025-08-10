@@ -9,13 +9,13 @@ const rightValue = <TL, TR>(x: EitherBox<TL, TR>) => $case<TL, TR, TR>({ right: 
 
 tap.test('Either functor', async (t) => {
     t.test('fmap - right', async (t) => {
-        const result = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+        const result = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
             rightValue,
             (x) => functor.fmap((x: number) => x * x + Math.pow(x, 2), x),
             right,
         )(3)
 
-        const expected = compose<number, EitherBox<Error, number>, number>(rightValue, right)(18)
+        const expected = compose<[number], EitherBox<Error, number>, number>(rightValue, right)(18)
 
         t.equal(result, expected)
         t.equal(result, 18)
@@ -23,7 +23,7 @@ tap.test('Either functor', async (t) => {
 
     t.test('fmap - left', async (t) => {
         const error = new Error('Test')
-        const result = compose<Error, EitherBox<Error, number>, EitherBox<Error, number>, Error>(
+        const result = compose<[Error], EitherBox<Error, number>, EitherBox<Error, number>, Error>(
             leftValue,
             (x) => functor.fmap((x: number) => x * x + Math.pow(x, 2), x),
             left,
@@ -33,7 +33,7 @@ tap.test('Either functor', async (t) => {
     })
 
     t.test('<$>', async (t) => {
-        const result = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+        const result = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
             rightValue,
             (x) => functor['<$>']((x: number) => x * x + x / 2, x),
             right,
@@ -43,7 +43,7 @@ tap.test('Either functor', async (t) => {
     })
 
     t.test('<$', async (t) => {
-        const result = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+        const result = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
             rightValue,
             (x) => functor['<$'](7, x),
             right,
@@ -53,7 +53,7 @@ tap.test('Either functor', async (t) => {
     })
 
     t.test('$>', async (t) => {
-        const result = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+        const result = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
             rightValue,
             (x) => functor['$>'](x, 7),
             right,
@@ -63,7 +63,7 @@ tap.test('Either functor', async (t) => {
     })
 
     t.test('<&>', async (t) => {
-        const result = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+        const result = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
             rightValue,
             (x) => functor['<&>'](x, (x: number) => x * x + x / 2),
             right,
@@ -74,7 +74,7 @@ tap.test('Either functor', async (t) => {
 
     t.test('void - left', async (t) => {
         const error = new Error('Test')
-        const result = compose<Error, EitherBox<Error, number>, EitherBox<Error, []>, Error>(
+        const result = compose<[Error], EitherBox<Error, number>, EitherBox<Error, []>, Error>(
             leftValue,
             functor.void,
             left,
@@ -84,7 +84,7 @@ tap.test('Either functor', async (t) => {
     })
 
     t.test('void - right', async (t) => {
-        const result = compose<number, EitherBox<Error, number>, EitherBox<Error, []>, []>(
+        const result = compose<[number], EitherBox<Error, number>, EitherBox<Error, []>, []>(
             rightValue,
             functor.void,
             right,
@@ -97,13 +97,13 @@ tap.test('Either functor', async (t) => {
         const fmapId = (fa: EitherBox<Error, number>) => functor.fmap(id, fa)
 
         t.test('Right', async (t) => {
-            const result = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+            const result = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
                 rightValue,
                 fmapId,
                 right,
             )(3)
 
-            const expected = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+            const expected = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
                 rightValue,
                 id,
                 right,
@@ -115,13 +115,13 @@ tap.test('Either functor', async (t) => {
 
         t.test('Left', async (t) => {
             const error = new Error('Test')
-            const result = compose<Error, EitherBox<Error, number>, EitherBox<Error, number>, Error>(
+            const result = compose<[Error], EitherBox<Error, number>, EitherBox<Error, number>, Error>(
                 leftValue,
                 fmapId,
                 left,
             )(error)
 
-            const expected = compose<Error, EitherBox<Error, number>, EitherBox<Error, number>, Error>(
+            const expected = compose<[Error], EitherBox<Error, number>, EitherBox<Error, number>, Error>(
                 leftValue,
                 id,
                 left,
@@ -141,13 +141,13 @@ tap.test('Either functor', async (t) => {
             const fAfB = compose(fA, fB)
 
             t.test('Right', async (t) => {
-                const one = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+                const one = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
                     rightValue,
                     fAB,
                     right,
                 )(3)
 
-                const two = compose<number, EitherBox<Error, number>, EitherBox<Error, number>, number>(
+                const two = compose<[number], EitherBox<Error, number>, EitherBox<Error, number>, number>(
                     rightValue,
                     fAfB,
                     right,
@@ -159,13 +159,13 @@ tap.test('Either functor', async (t) => {
 
             t.test('Left', async (t) => {
                 const error = new Error('Test Error')
-                const one = compose<Error, EitherBox<Error, number>, EitherBox<Error, number>, Error>(
+                const one = compose<[Error], EitherBox<Error, number>, EitherBox<Error, number>, Error>(
                     leftValue,
                     fAB,
                     left,
                 )(error)
 
-                const two = compose<Error, EitherBox<Error, number>, EitherBox<Error, number>, Error>(
+                const two = compose<[Error], EitherBox<Error, number>, EitherBox<Error, number>, Error>(
                     leftValue,
                     fAfB,
                     left,
