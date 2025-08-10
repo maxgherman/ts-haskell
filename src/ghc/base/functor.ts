@@ -13,7 +13,7 @@ export type Functor = FunctorBase & {
     // <$ :: Functor f => a -> f b -> f a
     '<$'<A, B>(a: A, fb: MinBox1<B>): MinBox1<A>
 
-    // <$ :: Functor f => f a -> b -> f a
+    // $> :: Functor f => f a -> b -> f b
     '$>'<A, B>(fa: MinBox1<A>, b: B): MinBox1<B>
 
     // <&> :: Functor f => f a -> (a -> b) -> f b
@@ -42,7 +42,7 @@ const extensions: (_: FunctorBase) => Extensions = (base: FunctorBase) => {
         // <$ :: Functor f => a -> f b -> f a
         '<$': fmapDotConst,
 
-        // $> :: Functor f => f a -> b -> f a
+        // $> :: Functor f => f a -> b -> f b
         '$>': flip(fmapDotConst),
 
         // <&> :: Functor f => f a -> (a -> b) -> f b
