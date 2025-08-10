@@ -48,7 +48,11 @@ const baseImplementation = <T>(monoid: Monoid<T>): BaseImplementation => ({
         const uv = monoid['<>'](fst(fa), fst(fb))
 
         // tuple2(uv, f(snd(fa))(snd(fb)))
-        return compose<Tuple2BoxT<T, B>, B, C, Tuple2BoxT<T, C>>(curry(tuple2)(uv), f(snd(fa)), snd)(fb)
+        return compose<Tuple2BoxT<T, B>, B, C, Tuple2BoxT<T, C>>(
+            curry(tuple2)(uv),
+            f(snd(fa)),
+            (...t: Tuple2BoxT<T, B>) => snd(t),
+        )(...fb)
     },
 })
 

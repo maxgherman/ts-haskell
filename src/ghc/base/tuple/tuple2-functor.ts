@@ -19,7 +19,9 @@ export interface Tuple2Functor<T> extends Functor {
 const fmap = <T>(): FunctorBase => ({
     // fmap :: Tuple2Box f => (a -> b) ->  f a -> f b
     fmap: <A, B>(f: (a: A) => NonNullable<B>, fa: Tuple2Box<T, A>): Tuple2Box<T, B> =>
-        compose<Tuple2Box<T, A>, A, B, Tuple2Box<T, B>>(curry(tuple2)(fst(fa)), f, snd)(fa),
+        compose<Tuple2Box<T, A>, A, B, Tuple2Box<T, B>>(curry(tuple2)(fst(fa)), f, (...t: Tuple2Box<T, A>) => snd(t))(
+            ...fa,
+        ),
 })
 
 export const functor = <T>() => createFunctor(fmap<T>()) as Tuple2Functor<T>
