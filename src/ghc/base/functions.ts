@@ -33,14 +33,11 @@ export function compose<T0, T1, T2>(f1: (x: T1) => T2, f0: (x: T0) => T1): (x: T
 
 export function compose<T0 extends unknown[], T1, T2>(f1: (x: T1) => T2, f0: (...args: T0) => T1): (...args: T0) => T2
 
-export function compose<T0, T1, T2, T3>(f2: (x: T2) => T3, f1: (x: T1) => T2, f0: (x: T0) => T1): (x: T0) => T3
-
 export function compose<T0 extends unknown[], T1, T2, T3>(
     f2: (x: T2) => T3,
     f1: (x: T1) => T2,
     f0: (...args: T0) => T1,
 ): (...args: T0) => T3
-
 export function compose<T0, T1, T2, T3, T4>(
     f3: (x: T3) => T4,
     f2: (x: T2) => T3,
