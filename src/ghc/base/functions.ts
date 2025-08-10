@@ -66,7 +66,7 @@ export function compose<T0, T1, T2, T3, T4, T5, T6>(
 ): (x: T0) => T6
 
 export function compose<T0, T1, T2, T3, T4, T5, T6, T7>(
-    f6: (x: T5) => T7,
+    f6: (x: T6) => T7,
     f5: (x: T5) => T6,
     f4: (x: T4) => T5,
     f3: (x: T3) => T4,
