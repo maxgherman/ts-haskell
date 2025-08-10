@@ -34,7 +34,7 @@ tap.test('MaybeSemigroup', async (t) => {
     })
 
     t.test('sconcat', async (t) => {
-        const value1 = compose(formList, cons(nothing()), nil)(id)
+        const value1 = compose(formList, cons(nothing()), nil)()
         const value2 = compose(formList, cons(nothing()), cons(nothing()), nil)(id)
 
         const value3 = compose(
