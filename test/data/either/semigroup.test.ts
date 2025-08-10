@@ -40,8 +40,7 @@ tap.test('EitherSemigroup', async (t) => {
             cons(right<Error, string>(' ')),
             cons(left<Error, string>(new Error('test error'))),
             cons(right<Error, string>('world')),
-            nil,
-        )()
+        )(nil())
 
         const result = semigroup.sconcat(value)
 

@@ -34,16 +34,15 @@ tap.test('MaybeSemigroup', async (t) => {
     })
 
     t.test('sconcat', async (t) => {
-        const value1 = compose(formList, cons(nothing()), nil)()
-        const value2 = compose(formList, cons(nothing()), cons(nothing()), nil)()
+        const value1 = compose(formList, cons(nothing()))(nil())
+        const value2 = compose(formList, cons(nothing()), cons(nothing()))(nil())
 
         const value3 = compose(
             formList,
             cons(just(createList('Hello'))),
             cons(just(createList(' '))),
             cons(just(createList('world'))),
-            nil,
-        )()
+        )(nil())
 
         const value4 = compose(
             formList,
@@ -52,8 +51,7 @@ tap.test('MaybeSemigroup', async (t) => {
             cons(nothing()),
             cons(just(createList(' world'))),
             cons(nothing()),
-            nil,
-        )()
+        )(nil())
 
         const result1 = semigroup.sconcat(value1)
         const result2 = semigroup.sconcat(value2)
