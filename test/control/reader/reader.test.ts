@@ -6,5 +6,5 @@ tap.test('reader and runReader', async (t) => {
 
     t.equal(run.runReader('hello'), 5)
     t.equal(runReader(run, 'world'), 5)
-    t.equal(run.kind(null as any)(null as any), '*')
+    t.equal(run.kind('*')('*'), '*')
 })
