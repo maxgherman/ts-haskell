@@ -201,8 +201,19 @@ tap.test('List', async (t) => {
     })
 
     t.test('kind', async (t) => {
-        const list = cons(1)(nil())
+        const empty = nil<number>()
+        const list = cons(1)(empty)
+        const mapped = map((x) => x, list)
+        const concatenated = concat(empty, list)
+        const taken = take(1, list)
+        const repeated = repeat(1)
 
         t.equal(kindOf(list), '*')
+        t.equal(empty.kind('*'), '*')
+        t.equal(list.kind('*'), '*')
+        t.equal(mapped.kind('*'), '*')
+        t.equal(concatenated.kind('*'), '*')
+        t.equal(taken.kind('*'), '*')
+        t.equal(repeated.kind('*'), '*')
     })
 })

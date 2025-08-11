@@ -66,5 +66,7 @@ tap.test('Maybe', async (t) => {
 
         t.equal(kindOf(justValue), '*')
         t.equal(kindOf(nothingValue), '*')
+        t.equal(justValue.kind('*'), '*')
+        t.equal(nothingValue.kind('*'), '*')
     })
 })
