@@ -66,7 +66,11 @@ tap.test('Maybe', async (t) => {
 
         t.equal(kindOf(justValue), '*')
         t.equal(kindOf(nothingValue), '*')
-        t.equal(justValue.kind('*'), '*')
-        t.equal(nothingValue.kind('*'), '*')
+
+        type Star = '*' & ((_: '*') => '*')
+        const star = '*' as Star
+
+        t.equal(justValue.kind(star), '*')
+        t.equal(nothingValue.kind(star), '*')
     })
 })
