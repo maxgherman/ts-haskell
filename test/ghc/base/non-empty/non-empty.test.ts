@@ -35,8 +35,8 @@ tap.test('NonEmpty', async (t) => {
         const empty = nil<number>()
         const list = listCons<number>(2)(empty)
 
-        const result1 = cons(1)(empty)
-        const result2 = cons(1)(list)
+        const result1 = cons<number>(1)(empty)
+        const result2 = cons<number>(1)(list)
 
         t.equal(head(result1), 1)
         t.equal(head(result2), 1)
