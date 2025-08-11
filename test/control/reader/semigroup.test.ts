@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { semigroup as createReaderSemigroup } from 'control/reader/semigroup'
 import { reader, ReaderBox, ReaderMinBox } from 'control/reader/reader'
-import { semigroup as createListSemigroup, ListSemigroup } from 'ghc/base/list/semigroup'
+import { semigroup as createListSemigroup } from 'ghc/base/list/semigroup'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
 import { formList } from 'ghc/base/non-empty/list'
 
@@ -23,7 +23,7 @@ tap.test('ReaderSemigroup', async (t) => {
         const value2 = createValue('0')
 
         const result = semigroup['<>'](value1, value2) as ReaderMinBox<string, ListBox<number>>
-        t.same(toArray(result('123') as ListBox<number>), [1, 7, 2, 7, 3, 1, 0, 2, 0, 3])
+        t.same(toArray(result.runReader('123') as ListBox<number>), [1, 7, 2, 7, 3, 1, 0, 2, 0, 3])
     })
 
     t.test('sconcat', async (t) => {
@@ -34,7 +34,7 @@ tap.test('ReaderSemigroup', async (t) => {
 
         const result = semigroup.sconcat(formList(value4)) as ReaderMinBox<string, ListBox<number>>
 
-        t.same(toArray(result('56') as ListBox<number>), [5, 3, 6, 5, 2, 6, 5, 1, 6])
+        t.same(toArray(result.runReader('56') as ListBox<number>), [5, 3, 6, 5, 2, 6, 5, 1, 6])
     })
 
     t.test('stimes', async (t) => {
@@ -42,7 +42,7 @@ tap.test('ReaderSemigroup', async (t) => {
 
         const result = semigroup.stimes(3, value1) as ReaderMinBox<string, ListBox<number>>
 
-        t.same(toArray(result('00') as ListBox<number>), [0, 1, 0, 0, 1, 0, 0, 1, 0])
+        t.same(toArray(result.runReader('00') as ListBox<number>), [0, 1, 0, 0, 1, 0, 0, 1, 0])
     })
 
     t.test('semigroup law - associativity: (x <> y) <> z = x <> (y <> z)', async (t) => {
@@ -61,7 +61,7 @@ tap.test('ReaderSemigroup', async (t) => {
 
         const expected = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
 
-        t.same(toArray(result1('56') as ListBox<number>), expected)
-        t.same(toArray(result2('56') as ListBox<number>), expected)
+        t.same(toArray(result1.runReader('56') as ListBox<number>), expected)
+        t.same(toArray(result2.runReader('56') as ListBox<number>), expected)
     })
 })

@@ -1,12 +1,21 @@
-import { MinBox0 } from 'data/kind'
-import { FunctionArrow, FunctionArrowBox, withKind } from 'ghc/prim/function-arrow'
+import { Box2, MinBox0, Type } from 'data/kind'
 
-export type Reader<R, A> = FunctionArrow<R, A>
+export interface Reader<R, A> {
+    readonly runReader: (r: R) => A
+}
 
-export type ReaderBox<R, A> = FunctionArrowBox<R, A>
+export type ReaderBox<R, A> = Reader<R, A> & Box2<R, A>
 
-export type ReaderMinBox<R, A> = FunctionArrowBox<R, MinBox0<A>>
+export type ReaderMinBox<R, A> = Reader<R, MinBox0<A>> & Box2<R, MinBox0<A>>
 
-export const reader = <R, A>(fn: Reader<R, A>): ReaderBox<R, A> => withKind(fn)
+export const reader = <R, A>(fn: (r: R) => A): ReaderBox<R, A> => {
+    const result: Reader<R, A> = {
+        runReader: fn,
+    }
 
-export const runReader = <R, A>(fn: Reader<R, A>, r: R): A => fn(r)
+    ;(result as any).kind = (_: '*') => (_: '*') => '*' as Type
+
+    return result as ReaderBox<R, A>
+}
+
+export const runReader = <R, A>(ra: Reader<R, A>, r: R): A => ra.runReader(r)
