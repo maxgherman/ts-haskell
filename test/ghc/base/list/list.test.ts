@@ -192,6 +192,8 @@ tap.test('List', async (t) => {
         t.same(toArray(take(3, nill)), [])
         t.same(toArray(take(5, cons1)), [1])
         t.same(toArray(take(3, cons2)), [3, 2, 1])
+        t.same(toArray(take(0, cons2)), [])
+        t.same(toArray(take(-1, cons2)), [])
     })
 
     t.test('repeat', async (t) => {
@@ -205,6 +207,7 @@ tap.test('List', async (t) => {
         const list = cons<number>(1)(empty)
         const mapped = map((x) => x, list)
         const concatenated = concat(empty, list)
+        const concatenatedNonEmpty = concat(list, empty)
         const taken = take(1, list)
         const repeated = repeat<number>(1)
 
@@ -217,6 +220,7 @@ tap.test('List', async (t) => {
         t.equal(list.kind(star), '*')
         t.equal(mapped.kind(star), '*')
         t.equal(concatenated.kind(star), '*')
+        t.equal(concatenatedNonEmpty.kind(star), '*')
         t.equal(taken.kind(star), '*')
         t.equal(repeated.kind(star), '*')
     })
