@@ -19,6 +19,8 @@ tap.test('List monad', async (t) => {
         const result1 = monad['>>='](list1, f)
         const result2 = take(5, monad['>>='](list2, f))
 
+        result1.kind('*')
+
         t.same(toArray(result1), [0, 1, 2, 1, 2, 3, 2, 3, 4])
         t.same(toArray(result2), [2, 3, 4, 2, 3])
     })

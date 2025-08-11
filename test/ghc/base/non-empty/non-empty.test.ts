@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose, Func } from 'ghc/base/functions'
 import { $null, cons, head as listHead, List, nil, tail as listTail, toArray } from 'ghc/base/list/list'
-import { $case, _, formList, head, map, NonEmpty, nonEmpty, tail, toList } from 'ghc/base/non-empty/list'
+import { $case, _, formList, head, map, NonEmpty, nonEmpty, tail, toList, cons as nonEmptyCons } from 'ghc/base/non-empty/list'
 
 tap.test('NonEmpty', async (t) => {
     t.test('nonEmpty', async (t) => {
@@ -21,6 +21,8 @@ tap.test('NonEmpty', async (t) => {
         t.equal(((value3() as Func)() as never[])[0], 1)
         t.equal(listHead(((value3() as Func)() as never[])[1] as unknown as List<number>), 2)
         t.equal(listHead(listTail(((value3() as Func)() as never[])[1] as unknown as List<number>)), 3)
+
+        ;(value3() as Func).kind('*')
     })
 
     t.test('head', async (t) => {
@@ -51,6 +53,7 @@ tap.test('NonEmpty', async (t) => {
         t.equal(((result2 as Func)() as never[])[0], 2)
         t.equal(listHead(((result2 as Func)() as never[])[1] as unknown as List<number>), 3)
         t.ok($null(listTail(((result2 as Func)() as never[])[1] as unknown as List<number>)))
+        result2.kind('*')
     })
 
     t.test('toListList', async (t) => {
@@ -67,6 +70,15 @@ tap.test('NonEmpty', async (t) => {
         const result = map((x) => x + 1, list)
 
         t.same(toArray(toList(result)), [1, 2, 3, 4])
+        result.kind('*')
+    })
+
+    t.test('cons', async (t) => {
+        const list = compose(cons<number>(2), cons<number>(3))(nil())
+        const result = nonEmptyCons(1)(list)
+
+        t.same(toArray(toList(result)), [1, 2, 3])
+        result.kind('*')
     })
 
     t.test('$case', async (t) => {
