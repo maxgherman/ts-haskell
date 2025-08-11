@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose } from 'ghc/base/functions'
 import { monad } from 'ghc/base/list/monad'
-import { toArray, cons, nil, repeat, take, ListBox } from 'ghc/base/list/list'
+import { toArray, cons, nil, repeat, take, ListBox, tail } from 'ghc/base/list/list'
 import { doNotation } from 'ghc/base/monad/do-notation'
 
 tap.test('List monad', async (t) => {
@@ -18,6 +18,15 @@ tap.test('List monad', async (t) => {
 
         const result1 = monad['>>='](list1, f)
         const result2 = take(5, monad['>>='](list2, f))
+
+        // Trigger kind thunks for coverage and assert returned kind
+        t.equal((result1.kind as (_: '*') => '*')('*'), '*')
+
+        const tailResult1 = tail(result1)
+        t.equal((tailResult1.kind as (_: '*') => '*')('*'), '*')
+        t.same(toArray(tailResult1), [1, 2, 1, 2, 3, 2, 3, 4])
+
+        t.equal((result2.kind as (_: '*') => '*')('*'), '*')
 
         t.same(toArray(result1), [0, 1, 2, 1, 2, 3, 2, 3, 4])
         t.same(toArray(result2), [2, 3, 4, 2, 3])
