@@ -1,24 +1,20 @@
 import { Type } from 'data/kind'
 import { List, ListBox, $null, head, tail, nil } from './list'
 
-function* crossJoinList<T>(...lists: List<T>[]) {
+function* crossJoinList<T>(...lists: List<T>[]): Generator<T[], void> {
     if (lists.length === 0) {
         yield []
         return
     }
 
-    let list = lists[0]
-    const rest = lists.slice(1)
+    const [first, ...rest] = lists
+    let list = first
 
     while (list && !$null(list)) {
         const headValue = head(list)
-
-        yield* (function* () {
-            for (const tailValues of crossJoinList<T>(...rest)) {
-                yield [headValue, ...tailValues]
-            }
-        })()
-
+        for (const tailValues of crossJoinList<T>(...rest)) {
+            yield [headValue, ...tailValues]
+        }
         list = tail(list)
     }
 }
