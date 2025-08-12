@@ -1,5 +1,5 @@
 import { Type } from 'data/kind'
-import { List, ListBox, $null, head, tail, nil } from './list'
+import { List, ListBox, $null, head, tail } from './list'
 
 function* crossJoinList<T>(...lists: List<T>[]): Generator<T[], void> {
     if (lists.length === 0) {
@@ -42,34 +42,33 @@ export function comp<T>(
     filters: ((...args: unknown[]) => boolean)[] = [],
 ): ListBox<T> {
     const generator = crossJoinList(...input)
-    const values: Map<number, unknown[]> = new Map()
 
-    const list = (step: number): ListBox<T> => {
-        if (values.has(step)) {
-            const headValue = values.get(step) as T[]
+    const build = (): ListBox<T> => {
+        let cache: unknown = null
 
-            const result = () => ({
-                head: output(...headValue),
-                tail: list(step + 1),
-            })
+        const node = () => {
+            if (cache === null) {
+                let next = generator.next()
 
-            result.kind = (_: '*') => '*' as Type
-            return result
+                while (!next.done && !filters.every((filter) => filter(...(next.value as unknown[])))) {
+                    next = generator.next()
+                }
+
+                cache = next.done
+                    ? []
+                    : {
+                          head: output(...(next.value as unknown[])),
+                          tail: build(),
+                      }
+            }
+
+            return cache
         }
 
-        let next = generator.next()
+        ;(node as unknown as { kind: (_: '*') => Type }).kind = (_: '*') => '*' as Type
 
-        while (!next.done && !filters.every((filter) => filter(...(next.value as T[])))) {
-            next = generator.next()
-        }
-
-        if (next.done) {
-            return nil<T>()
-        }
-
-        values.set(step, next.value)
-        return list(step)
+        return node as ListBox<T>
     }
 
-    return list(1)
+    return build()
 }
