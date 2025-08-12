@@ -1,58 +1,21 @@
 import { Type } from 'data/kind'
-import { List, ListBox, $null, head, tail, cons, nil } from './list'
+import { List, ListBox, $null, head, tail, nil } from './list'
 
-function* crossJoinList<T>(...lists: List<T>[]) {
-    if (lists.length <= 0) {
+function* crossJoinList<T>(...lists: List<T>[]): Generator<T[], void> {
+    if (lists.length === 0) {
         yield []
         return
     }
 
-    if (lists.length <= 1) {
-        let list = lists[0]
-        while (list && !$null(list)) {
-            const headValue = head(list)
-            yield [headValue]
-            list = tail(list)
+    const [first, ...rest] = lists
+    let list = first
+
+    while (list && !$null(list)) {
+        const headValue = head(list)
+        for (const tailValues of crossJoinList<T>(...rest)) {
+            yield [headValue, ...tailValues]
         }
-        return
-    }
-
-    let result = lists[0] as List<T[]>
-    for (let i = 1; i < lists.length; i++) {
-        const fmap: T[][] = []
-        let tempResult = result
-
-        while (tempResult && !$null(tempResult)) {
-            const tempResultHead = head(tempResult)
-            const map: T[][] = []
-
-            let current = lists[i]
-            while (current && !$null(current)) {
-                const currentHead = head(current)
-                const result = [tempResultHead, currentHead].flat() as T[]
-
-                if (result.length === lists.length) {
-                    yield result
-                }
-
-                map.push(result)
-
-                current = tail(current)
-            }
-
-            fmap.push(...map)
-
-            tempResult = tail(tempResult)
-        }
-
-        if (i !== lists.length - 1) {
-            let resultTail = nil<T[]>()
-            for (let j = fmap.length - 1; j >= 0; j--) {
-                resultTail = cons(fmap[j] as T[])(resultTail)
-            }
-
-            result = resultTail
-        }
+        list = tail(list)
     }
 }
 
