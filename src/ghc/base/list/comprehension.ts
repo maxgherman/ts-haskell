@@ -42,34 +42,30 @@ export function comp<T>(
     filters: ((...args: unknown[]) => boolean)[] = [],
 ): ListBox<T> {
     const generator = crossJoinList(...input)
-    const values: Map<number, unknown[]> = new Map()
-
-    const list = (step: number): ListBox<T> => {
-        if (values.has(step)) {
-            const headValue = values.get(step) as T[]
-
-            const result = () => ({
-                head: output(...headValue),
-                tail: list(step + 1),
-            })
-
-            result.kind = (_: '*') => '*' as Type
-            return result
-        }
-
+    const nextValid = (): IteratorResult<unknown[], void> => {
         let next = generator.next()
-
-        while (!next.done && !filters.every((filter) => filter(...(next.value as T[])))) {
+        while (!next.done && !filters.every((filter) => filter(...(next.value as unknown[])))) {
             next = generator.next()
         }
+        return next
+    }
 
+    const build = (): ListBox<T> => {
+        const next = nextValid()
         if (next.done) {
             return nil<T>()
         }
 
-        values.set(step, next.value)
-        return list(step)
+        const headValue = next.value as unknown[]
+
+        const result = () => ({
+            head: output(...headValue),
+            tail: build(),
+        })
+
+        result.kind = (_: '*') => '*' as Type
+        return result
     }
 
-    return list(1)
+    return build()
 }
