@@ -15,6 +15,12 @@ export const reader = <R, A>(fn: (r: R) => A): ReaderBox<R, A> => ({
 
 export const runReader = <R, A>(ra: Reader<R, A>, r: R): A => ra.runReader(r)
 
+export const mapReader = <R, A, B>(f: (a: A) => B, ra: ReaderBox<R, A>): ReaderBox<R, B> =>
+    reader((r: R) => f(ra.runReader(r)))
+
+export const withReader = <R, RPrime, A>(f: (r: RPrime) => R, ra: ReaderBox<R, A>): ReaderBox<RPrime, A> =>
+    reader((r: RPrime) => ra.runReader(f(r)))
+
 export const ask = <R>(): ReaderBox<R, R> => reader((r: R) => r)
 
 export const asks = <R, A>(f: (r: R) => A): ReaderBox<R, A> => reader((r: R) => f(r))
