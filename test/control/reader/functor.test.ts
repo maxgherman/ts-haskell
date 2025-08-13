@@ -2,6 +2,14 @@ import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
 import { functor as createFunctor } from 'control/reader/functor'
 import { reader, ReaderBox } from 'control/reader/reader'
+import { $case as maybeCase, just, nothing, MaybeBox } from 'ghc/base/maybe/maybe'
+import {
+    $case as eitherCase,
+    left,
+    right,
+    EitherBox,
+} from 'data/either/either'
+import { fst, snd, tuple2, Tuple2Box } from 'ghc/base/tuple/tuple'
 
 const functor = createFunctor<string>()
 const lengthReader = reader((env: string) => env.length)
@@ -43,6 +51,68 @@ tap.test('ReaderFunctor functor', async (t) => {
     t.test('void', async (t) => {
         const result = functor.void(lengthReader)
         t.same(result.runReader('anything'), [])
+    })
+
+    t.test('Functor with Maybe', async (t) => {
+        const maybeReader = reader((env: string) =>
+            env.length > 0 ? just(env.length) : nothing<number>(),
+        )
+
+        const result = functor.fmap(
+            (m: MaybeBox<number>) =>
+                maybeCase<number, MaybeBox<number>>({
+                    just: (x) => just(x + 1),
+                    nothing: () => nothing<number>(),
+                })(m),
+            maybeReader,
+        )
+
+        const run = (env: string) =>
+            maybeCase<number, number | undefined>({
+                just: (x) => x,
+                nothing: () => undefined,
+            })(result.runReader(env) as MaybeBox<number>)
+
+        t.equal(run('abcd'), 5)
+        t.equal(run(''), undefined)
+    })
+
+    t.test('Functor with Either', async (t) => {
+        const eitherReader = reader((env: string) =>
+            env.length > 0 ? right<string, number>(env.length) : left<string, number>('empty'),
+        )
+
+        const result = functor.fmap(
+            (e: EitherBox<string, number>) =>
+                eitherCase<string, number, EitherBox<string, number>>({
+                    left: (l) => left<string, number>(l + '!'),
+                    right: (r) => right<string, number>(r + 1),
+                })(e),
+            eitherReader,
+        )
+
+        const run = (env: string) =>
+            eitherCase<string, number, string | number>({
+                left: (l) => l,
+                right: (r) => r,
+            })(result.runReader(env) as EitherBox<string, number>)
+
+        t.equal(run('abc'), 4)
+        t.equal(run(''), 'empty!')
+    })
+
+    t.test('Functor with Tuple', async (t) => {
+        const tupleReader = reader((env: string) => tuple2(env.length, env))
+
+        const result = functor.fmap(
+            (p: Tuple2Box<number, string>) =>
+                tuple2(fst(p) + 1, snd(p).toUpperCase()),
+            tupleReader,
+        )
+
+        const tuple = result.runReader('abc') as Tuple2Box<number, string>
+        t.equal(fst(tuple), 4)
+        t.equal(snd(tuple), 'ABC')
     })
 
     t.test('Functor first law: fmap id = id', async (t) => {
