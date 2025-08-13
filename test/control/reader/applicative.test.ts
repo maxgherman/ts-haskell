@@ -2,6 +2,18 @@ import tap from 'tap'
 import { id, dot, Dot } from 'ghc/base/functions'
 import { applicative as createApplicative } from 'control/reader/applicative'
 import { reader, ReaderBox } from 'control/reader/reader'
+import { $case as maybeCase, just, nothing, MaybeBox } from 'ghc/base/maybe/maybe'
+import { applicative as maybeApplicative } from 'ghc/base/maybe/applicative'
+import {
+    $case as eitherCase,
+    left,
+    right,
+    EitherBox,
+} from 'data/either/either'
+import { applicative as eitherApplicative } from 'data/either/applicative'
+import { tuple2, snd, Tuple2Box, UnitBox, unit } from 'ghc/base/tuple/tuple'
+import { applicative as tupleApplicative } from 'ghc/base/tuple/tuple2-applicative'
+import { monoid as unitMonoid } from 'ghc/base/tuple/unit-monoid'
 
 const applicative = createApplicative<string>()
 
@@ -66,6 +78,94 @@ tap.test('Reader applicative', async (t) => {
         const result = applicative.fmap((x: number) => x * 2, value)
 
         t.equal(run(result, 'abc'), 6)
+    })
+
+    t.test('Applicative with Maybe', async (t) => {
+        const r1 = reader((env: string) =>
+            env.length > 0 ? just(env.length) : nothing<number>(),
+        )
+        const r2 = reader((env: string) =>
+            env.includes('!') ? just(env.length) : nothing<number>(),
+        )
+
+        const result = applicative.liftA2(
+            (m1: MaybeBox<number>) =>
+            (m2: MaybeBox<number>) =>
+                maybeApplicative.liftA2(
+                    (x: number) => (y: number) => x + y,
+                    m1,
+                    m2,
+                ),
+            r1,
+            r2,
+        )
+
+        const runMaybe = (env: string) =>
+            maybeCase<number, number | undefined>({
+                just: (x) => x,
+                nothing: () => undefined,
+            })(result.runReader(env) as MaybeBox<number>)
+
+        t.equal(runMaybe('abc!'), 8)
+        t.equal(runMaybe('abc'), undefined)
+    })
+
+    t.test('Applicative with Either', async (t) => {
+        const r1 = reader((env: string) =>
+            env.length > 0
+                ? right<string, number>(env.length)
+                : left<string, number>('empty'),
+        )
+        const r2 = reader((env: string) =>
+            env.includes('!')
+                ? right<string, number>(env.length)
+                : left<string, number>('no bang'),
+        )
+
+        const eitherApp = eitherApplicative<string>()
+        const result = applicative.liftA2(
+            (e1: EitherBox<string, number>) =>
+            (e2: EitherBox<string, number>) =>
+                eitherApp.liftA2(
+                    (x: number) => (y: number) => x + y,
+                    e1,
+                    e2,
+                ),
+            r1,
+            r2,
+        )
+
+        const runEither = (env: string) =>
+            eitherCase<string, number, string | number>({
+                left: (l) => l,
+                right: (r) => r,
+            })(result.runReader(env) as EitherBox<string, number>)
+
+        t.equal(runEither('abc!'), 8)
+        t.equal(runEither(''), 'empty')
+        t.equal(runEither('abc'), 'no bang')
+    })
+
+    t.test('Applicative with Tuple', async (t) => {
+        const tupleApp = tupleApplicative(unitMonoid)
+
+        const r1 = reader((env: string) => tuple2(unit(), env.length))
+        const r2 = reader((env: string) => tuple2(unit(), env.length * 2))
+
+        const result = applicative.liftA2(
+            (t1: Tuple2Box<UnitBox, number>) =>
+            (t2: Tuple2Box<UnitBox, number>) =>
+                tupleApp.liftA2(
+                    (x: number) => (y: number) => x + y,
+                    t1,
+                    t2,
+                ),
+            r1,
+            r2,
+        )
+
+        const tuple = result.runReader('abc') as Tuple2Box<UnitBox, number>
+        t.equal(snd(tuple), 9)
     })
 
     t.test('Applicative first law (Identity): pure id <*> v = v', async (t) => {
