@@ -14,3 +14,10 @@ export const reader = <R, A>(fn: (r: R) => A): ReaderBox<R, A> => ({
 })
 
 export const runReader = <R, A>(ra: Reader<R, A>, r: R): A => ra.runReader(r)
+
+export const ask = <R>(): ReaderBox<R, R> => reader((r: R) => r)
+
+export const asks = <R, A>(f: (r: R) => A): ReaderBox<R, A> => reader((r: R) => f(r))
+
+export const local = <R, A>(f: (r: R) => R, ma: ReaderBox<R, A>): ReaderBox<R, A> =>
+    reader((r: R) => ma.runReader(f(r)))
