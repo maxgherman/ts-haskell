@@ -11,6 +11,8 @@ import { $case as eitherCase, left, right, EitherBox } from 'data/either/either'
 import { semigroup as createNonEmptySemigroup } from 'ghc/base/non-empty/semigroup'
 import { semigroup as createTuple2Semigroup } from 'ghc/base/tuple/tuple2-semigroup'
 import { tuple2, fst, snd, TupleMinBox } from 'ghc/base/tuple/tuple'
+import { semigroup as createPromiseSemigroup } from 'extra/promise/semigroup'
+import { PromiseBox } from 'extra/promise/promise'
 
 const listSemigroup = createListSemigroup<number>()
 const listReaderSemigroup = createReaderSemigroup<string, ListBox<number>>(listSemigroup)
@@ -60,6 +62,12 @@ const createTupleValue = (
     sep2: string,
 ): ReaderBox<string, TupleMinBox<ListBox<number>, ListBox<number>>> =>
     reader((x: string) => tuple2(buildList(sep1, x), buildList(sep2, x)))
+
+const promiseSemigroup = createPromiseSemigroup<ListBox<number>>(listSemigroup)
+const promiseReaderSemigroup = createReaderSemigroup<string, PromiseBox<ListBox<number>>>(promiseSemigroup)
+
+const createPromiseValue = (separator: string): ReaderBox<string, PromiseBox<ListBox<number>>> =>
+    reader((x: string) => Promise.resolve(buildList(separator, x)) as PromiseBox<ListBox<number>>)
 
 tap.test('ReaderSemigroup List', async (t) => {
     t.test('<>', async (t) => {
@@ -437,3 +445,83 @@ tap.test('ReaderSemigroup Tuple', async (t) => {
         },
     )
 })
+
+tap.test('ReaderSemigroup Promise', async (t) => {
+    t.test('<>', async (t) => {
+        const value1 = createPromiseValue('7')
+        const value2 = createPromiseValue('0')
+
+        const result = promiseReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+        t.same(
+            toArray(await (result.runReader('123') as PromiseBox<ListBox<number>>)),
+            [1, 7, 2, 7, 3, 1, 0, 2, 0, 3],
+        )
+    })
+
+    t.test('sconcat', async (t) => {
+        const value1 = createPromiseValue('1')
+        const value2 = createPromiseValue('2')
+        const value3 = createPromiseValue('3')
+        const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
+
+        const result = promiseReaderSemigroup.sconcat(
+            formList(value4),
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+        t.same(
+            toArray(await (result.runReader('56') as PromiseBox<ListBox<number>>)),
+            [5, 3, 6, 5, 2, 6, 5, 1, 6],
+        )
+    })
+
+    t.test('stimes', async (t) => {
+        const value1 = createPromiseValue('1')
+
+        const result = promiseReaderSemigroup.stimes(
+            3,
+            value1,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+        t.same(
+            toArray(await (result.runReader('00') as PromiseBox<ListBox<number>>)),
+            [0, 1, 0, 0, 1, 0, 0, 1, 0],
+        )
+    })
+
+    t.test(
+        'semigroup law - associativity: (x <> y) <> z = x <> (y <> z)',
+        async (t) => {
+            const value1 = createPromiseValue('11')
+            const value2 = createPromiseValue('22')
+            const value3 = createPromiseValue('33')
+
+            const result1 = promiseReaderSemigroup['<>'](
+                promiseReaderSemigroup['<>'](
+                    value1,
+                    value2,
+                ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>,
+                value3,
+            ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+            const result2 = promiseReaderSemigroup['<>'](
+                value1,
+                promiseReaderSemigroup['<>'](
+                    value2,
+                    value3,
+                ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>,
+            ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+            const expected = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
+
+            t.same(
+                toArray(await (result1.runReader('56') as PromiseBox<ListBox<number>>)),
+                expected,
+            )
+            t.same(
+                toArray(await (result2.runReader('56') as PromiseBox<ListBox<number>>)),
+                expected,
+            )
+        },
+    )
+})
+

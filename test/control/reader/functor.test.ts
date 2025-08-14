@@ -10,6 +10,8 @@ import {
     EitherBox,
 } from 'data/either/either'
 import { fst, snd, tuple2, Tuple2Box } from 'ghc/base/tuple/tuple'
+import { PromiseBox } from 'extra/promise/promise'
+import { functor as promiseFunctor } from 'extra/promise/functor'
 
 const functor = createFunctor<string>()
 const lengthReader = reader((env: string) => env.length)
@@ -113,6 +115,18 @@ tap.test('ReaderFunctor functor', async (t) => {
         const tuple = result.runReader('abc') as Tuple2Box<number, string>
         t.equal(fst(tuple), 4)
         t.equal(snd(tuple), 'ABC')
+    })
+
+    t.test('Functor with Promise', async (t) => {
+        const promiseReader = reader((env: string) => Promise.resolve(env.length) as PromiseBox<number>)
+
+        const result = functor.fmap(
+            (p: PromiseBox<number>) =>
+                promiseFunctor.fmap((x: number) => x + 1, p),
+            promiseReader,
+        )
+
+        t.equal(await (result.runReader('abc') as PromiseBox<number>), 4)
     })
 
     t.test('Functor first law: fmap id = id', async (t) => {

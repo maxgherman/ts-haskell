@@ -12,6 +12,8 @@ import {
 } from 'data/either/either'
 import { monad as eitherMonad } from 'data/either/monad'
 import { tuple2, fst, snd, Tuple2Box } from 'ghc/base/tuple/tuple'
+import { monad as promiseMonad } from 'extra/promise/monad'
+import { PromiseBox } from 'extra/promise/promise'
 
 const monad = createMonad<string>()
 
@@ -241,6 +243,40 @@ tap.test('Reader monad', async (t) => {
         }
 
         t.same(runTuple('abc'), [9, 'ABCabc'])
+    })
+})
+
+
+tap.test('Reader monad with Promise', async (t) => {
+    t.test('Monad with Promise', async (t) => {
+        const value = reader((env: string) => Promise.resolve(env.length) as PromiseBox<number>)
+        const f = (p: PromiseBox<number>) =>
+            reader((env: string) =>
+                promiseMonad['>>='](p, (x: number) =>
+                    Promise.resolve(x + env.length) as PromiseBox<number>,
+                ),
+            )
+
+        const result = monad['>>='](value, f) as ReaderBox<string, PromiseBox<number>>
+
+        t.equal(await run(result, 'abc'), 6)
+    })
+
+    t.test('Monad with Promise and do-notation', async (t) => {
+        const result = doNotation<ReaderBox<string, PromiseBox<number>>>(function* (): Generator<
+            ReaderBox<string, PromiseBox<number>>,
+            PromiseBox<number>,
+            PromiseBox<number>
+        > {
+            const value1 = (yield reader((env: string) => Promise.resolve(env.length) as PromiseBox<number>)) as PromiseBox<number>
+            const value2 = (yield reader((env: string) => Promise.resolve(env.length * 2) as PromiseBox<number>)) as PromiseBox<number>
+
+            return promiseMonad['>>='](value1, (x: number) =>
+                promiseMonad['>>='](value2, (y: number) => promiseMonad.pure(x + y)),
+            )
+        }, monad)
+
+        t.equal(await run(result, 'abcd'), 12)
     })
 })
 

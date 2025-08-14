@@ -14,6 +14,8 @@ import { applicative as eitherApplicative } from 'data/either/applicative'
 import { tuple2, snd, Tuple2Box, UnitBox, unit } from 'ghc/base/tuple/tuple'
 import { applicative as tupleApplicative } from 'ghc/base/tuple/tuple2-applicative'
 import { monoid as unitMonoid } from 'ghc/base/tuple/unit-monoid'
+import { applicative as promiseApplicative } from 'extra/promise/applicaive'
+import { PromiseBox } from 'extra/promise/promise'
 
 const applicative = createApplicative<string>()
 
@@ -166,6 +168,25 @@ tap.test('Reader applicative', async (t) => {
 
         const tuple = result.runReader('abc') as Tuple2Box<UnitBox, number>
         t.equal(snd(tuple), 9)
+    })
+
+    t.test('Applicative with Promise', async (t) => {
+        const r1 = reader((env: string) => Promise.resolve(env.length) as PromiseBox<number>)
+        const r2 = reader((env: string) => Promise.resolve(env.length * 2) as PromiseBox<number>)
+
+        const result = applicative.liftA2(
+            (p1: PromiseBox<number>) =>
+            (p2: PromiseBox<number>) =>
+                promiseApplicative.liftA2(
+                    (x: number) => (y: number) => x + y,
+                    p1,
+                    p2,
+                ),
+            r1,
+            r2,
+        )
+
+        t.equal(await (result.runReader('abc') as PromiseBox<number>), 9)
     })
 
     t.test('Applicative first law (Identity): pure id <*> v = v', async (t) => {
