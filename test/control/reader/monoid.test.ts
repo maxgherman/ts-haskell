@@ -9,6 +9,8 @@ import { monoid as createEitherMonoid } from 'data/either/monoid'
 import { $case as eitherCase, left, right, EitherBox } from 'data/either/either'
 import { monoid as createTupleMonoid } from 'ghc/base/tuple/tuple2-monoid'
 import { tuple2, fst, snd, TupleMinBox } from 'ghc/base/tuple/tuple'
+import { monoid as createPromiseMonoid } from 'extra/promise/monoid'
+import { PromiseBox } from 'extra/promise/promise'
 
 const listMonoid = createListMonoid<number>()
 const listReaderMonoid = createReaderMonoid<string, ListBox<number>>(listMonoid)
@@ -50,6 +52,12 @@ const createTupleValue = (
     sep2: string,
 ): ReaderBox<string, TupleMinBox<ListBox<number>, ListBox<number>>> =>
     reader((x: string) => tuple2(buildList(sep1, x), buildList(sep2, x)))
+
+const promiseMonoid = createPromiseMonoid<ListBox<number>>(listMonoid)
+const promiseReaderMonoid = createReaderMonoid<string, PromiseBox<ListBox<number>>>(promiseMonoid)
+
+const createPromiseValue = (separator: string): ReaderBox<string, PromiseBox<ListBox<number>>> =>
+    reader((x: string) => Promise.resolve(buildList(separator, x)) as PromiseBox<ListBox<number>>)
 
 tap.test('ReaderMonoid List', async (t) => {
     t.test('mempty', async (t) => {
@@ -549,3 +557,140 @@ tap.test('ReaderMonoid Tuple', async (t) => {
         )
     })
 })
+
+tap.test('ReaderMonoid Promise', async (t) => {
+    const toArr = async (p: PromiseBox<ListBox<number>>) =>
+        toArray(await p)
+
+    t.test('mempty', async (t) => {
+        const result = promiseReaderMonoid.mempty as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        t.same(await toArr(result.runReader('123') as PromiseBox<ListBox<number>>), [])
+    })
+
+    t.test('<>', async (t) => {
+        const value1 = createPromiseValue('1')
+        const value2 = createPromiseValue('2')
+
+        const result = promiseReaderMonoid['<>'](value1, value2) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        t.same(
+            await toArr(result.runReader('34') as PromiseBox<ListBox<number>>),
+            [3, 1, 4, 3, 2, 4],
+        )
+    })
+
+    t.test('mappend', async (t) => {
+        const value1 = createPromiseValue('3')
+        const value2 = createPromiseValue('4')
+
+        const result = promiseReaderMonoid.mappend(
+            value1,
+            value2,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+        t.same(
+            await toArr(result.runReader('56') as PromiseBox<ListBox<number>>),
+            [5, 3, 6, 5, 4, 6],
+        )
+    })
+
+    t.test('mconcat', async (t) => {
+        const value1 = createPromiseValue('1')
+        const value2 = createPromiseValue('2')
+        const value3 = createPromiseValue('3')
+
+        const list = cons(value3)(
+            cons(value2)(
+                cons(value1)(
+                    nil() as List<ReaderBox<string, PromiseBox<ListBox<number>>>>,
+                ),
+            ),
+        )
+        const result = promiseReaderMonoid.mconcat(
+            list as List<ReaderMinBox<string, PromiseBox<ListBox<number>>>>,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+        t.same(
+            await toArr(result.runReader('78') as PromiseBox<ListBox<number>>),
+            [7, 3, 8, 7, 2, 8, 7, 1, 8],
+        )
+    })
+
+    t.test('Monoid law - associativity : (x <> y) <> z = x <> (y <> z)', async (t) => {
+        const value1 = createPromiseValue('1')
+        const value2 = createPromiseValue('2')
+        const value3 = createPromiseValue('3')
+
+        const result1 = promiseReaderMonoid['<>'](
+            promiseReaderMonoid['<>'](
+                value1,
+                value2,
+            ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>,
+            value3,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        const result2 = promiseReaderMonoid['<>'](
+            value1,
+            promiseReaderMonoid['<>'](
+                value2,
+                value3,
+            ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+        const expected = [7, 1, 8, 7, 2, 8, 7, 3, 8]
+
+        t.same(
+            await toArr(result1.runReader('78') as PromiseBox<ListBox<number>>),
+            expected,
+        )
+        t.same(
+            await toArr(result2.runReader('78') as PromiseBox<ListBox<number>>),
+            expected,
+        )
+    })
+
+    t.test('Monoid law - right identity: mempty <> x = x', async (t) => {
+        const value1 = createPromiseValue('1')
+        const value2 = createPromiseValue('2')
+
+        const result1 = promiseReaderMonoid['<>'](
+            promiseReaderMonoid.mempty,
+            value1,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        const result2 = promiseReaderMonoid['<>'](
+            promiseReaderMonoid.mempty,
+            value2,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+        t.same(
+            await toArr(result1.runReader('12') as PromiseBox<ListBox<number>>),
+            await toArr(value1.runReader('12') as PromiseBox<ListBox<number>>),
+        )
+        t.same(
+            await toArr(result2.runReader('12') as PromiseBox<ListBox<number>>),
+            await toArr(value2.runReader('12') as PromiseBox<ListBox<number>>),
+        )
+    })
+
+    t.test('Monoid law - left identity: x <> mempty = x', async (t) => {
+        const value1 = createPromiseValue('1')
+        const value2 = createPromiseValue('2')
+
+        const result1 = promiseReaderMonoid['<>'](
+            value1,
+            promiseReaderMonoid.mempty,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        const result2 = promiseReaderMonoid['<>'](
+            value2,
+            promiseReaderMonoid.mempty,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+
+        t.same(
+            await toArr(result1.runReader('12') as PromiseBox<ListBox<number>>),
+            await toArr(value1.runReader('12') as PromiseBox<ListBox<number>>),
+        )
+        t.same(
+            await toArr(result2.runReader('12') as PromiseBox<ListBox<number>>),
+            await toArr(value2.runReader('12') as PromiseBox<ListBox<number>>),
+        )
+    })
+})
+
