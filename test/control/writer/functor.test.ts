@@ -10,6 +10,8 @@ import {
     EitherBox,
 } from 'data/either/either'
 import { fst, snd, tuple2, Tuple2Box } from 'ghc/base/tuple/tuple'
+import { cons, nil, toArray, ListBox } from 'ghc/base/list/list'
+import { functor as listFunctor } from 'ghc/base/list/functor'
 import { PromiseBox } from 'extra/promise/promise'
 import { functor as promiseFunctor } from 'extra/promise/functor'
 
@@ -17,6 +19,9 @@ const functor = createFunctor<string>()
 const numberWriter = writer(() => tuple2(3, 'log'))
 
 const fmapId = (fa: WriterBox<string, number>) => functor.fmap(id, fa)
+
+const createList = <T>(values: NonNullable<T>[]): ListBox<T> =>
+    values.reduceRight((acc, curr) => cons(curr)(acc), nil<T>())
 
 tap.test('WriterFunctor functor', async (t) => {
     t.test('fmap', async (t) => {
@@ -146,6 +151,20 @@ tap.test('WriterFunctor functor', async (t) => {
 
         t.equal(await (runWriter(mapped)[0] as PromiseBox<number>), 4)
         t.equal(runWriter(mapped)[1], 'log')
+    })
+
+    t.test('Functor with List', async (t) => {
+        const listWriter = writer(() => tuple2(createList([1, 2]), 'log'))
+
+        const mapped = functor.fmap(
+            (lst: ListBox<number>) =>
+                listFunctor.fmap((x: number) => x + 1, lst),
+            listWriter,
+        )
+
+        const [v, l] = runWriter(mapped)
+        t.same(toArray(v as ListBox<number>), [2, 3])
+        t.equal(l, 'log')
     })
 
     t.test('Functor first law: fmap id = id', async (t) => {
