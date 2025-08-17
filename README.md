@@ -54,17 +54,17 @@ Unit ()        -        -         -        ✓      ✓
 
 ## References
 
-- Functor
-- Applicative
-- Monad
-- Semigroup
-- Monoid
-- Maybe
-- Either
-- List
-- NonEmpty list
-- Reader
-- Writer
-- Function arrow `(->)`
-- Tuple2 and Unit
-- Promise
+- [Functor](src/ghc/base/functor.ts)
+- [Applicative](src/ghc/base/applicative.ts)
+- [Monad](src/ghc/base/monad/monad.ts)
+- [Semigroup](src/ghc/base/semigroup.ts)
+- [Monoid](src/ghc/base/monoid.ts)
+- [Maybe](src/ghc/base/maybe/maybe.ts)
+- [Either](src/data/either/either.ts)
+- [List](src/ghc/base/list/list.ts)
+- [NonEmpty list](src/ghc/base/non-empty/list.ts)
+- [Reader](src/control/reader/reader.ts)
+- [Writer](src/control/writer/writer.ts)
+- [Function arrow \`(->)\`](src/ghc/prim/function-arrow/index.ts)
+- [Tuple2 and Unit](src/ghc/base/tuple/tuple.ts)
+- [Promise](src/extra/promise/promise.ts)
