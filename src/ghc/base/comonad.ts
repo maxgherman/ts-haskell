@@ -30,8 +30,7 @@ export const comonad = (base: BaseImplementation, functor: Functor): Comonad => 
     }
 
     if (!result.duplicate && result.extend) {
-        result.duplicate = <A>(wa: MinBox1<A>): MinBox1<MinBox1<A>> =>
-            result.extend!((w: MinBox1<A>) => w, wa)
+        result.duplicate = <A>(wa: MinBox1<A>): MinBox1<MinBox1<A>> => result.extend!((w: MinBox1<A>) => w, wa)
     }
 
     return result

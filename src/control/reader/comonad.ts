@@ -17,10 +17,8 @@ export interface ReaderComonad<R> extends Comonad {
 
 const baseImplementation = <R>(): BaseImplementation => ({
     extract: <A>(wa: ReaderBox<R, A>): A => wa.runReader(undefined as unknown as R),
-    extend: <A, B>(f: (wa: ReaderBox<R, A>) => B, wa: ReaderBox<R, A>): ReaderBox<R, B> =>
-        reader((_: R) => f(wa)),
-    duplicate: <A>(wa: ReaderBox<R, A>): ReaderBox<R, ReaderBox<R, A>> =>
-        reader((_: R) => wa),
+    extend: <A, B>(f: (wa: ReaderBox<R, A>) => B, wa: ReaderBox<R, A>): ReaderBox<R, B> => reader((_: R) => f(wa)),
+    duplicate: <A>(wa: ReaderBox<R, A>): ReaderBox<R, ReaderBox<R, A>> => reader((_: R) => wa),
 })
 
 export const comonad = <R>(): ReaderComonad<R> => {

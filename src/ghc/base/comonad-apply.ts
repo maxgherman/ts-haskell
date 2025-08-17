@@ -10,9 +10,8 @@ export type ComonadApplyBase = Comonad & {
 
 export type ComonadApply = ComonadApplyBase
 
-export type BaseImplementation = Partial<
-    Pick<ComonadApplyBase, '<@>' | 'liftW2'>
-> & (Pick<ComonadApplyBase, '<@>'> | Pick<ComonadApplyBase, 'liftW2'>)
+export type BaseImplementation = Partial<Pick<ComonadApplyBase, '<@>' | 'liftW2'>> &
+    (Pick<ComonadApplyBase, '<@>'> | Pick<ComonadApplyBase, 'liftW2'>)
 
 export const comonadApply = (base: BaseImplementation, comonad: Comonad): ComonadApply => {
     const result: ComonadApply = { ...comonad, ...base } as ComonadApply
