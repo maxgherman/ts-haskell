@@ -1,11 +1,18 @@
 import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'control/comonad-apply'
 import { ReaderBox, reader } from './reader'
 import { comonad as createComonad } from './comonad'
-import type { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
+import type { FunctionArrow, FunctionArrow2, FunctionArrow3 } from 'ghc/prim/function-arrow'
 
 export interface ReaderComonadApply<R> extends ComonadApply {
     '<@>'<A, B>(f: ReaderBox<R, FunctionArrow<A, B>>, wa: ReaderBox<R, A>): ReaderBox<R, B>
+    '<@@>'<A, B>(wa: ReaderBox<R, A>, wf: ReaderBox<R, FunctionArrow<A, B>>): ReaderBox<R, B>
     liftW2<A, B, C>(f: FunctionArrow2<A, B, C>, wa: ReaderBox<R, A>, wb: ReaderBox<R, B>): ReaderBox<R, C>
+    liftW3<A, B, C, D>(
+        f: FunctionArrow3<A, B, C, D>,
+        wa: ReaderBox<R, A>,
+        wb: ReaderBox<R, B>,
+        wc: ReaderBox<R, C>,
+    ): ReaderBox<R, D>
 
     extract<A>(wa: ReaderBox<R, A>): A
     extend<A, B>(f: (wa: ReaderBox<R, A>) => B, wa: ReaderBox<R, A>): ReaderBox<R, B>

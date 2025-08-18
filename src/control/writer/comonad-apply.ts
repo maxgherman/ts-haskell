@@ -1,12 +1,19 @@
 import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'control/comonad-apply'
 import { WriterBox, writer } from './writer'
 import { comonad as createComonad } from './comonad'
-import type { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
+import type { FunctionArrow, FunctionArrow2, FunctionArrow3 } from 'ghc/prim/function-arrow'
 import { Tuple2Box, tuple2 } from 'ghc/base/tuple/tuple'
 
 export interface WriterComonadApply<W> extends ComonadApply {
     '<@>'<A, B>(f: WriterBox<W, FunctionArrow<A, B>>, wa: WriterBox<W, A>): WriterBox<W, B>
+    '<@@>'<A, B>(wa: WriterBox<W, A>, wf: WriterBox<W, FunctionArrow<A, B>>): WriterBox<W, B>
     liftW2<A, B, C>(f: FunctionArrow2<A, B, C>, wa: WriterBox<W, A>, wb: WriterBox<W, B>): WriterBox<W, C>
+    liftW3<A, B, C, D>(
+        f: FunctionArrow3<A, B, C, D>,
+        wa: WriterBox<W, A>,
+        wb: WriterBox<W, B>,
+        wc: WriterBox<W, C>,
+    ): WriterBox<W, D>
 
     extract<A>(wa: WriterBox<W, A>): A
     extend<A, B>(f: (wa: WriterBox<W, A>) => B, wa: WriterBox<W, A>): WriterBox<W, B>

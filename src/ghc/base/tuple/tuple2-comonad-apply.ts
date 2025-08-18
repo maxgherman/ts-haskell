@@ -1,11 +1,18 @@
 import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'control/comonad-apply'
 import { Tuple2BoxT, tuple2 } from './tuple'
 import { comonad as createComonad } from './tuple2-comonad'
-import { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
+import { FunctionArrow, FunctionArrow2, FunctionArrow3 } from 'ghc/prim/function-arrow'
 
 export interface Tuple2ComonadApply<T> extends ComonadApply {
     '<@>'<A, B>(f: Tuple2BoxT<T, FunctionArrow<A, B>>, wa: Tuple2BoxT<T, A>): Tuple2BoxT<T, B>
+    '<@@>'<A, B>(wa: Tuple2BoxT<T, A>, wf: Tuple2BoxT<T, FunctionArrow<A, B>>): Tuple2BoxT<T, B>
     liftW2<A, B, C>(f: FunctionArrow2<A, B, C>, wa: Tuple2BoxT<T, A>, wb: Tuple2BoxT<T, B>): Tuple2BoxT<T, C>
+    liftW3<A, B, C, D>(
+        f: FunctionArrow3<A, B, C, D>,
+        wa: Tuple2BoxT<T, A>,
+        wb: Tuple2BoxT<T, B>,
+        wc: Tuple2BoxT<T, C>,
+    ): Tuple2BoxT<T, D>
 
     extract<A>(wa: Tuple2BoxT<T, A>): A
     extend<A, B>(f: (wa: Tuple2BoxT<T, A>) => B, wa: Tuple2BoxT<T, A>): Tuple2BoxT<T, B>
