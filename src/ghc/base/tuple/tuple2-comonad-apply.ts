@@ -1,4 +1,4 @@
-import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'ghc/base/comonad-apply'
+import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'control/comonad-apply'
 import { Tuple2BoxT, tuple2 } from './tuple'
 import { comonad as createComonad } from './tuple2-comonad'
 import { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'

@@ -1,4 +1,4 @@
-import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'ghc/base/comonad-apply'
+import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'control/comonad-apply'
 import { WriterBox, writer } from './writer'
 import { comonad as createComonad } from './comonad'
 import type { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
