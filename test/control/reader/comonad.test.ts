@@ -24,4 +24,11 @@ tap.test('Reader Comonad', async (t) => {
         const extended = cm.extend((w) => w, ra)
         t.equal(cm.extract(cm.extract(extended)), 1)
     })
+
+    t.test('extend derives from duplicate', async (t) => {
+        const f = (r: typeof ra) => cm.extract(r) + 1
+        const viaExtend = cm.extend(f, ra)
+        const viaDuplicate = cm.fmap(f, cm.duplicate(ra))
+        t.equal(cm.extract(viaExtend), cm.extract(viaDuplicate))
+    })
 })
