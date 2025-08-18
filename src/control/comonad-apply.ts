@@ -6,6 +6,7 @@ import { Comonad } from './comonad'
 export type ComonadApplyBase = Comonad & {
     '<@>'<A, B>(f: MinBox1<FunctionArrow<A, B>>, wa: MinBox1<A>): MinBox1<B>
     liftW2<A, B, C>(f: FunctionArrow2<A, B, C>, wa: MinBox1<A>, wb: MinBox1<B>): MinBox1<C>
+    kfix<A>(w: MinBox1<(wa: MinBox1<A>) => A>): MinBox1<A>
 }
 
 export type ComonadApply = ComonadApplyBase
@@ -24,6 +25,13 @@ export const comonadApply = (base: BaseImplementation, comonad: Comonad): Comona
     if (!result['<@>'] && result.liftW2) {
         result['<@>'] = <A, B>(wf: MinBox1<FunctionArrow<A, B>>, wa: MinBox1<A>): MinBox1<B> =>
             result.liftW2!(id, wf, wa)
+    }
+
+    result.kfix = <A>(w: MinBox1<(wa: MinBox1<A>) => A>): MinBox1<A> => {
+        let u!: MinBox1<A>
+        // eslint-disable-next-line prefer-const
+        u = result['<@>']!(w, result.duplicate(u as MinBox1<A>))
+        return u
     }
 
     return result

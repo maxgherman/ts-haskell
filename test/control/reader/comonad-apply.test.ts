@@ -35,4 +35,11 @@ tap.test('Reader ComonadApply', async (t) => {
         const right = ca.liftW2((f: (a: number) => number) => (a: number) => f(a), wf, wa)
         t.equal(ca.extract(left), ca.extract(right))
     })
+
+    t.test('kfix', async (t) => {
+        const w = reader((_: void) => (_: unknown) => 5)
+        const result = ca.kfix(w as any)
+        const verify = ca['<@>'](w as any, ca.duplicate(result as any) as any)
+        t.equal(ca.extract(result as any), ca.extract(verify as any))
+    })
 })
