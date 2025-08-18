@@ -1,4 +1,4 @@
-import { comonad as createComonad, Comonad, BaseImplementation } from 'ghc/base/comonad'
+import { comonad as createComonad, Comonad, BaseImplementation } from 'control/comonad'
 import { NonEmptyBox, head, tail, cons, map } from './list'
 import { functor } from './functor'
 import { ListBox, cons as listCons, head as listHead, tail as listTail, $null, nil } from 'ghc/base/list/list'

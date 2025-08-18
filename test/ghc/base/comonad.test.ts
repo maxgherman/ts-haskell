@@ -2,7 +2,7 @@ import tap from 'tap'
 import { comonad as writerComonad } from 'control/writer/comonad'
 import { functor as writerFunctor } from 'control/writer/functor'
 import { writer, WriterBox } from 'control/writer/writer'
-import { comonad as createComonad } from 'ghc/base/comonad'
+import { comonad as createComonad } from 'control/comonad'
 import { tuple2 } from 'ghc/base/tuple/tuple'
 
 const cm = writerComonad<string>()

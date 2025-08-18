@@ -1,4 +1,4 @@
-import { comonad as createComonad, Comonad, BaseImplementation } from 'ghc/base/comonad'
+import { comonad as createComonad, Comonad, BaseImplementation } from 'control/comonad'
 import { writer, WriterBox } from './writer'
 import { functor as createFunctor } from './functor'
 import { Tuple2Box, tuple2 } from 'ghc/base/tuple/tuple'

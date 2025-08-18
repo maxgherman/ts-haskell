@@ -1,4 +1,4 @@
-import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'ghc/base/comonad-apply'
+import { comonadApply as createComonadApply, ComonadApply, BaseImplementation } from 'control/comonad-apply'
 import { NonEmptyBox, head, tail, cons } from './list'
 import { comonad } from './comonad'
 import { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'

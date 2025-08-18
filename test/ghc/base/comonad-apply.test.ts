@@ -2,7 +2,7 @@ import tap from 'tap'
 import { comonad as writerComonad } from 'control/writer/comonad'
 import { comonadApply as writerComonadApply } from 'control/writer/comonad-apply'
 import { writer, WriterBox } from 'control/writer/writer'
-import { comonadApply as createComonadApply } from 'ghc/base/comonad-apply'
+import { comonadApply as createComonadApply } from 'control/comonad-apply'
 import { tuple2 } from 'ghc/base/tuple/tuple'
 import { id } from 'ghc/base/functions'
 

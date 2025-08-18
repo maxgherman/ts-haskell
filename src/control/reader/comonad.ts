@@ -1,4 +1,4 @@
-import { comonad as createComonad, Comonad, BaseImplementation } from 'ghc/base/comonad'
+import { comonad as createComonad, Comonad, BaseImplementation } from 'control/comonad'
 import { reader, ReaderBox } from './reader'
 import { functor as createFunctor } from './functor'
 
