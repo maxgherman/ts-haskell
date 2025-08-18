@@ -4,6 +4,8 @@ export type FunctionArrow<A, B> = (_: A) => B
 
 export type FunctionArrow2<A, B, C> = (_: A) => (_: B) => C
 
+export type FunctionArrow3<A, B, C, D> = (_: A) => (_: B) => (_: C) => D
+
 export type FunctionArrowBox<A, B> = FunctionArrow<A, B> & Box2<A, B>
 
 export const withKind = <A, B>(base: FunctionArrow<A, B>): FunctionArrowBox<A, B> => base as FunctionArrowBox<A, B>
