@@ -10,26 +10,26 @@ npm test
 
 ## Typeclass relationships
 
-```
+```txt
 +-----------+          +-----------+
-| Semigroup | ───────► |  Monoid   |
+| Semigroup | -------> |  Monoid   |
 +-----------+          +-----------+
                           : \
-                          :  \............................ (Applicative as a monoidal pattern)
+                          :  \................. (Applicative as a monoidal pattern)
                           :   \
         +----------+      :    v
-        | Functor  | ─────► +-------------+
+        | Functor  | -----> +-------------+
         +----------+        | Applicative |
-             | \            +-------------+
-             |  \                |
-             v   v               v
-     +-------------+         +------+
-     |  Comonad    |         | Monad|
-     +-------------+         +------+
+             |      \       +-------------+
+             |       \          |
+             v        \         v
+     +-------------+   \      +-------+
+     |  Comonad    |    \---> | Monad |
+     +-------------+          +-------+
              |                 ^
              v                 :
-     +------------------+      :............................ (Monad as a monoid
-     | Comonad Apply    |                             in endofunctors)
+     +------------------+      :................ (Monad as a monoid in endofunctors)
+     | Comonad Apply    |
      +------------------+
 ```
 
