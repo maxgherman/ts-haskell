@@ -9,7 +9,7 @@ export interface NonEmptyComonadApply extends ComonadApply {
     liftW2<A, B, C>(f: FunctionArrow2<A, B, C>, wa: NonEmptyBox<A>, wb: NonEmptyBox<B>): NonEmptyBox<C>
 
     extract<A>(wa: NonEmptyBox<A>): A
-    extend<A, B>(f: (wa: NonEmptyBox<A>) => B, wa: NonEmptyBox<A>): NonEmptyBox<B>
+    extend<A, B>(f: (wa: NonEmptyBox<A>) => NonNullable<B>, wa: NonEmptyBox<A>): NonEmptyBox<B>
     duplicate<A>(wa: NonEmptyBox<A>): NonEmptyBox<NonEmptyBox<A>>
 
     fmap<A, B>(f: (a: A) => B, fa: NonEmptyBox<A>): NonEmptyBox<B>
@@ -20,11 +20,7 @@ export interface NonEmptyComonadApply extends ComonadApply {
     void<A>(fa: NonEmptyBox<A>): NonEmptyBox<[]>
 }
 
-const zipWith = <A, B, C>(
-    f: (a: A, b: B) => C,
-    la: ListBox<A>,
-    lb: ListBox<B>,
-): ListBox<C> => {
+const zipWith = <A, B, C>(f: (a: A, b: B) => NonNullable<C>, la: ListBox<A>, lb: ListBox<B>): ListBox<C> => {
     if ($null(la) || $null(lb)) {
         return nil()
     }
@@ -33,8 +29,8 @@ const zipWith = <A, B, C>(
 
 const baseImplementation: BaseImplementation = {
     '<@>': <A, B>(wf: NonEmptyBox<FunctionArrow<A, B>>, wa: NonEmptyBox<A>): NonEmptyBox<B> => {
-        const headResult = head(wf)(head(wa))
-        const tailResult = zipWith((f, a) => f(a), tail(wf), tail(wa))
+        const headResult = head(wf)(head(wa)) as NonNullable<B>
+        const tailResult = zipWith((f, a) => f(a) as NonNullable<B>, tail(wf), tail(wa))
         return cons(headResult)(tailResult)
     },
 }

@@ -5,7 +5,7 @@ import { ListBox, cons as listCons, head as listHead, tail as listTail, $null, n
 
 export interface NonEmptyComonad extends Comonad {
     extract<A>(wa: NonEmptyBox<A>): A
-    extend<A, B>(f: (wa: NonEmptyBox<A>) => B, wa: NonEmptyBox<A>): NonEmptyBox<B>
+    extend<A, B>(f: (wa: NonEmptyBox<A>) => NonNullable<B>, wa: NonEmptyBox<A>): NonEmptyBox<B>
     duplicate<A>(wa: NonEmptyBox<A>): NonEmptyBox<NonEmptyBox<A>>
 
     fmap<A, B>(f: (a: A) => B, fa: NonEmptyBox<A>): NonEmptyBox<B>
@@ -21,16 +21,17 @@ const duplicate = <A>(wa: NonEmptyBox<A>): NonEmptyBox<NonEmptyBox<A>> => {
         if ($null(lst)) {
             return nil()
         }
-        const ne = cons(listHead(lst))(listTail(lst))
+        const ne = cons(listHead(lst) as NonNullable<A>)(listTail(lst))
         return listCons(ne)(go(listTail(lst)))
     }
-    return cons(wa)(go(tail(wa)))
+    return cons(wa as NonNullable<NonEmptyBox<A>>)(go(tail(wa)))
 }
 
 const baseImplementation: BaseImplementation = {
     extract: <A>(wa: NonEmptyBox<A>): A => head(wa),
     duplicate,
-    extend: <A, B>(f: (wa: NonEmptyBox<A>) => B, wa: NonEmptyBox<A>): NonEmptyBox<B> => map(f, duplicate(wa)),
+    extend: <A, B>(f: (wa: NonEmptyBox<A>) => NonNullable<B>, wa: NonEmptyBox<A>): NonEmptyBox<B> =>
+        map(f, duplicate(wa)),
 }
 
 export const comonad = createComonad(baseImplementation, functor) as NonEmptyComonad

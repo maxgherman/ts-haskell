@@ -18,8 +18,7 @@ export interface Tuple2Comonad<T> extends Comonad {
 const baseImplementation = <T>(): BaseImplementation => ({
     extract: <A>(wa: Tuple2BoxT<T, A>): A => snd(wa),
     duplicate: <A>(wa: Tuple2BoxT<T, A>): Tuple2BoxT<T, Tuple2BoxT<T, A>> => tuple2(fst(wa), wa),
-    extend: <A, B>(f: (wa: Tuple2BoxT<T, A>) => B, wa: Tuple2BoxT<T, A>): Tuple2BoxT<T, B> =>
-        tuple2(fst(wa), f(wa)),
+    extend: <A, B>(f: (wa: Tuple2BoxT<T, A>) => B, wa: Tuple2BoxT<T, A>): Tuple2BoxT<T, B> => tuple2(fst(wa), f(wa)),
 })
 
 export const comonad = <T>(): Tuple2Comonad<T> => {
