@@ -31,4 +31,52 @@ tap.test('Reader Comonad', async (t) => {
         const viaDuplicate = cm.fmap(f, cm.duplicate(ra))
         t.equal(cm.extract(viaExtend), cm.extract(viaDuplicate))
     })
+
+    t.test('liftW', async (t) => {
+        const f = (x: number) => x + 1
+        const viaLiftW = cm.liftW(f, ra) as any
+        const viaExtend = cm.extend((w) => f(cm.extract(w)), ra)
+        t.equal(cm.extract(viaLiftW as any), cm.extract(viaExtend))
+    })
+
+    t.test('(=>>)', async (t) => {
+        const f = (r: typeof ra) => cm.extract(r) + 1
+        const left = cm['=>>'](ra, f as any)
+        const right = cm.extend(f as any, ra)
+        t.equal(cm.extract(left as any), cm.extract(right as any))
+    })
+
+    t.test('(<<=)', async (t) => {
+        const f = (r: typeof ra) => cm.extract(r) + 1
+        const left = cm['<<='](f as any, ra)
+        const right = cm.extend(f as any, ra)
+        t.equal(cm.extract(left as any), cm.extract(right as any))
+    })
+
+    t.test('(=<=)', async (t) => {
+        const f = (w: typeof ra) => cm.extract(w) + 1
+        const g = (w: typeof ra) => cm.extract(w) * 2
+        const left = cm['=<='](f as any, g as any, ra)
+        const right = (f as any)(cm.extend(g as any, ra))
+        t.equal(left, right)
+    })
+
+    t.test('(=>=)', async (t) => {
+        const f = (w: typeof ra) => cm.extract(w) + 1
+        const g = (w: typeof ra) => cm.extract(w) * 2
+        const left = cm['=>='](f as any, g as any, ra)
+        const right = (g as any)(cm.extend(f as any, ra))
+        t.equal(left, right)
+    })
+
+    t.test('wfix', async (t) => {
+        const w = reader((_: void) => (_: typeof ra) => 5)
+        t.equal(cm.wfix(w as any), 5)
+    })
+
+    t.test('cfix', async (t) => {
+        const f = (_: typeof ra) => 7
+        const result = cm.cfix(f as any)
+        t.equal(cm.extract(result as any), 7)
+    })
 })
