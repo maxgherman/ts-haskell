@@ -20,36 +20,37 @@ npm test
         +----------+      :    v
         | Functor  | ─────► +-------------+
         +----------+        | Applicative |
-              |             +-------------+
-              v                  |
-        +-------------+          v
-        | Applicative | ───────► +------+
-        +-------------+          | Monad|
-                                 +------+
-                                   ^
-                                   :
-                                   :............................ (Monad as a monoid
- in endofunctors)
+             | \            +-------------+
+             |  \                |
+             v   v               v
+     +-------------+         +------+
+     |  Comonad    |         | Monad|
+     +-------------+         +------+
+             |                 ^
+             v                 :
+     +------------------+      :............................ (Monad as a monoid
+     | Comonad Apply    |                             in endofunctors)
+     +------------------+
 ```
 
 ## Instances
 
-`✓` = available instance  
+`✓` = available instance
 `*` = requires the underlying value type to have the same instance
 
 ```
-Type        Functor Applicative Monad Semigroup Monoid
-------------------------------------------------------
-Maybe          ✓        ✓         ✓        ✓*     ✓*
-Either e       ✓        ✓         ✓        ✓*     ✓*
-List           ✓        ✓         ✓        ✓      ✓
-NonEmpty       ✓        ✓         ✓        ✓      -
-Reader r       ✓        ✓         ✓        ✓*     ✓*
-Writer w       ✓        ✓         ✓        ✓*     ✓*
-(->) r         ✓        ✓         ✓        ✓*     ✓*
-Tuple2 a       ✓        ✓         ✓        ✓*     ✓*
-Promise        ✓        ✓         ✓        ✓*     ✓*
-Unit ()        -        -         -        ✓      ✓
+Type        Functor Applicative Monad Comonad ComonadApply Semigroup Monoid
+----------------------------------------------------------------------------
+Maybe          ✓        ✓         ✓      -        -           ✓*     ✓*
+Either e       ✓        ✓         ✓      -        -           ✓*     ✓*
+List           ✓        ✓         ✓      -        -           ✓      ✓
+NonEmpty       ✓        ✓         ✓      ✓        ✓           ✓      -
+Reader r       ✓        ✓         ✓      ✓        ✓           ✓*     ✓*
+Writer w       ✓        ✓         ✓      ✓        ✓           ✓*     ✓*
+(->) r         ✓        ✓         ✓      ✓        ✓           ✓*     ✓*
+Tuple2 a       ✓        ✓         ✓      ✓        ✓           ✓*     ✓*
+Promise        ✓        ✓         ✓      -        -           ✓*     ✓*
+Unit ()        -        -         -      -        -           ✓      ✓
 ```
 
 ## References
@@ -57,6 +58,8 @@ Unit ()        -        -         -        ✓      ✓
 - [Functor](src/ghc/base/functor.ts)
 - [Applicative](src/ghc/base/applicative.ts)
 - [Monad](src/ghc/base/monad/monad.ts)
+- [Comonad](src/control/comonad.ts)
+- [ComonadApply](src/control/comonad-apply.ts)
 - [Semigroup](src/ghc/base/semigroup.ts)
 - [Monoid](src/ghc/base/monoid.ts)
 - [Maybe](src/ghc/base/maybe/maybe.ts)
