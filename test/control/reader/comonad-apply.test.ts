@@ -11,4 +11,11 @@ tap.test('Reader ComonadApply', async (t) => {
         const result = ca['<@>'](wf, wa)
         t.equal(ca.extract(result), 2)
     })
+
+    t.test('liftW2', async (t) => {
+        const wa = reader((_: void) => 1)
+        const wb = reader((_: void) => 2)
+        const result = ca.liftW2((a: number) => (b: number) => a + b, wa, wb)
+        t.equal(ca.extract(result), 3)
+    })
 })
