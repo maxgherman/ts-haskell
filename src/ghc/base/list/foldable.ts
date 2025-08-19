@@ -1,11 +1,12 @@
 import { FoldableBase, Foldable, foldable as createFoldable } from 'data/foldable'
 import { $null, head, tail, ListBox } from './list'
 import { Monoid } from 'ghc/base/monoid'
+import { MinBox0 } from 'data/kind'
 
 export interface ListFoldable<T> extends Foldable {
-    foldMap<A, M>(m: Monoid<M>, f: (a: A) => M, fa: ListBox<A>): M
-    "foldMap'"<A, M>(m: Monoid<M>, f: (a: A) => M, fa: ListBox<A>): M
-    fold<M>(m: Monoid<M>, fa: ListBox<M>): M
+    foldMap<A, M>(m: Monoid<M>, f: (a: A) => MinBox0<M>, fa: ListBox<A>): MinBox0<M>
+    "foldMap'"<A, M>(m: Monoid<M>, f: (a: A) => MinBox0<M>, fa: ListBox<A>): MinBox0<M>
+    fold<M>(m: Monoid<M>, fa: ListBox<M>): MinBox0<M>
     foldr<A, B>(f: (a: A, b: B) => B, b: B, fa: ListBox<A>): B
     "foldr'"<A, B>(f: (a: A, b: B) => B, b: B, fa: ListBox<A>): B
     foldl<A, B>(f: (b: B, a: A) => B, b: B, fa: ListBox<A>): B

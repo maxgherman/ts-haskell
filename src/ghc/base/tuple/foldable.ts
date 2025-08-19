@@ -2,11 +2,12 @@ import { Tuple2Box } from './tuple'
 import { FoldableBase, Foldable, foldable as createFoldable } from 'data/foldable'
 import { Monoid } from 'ghc/base/monoid'
 import { ListBox } from 'ghc/base/list/list'
+import { MinBox0 } from 'data/kind'
 
 export interface Tuple2Foldable<T> extends Foldable {
-    foldMap<A, M>(m: Monoid<M>, f: (a: A) => M, fa: Tuple2Box<T, A>): M
-    "foldMap'"<A, M>(m: Monoid<M>, f: (a: A) => M, fa: Tuple2Box<T, A>): M
-    fold<M>(m: Monoid<M>, fa: Tuple2Box<T, M>): M
+    foldMap<A, M>(m: Monoid<M>, f: (a: A) => MinBox0<M>, fa: Tuple2Box<T, A>): MinBox0<M>
+    "foldMap'"<A, M>(m: Monoid<M>, f: (a: A) => MinBox0<M>, fa: Tuple2Box<T, A>): MinBox0<M>
+    fold<M>(m: Monoid<M>, fa: Tuple2Box<T, M>): MinBox0<M>
     foldr<A, B>(f: (a: A, b: B) => B, b: B, fa: Tuple2Box<T, A>): B
     "foldr'"<A, B>(f: (a: A, b: B) => B, b: B, fa: Tuple2Box<T, A>): B
     foldl<A, B>(f: (b: B, a: A) => B, b: B, fa: Tuple2Box<T, A>): B

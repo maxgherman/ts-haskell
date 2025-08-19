@@ -2,11 +2,12 @@ import { $case, EitherBox } from './either'
 import { FoldableBase, Foldable, foldable as createFoldable } from 'data/foldable'
 import { Monoid } from 'ghc/base/monoid'
 import { ListBox } from 'ghc/base/list/list'
+import { MinBox0 } from 'data/kind'
 
 export interface EitherFoldable<L> extends Foldable {
-    foldMap<A, M>(m: Monoid<M>, f: (a: A) => M, fa: EitherBox<L, A>): M
-    "foldMap'"<A, M>(m: Monoid<M>, f: (a: A) => M, fa: EitherBox<L, A>): M
-    fold<M>(m: Monoid<M>, fa: EitherBox<L, M>): M
+    foldMap<A, M>(m: Monoid<M>, f: (a: A) => MinBox0<M>, fa: EitherBox<L, A>): MinBox0<M>
+    "foldMap'"<A, M>(m: Monoid<M>, f: (a: A) => MinBox0<M>, fa: EitherBox<L, A>): MinBox0<M>
+    fold<M>(m: Monoid<M>, fa: EitherBox<L, M>): MinBox0<M>
     foldr<A, B>(f: (a: A, b: B) => B, b: B, fa: EitherBox<L, A>): B
     "foldr'"<A, B>(f: (a: A, b: B) => B, b: B, fa: EitherBox<L, A>): B
     foldl<A, B>(f: (b: B, a: A) => B, b: B, fa: EitherBox<L, A>): B

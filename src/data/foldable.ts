@@ -32,7 +32,8 @@ export const kindOf =
         'Constraint' as Constraint
 
 export const foldable = (base: FoldableBase): Foldable => {
-    const toList = <A>(fa: MinBox1<A>): ListBox<A> => base.foldr<A, ListBox<A>>((a, b) => cons(a)(b), nil(), fa)
+    const toList = <A>(fa: MinBox1<A>): ListBox<A> =>
+        base.foldr<A, ListBox<A>>((a, b) => cons(a as NonNullable<A>)(b), nil(), fa)
 
     const toArray = <A>(fa: MinBox1<A>): A[] => listToArray(toList(fa))
 
@@ -74,7 +75,7 @@ export const foldable = (base: FoldableBase): Foldable => {
         ...base,
         foldMap,
         "foldMap'": foldMap,
-        fold: <M>(m: Monoid<M>, fa: MinBox1<M>) => foldMap<M, M>(m, (x) => x, fa),
+        fold: <M>(m: Monoid<M>, fa: MinBox1<M>) => foldMap<M, M>(m, (x) => x as MinBox0<M>, fa),
         foldr: base.foldr,
         "foldr'": base.foldr,
         foldl,
