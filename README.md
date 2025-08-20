@@ -39,18 +39,18 @@ npm test
 `*` = requires the underlying value type to have the same instance
 
 ```
-Type        Functor Applicative Monad Comonad ComonadApply Semigroup Monoid
-----------------------------------------------------------------------------
-Maybe          ✓        ✓         ✓      -        -           ✓*     ✓*
-Either e       ✓        ✓         ✓      -        -           ✓*     ✓*
-List           ✓        ✓         ✓      -        -           ✓      ✓
-NonEmpty       ✓        ✓         ✓      ✓        ✓           ✓      -
-Reader r       ✓        ✓         ✓      ✓        ✓           ✓*     ✓*
-Writer w       ✓        ✓         ✓      ✓        ✓           ✓*     ✓*
-(->) r         ✓        ✓         ✓      ✓        ✓           ✓*     ✓*
-Tuple2 a       ✓        ✓         ✓      ✓        ✓           ✓*     ✓*
-Promise        ✓        ✓         ✓      -        -           ✓*     ✓*
-Unit ()        -        -         -      -        -           ✓      ✓
+Type        Functor Applicative Monad Comonad ComonadApply Foldable Traversable Semigroup Monoid
+------------------------------------------------------------------------------------------------
+Maybe          ✓        ✓         ✓      -        -          ✓        ✓           ✓*     ✓*
+Either e       ✓        ✓         ✓      -        -          ✓        ✓           ✓*     ✓*
+List           ✓        ✓         ✓      -        -          ✓        ✓           ✓      ✓
+NonEmpty       ✓        ✓         ✓      ✓        ✓          ✓        ✓           ✓      -
+Reader r       ✓        ✓         ✓      ✓        ✓          ✓        -           ✓*     ✓*
+Writer w       ✓        ✓         ✓      ✓        ✓          ✓        -           ✓*     ✓*
+(->) r         ✓        ✓         ✓      ✓        ✓          -        -           ✓*     ✓*
+Tuple2 a       ✓        ✓         ✓      ✓        ✓          ✓        ✓           ✓*     ✓*
+Promise        ✓        ✓         ✓      -        -          ✓        -           ✓*     ✓*
+Unit ()        -        -         -      -        -          -        -           ✓      ✓
 ```
 
 ## References
@@ -62,6 +62,7 @@ Unit ()        -        -         -      -        -           ✓      ✓
 - [ComonadApply](src/control/comonad-apply.ts)
 - [Semigroup](src/ghc/base/semigroup.ts)
 - [Monoid](src/ghc/base/monoid.ts)
+- [Traversable](src/ghc/base/traversable.ts)
 - [Maybe](src/ghc/base/maybe/maybe.ts)
 - [Either](src/data/either/either.ts)
 - [List](src/ghc/base/list/list.ts)
