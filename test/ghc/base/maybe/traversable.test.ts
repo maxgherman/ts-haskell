@@ -5,25 +5,33 @@ import { applicative as listApplicative } from 'ghc/base/list/applicative'
 import { just, nothing, $case, MaybeBox } from 'ghc/base/maybe/maybe'
 import { cons, nil, toArray, ListBox } from 'ghc/base/list/list'
 
-const listOf = <A>(...xs: A[]) => xs.reduceRight((acc, x) => cons(x)(acc), nil<A>())
+const listOf = <A>(...xs: NonNullable<A>[]) =>
+    xs.reduceRight((acc, x) => cons(x)(acc), nil<A>())
 
 const caseMaybe = <A>(mb: MaybeBox<A>, onNothing: () => void, onJust: (a: A) => void) =>
     $case<A, void>({ nothing: onNothing, just: onJust })(mb)
 
 tap.test('Maybe traversable', async (t) => {
     t.test('traverse', async (t) => {
-        const res = traversable.traverse(maybeApplicative, (x: number) => just(x + 1), just(3))
+        const res =
+            traversable.traverse(maybeApplicative, (x: number) => just(x + 1), just(3)) as MaybeBox<MaybeBox<number>>
         caseMaybe(
             res,
             () => t.fail('expected outer just'),
-            (inner) => caseMaybe(inner, () => t.fail('expected inner just'), (v) => t.equal(v, 4)),
+            (inner: MaybeBox<number>) =>
+                caseMaybe(inner, () => t.fail('expected inner just'), (v) => t.equal(v, 4)),
         )
 
-        const res2 = traversable.traverse(maybeApplicative, (x: number) => just(x + 1), nothing())
+        const res2 = traversable.traverse(
+            maybeApplicative,
+            (x: number) => just(x + 1),
+            nothing<number>(),
+        )
         caseMaybe(
-            res2,
+            res2 as MaybeBox<MaybeBox<number>>,
             () => t.fail('expected outer just'),
-            (inner) => caseMaybe(inner, () => t.pass(''), () => t.fail('expected nothing inside')),
+            (inner: MaybeBox<number>) =>
+                caseMaybe(inner, () => t.pass(''), (_a) => t.fail('expected nothing inside')),
         )
     })
 
