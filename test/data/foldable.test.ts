@@ -43,6 +43,8 @@ tap.test('Foldable base', (t) => {
     t.notOk(fold.elem(4, lst))
     t.notOk(fold.elem(1, nil()))
     t.equal(fold.maximum(lst), 3)
+    const lstDesc = listOf(3, 2, 1)
+    t.equal(fold.maximum(lstDesc), 3)
     t.equal(fold.sum(lst), 6)
     t.equal(fold.sum(nil()), 0)
     t.equal(fold.product(lst), 6)
