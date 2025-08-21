@@ -2,6 +2,7 @@ import { MinBox1, Kind, Constraint } from 'data/kind'
 import { Functor } from 'ghc/base/functor'
 import { Foldable } from 'data/foldable'
 import { Applicative } from 'ghc/base/applicative'
+import { Monad } from 'ghc/base/monad/monad'
 import { id } from 'ghc/base/functions'
 
 export type TraversableBase = Functor &
@@ -11,6 +12,8 @@ export type TraversableBase = Functor &
     }
 
 export type Traversable = TraversableBase & {
+    mapM<A, B>(m: Monad, f: (a: A) => MinBox1<B>, ta: MinBox1<A>): MinBox1<MinBox1<B>>
+    sequence<A>(m: Monad, tfa: MinBox1<MinBox1<A>>): MinBox1<MinBox1<A>>
     kind: (_: (_: '*') => '*') => Constraint
 }
 
@@ -41,6 +44,8 @@ export const traversable = (base: BaseImplementation, functor: Functor, foldable
 
     return {
         ...result,
+        mapM: (m, f, ta) => result.traverse(m, f, ta),
+        sequence: (m, tfa) => result.sequenceA(m, tfa),
         kind: kindOf(null as unknown as Traversable) as (_: (_: '*') => '*') => 'Constraint',
     }
 }
