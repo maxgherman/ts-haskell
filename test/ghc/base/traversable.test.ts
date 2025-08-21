@@ -6,6 +6,7 @@ import { functor as listFunctor } from 'ghc/base/list/functor'
 import { foldable as listFoldable } from 'ghc/base/list/foldable'
 import { cons, nil, toArray, ListBox } from 'ghc/base/list/list'
 import { applicative as maybeApplicative } from 'ghc/base/maybe/applicative'
+import { monad as maybeMonad } from 'ghc/base/maybe/monad'
 import { just, nothing, $case, MaybeBox } from 'ghc/base/maybe/maybe'
 
 tap.test('traversable', async () => {
@@ -33,6 +34,45 @@ tap.test('traversable', async () => {
 
         const tfa2 = listOf(just(1), nothing<number>())
         const res2 = tOnlyTraverse.sequenceA(maybeApplicative, tfa2) as MaybeBox<ListBox<number>>
+        $case<void, void>({
+            nothing: () => t.pass(''),
+            just: () => t.fail('expected nothing'),
+        })(res2)
+    })
+
+    tap.test('mapM derived from traverse', async (t) => {
+        const base = { traverse: listTraversable.traverse }
+        const tOnlyTraverse = createTraversable(base, listFunctor, listFoldable)
+
+        const lst = listOf(1, 2)
+        const res = tOnlyTraverse.mapM(
+            maybeMonad,
+            (x: number) => just(x + 1),
+            lst,
+        ) as MaybeBox<ListBox<number>>
+        caseMaybe(t, res, (lst: ListBox<number>) => t.same(toArray(lst), [2, 3]))
+
+        const res2 = tOnlyTraverse.mapM(
+            maybeMonad,
+            (_: number) => nothing<number>(),
+            lst,
+        ) as MaybeBox<ListBox<number>>
+        $case<void, void>({
+            nothing: () => t.pass(''),
+            just: () => t.fail('expected nothing'),
+        })(res2)
+    })
+
+    tap.test('sequence derived from traverse', async (t) => {
+        const base = { traverse: listTraversable.traverse }
+        const tOnlyTraverse = createTraversable(base, listFunctor, listFoldable)
+
+        const tfa1 = listOf(just(1), just(2))
+        const res1 = tOnlyTraverse.sequence(maybeMonad, tfa1) as MaybeBox<ListBox<number>>
+        caseMaybe(t, res1, (lst: ListBox<number>) => t.same(toArray(lst), [1, 2]))
+
+        const tfa2 = listOf(just(1), nothing<number>())
+        const res2 = tOnlyTraverse.sequence(maybeMonad, tfa2) as MaybeBox<ListBox<number>>
         $case<void, void>({
             nothing: () => t.pass(''),
             just: () => t.fail('expected nothing'),

@@ -2,6 +2,7 @@ import tap from 'tap'
 import type { Test } from 'tap'
 import { traversable } from 'ghc/base/list/traversable'
 import { applicative as maybeApplicative } from 'ghc/base/maybe/applicative'
+import { monad as maybeMonad } from 'ghc/base/maybe/monad'
 import { just, nothing, $case, MaybeBox } from 'ghc/base/maybe/maybe'
 import { cons, nil, toArray, ListBox } from 'ghc/base/list/list'
 
@@ -35,6 +36,26 @@ tap.test('List traversable', async (t) => {
           caseMaybe(t, res, (lst: ListBox<number>) => t.same(toArray(lst), [2, 3]))
     })
 
+    t.test('mapM', async (t) => {
+        const lst = listOf(1, 2)
+        const res = traversable.mapM(
+            maybeMonad,
+            (x: number) => just(x + 1),
+            lst,
+        ) as MaybeBox<ListBox<number>>
+        caseMaybe(t, res, (lst: ListBox<number>) => t.same(toArray(lst), [2, 3]))
+
+        const res2 = traversable.mapM(
+            maybeMonad,
+            (_: number) => nothing<number>(),
+            lst,
+        ) as MaybeBox<ListBox<number>>
+        $case<void, void>({
+            nothing: () => t.pass(''),
+            just: () => t.fail('expected nothing'),
+        })(res2)
+    })
+
     t.test('sequenceA = traverse id', async (t) => {
           const tfa = listOf(just(1), just(2))
           const seq = traversable.sequenceA(maybeApplicative, tfa) as MaybeBox<ListBox<number>>
@@ -46,5 +67,18 @@ tap.test('List traversable', async (t) => {
           caseMaybe(t, seq, (lst1: ListBox<number>) =>
               caseMaybe(t, trav, (lst2: ListBox<number>) => t.same(toArray(lst1), toArray(lst2))),
           )
+    })
+
+    t.test('sequence', async (t) => {
+        const tfa1 = listOf(just(1), just(2))
+        const result1 = traversable.sequence(maybeMonad, tfa1) as MaybeBox<ListBox<number>>
+        caseMaybe(t, result1, (lst: ListBox<number>) => t.same(toArray(lst), [1, 2]))
+
+        const tfa2 = listOf(just(1), nothing<number>())
+        const result2 = traversable.sequence(maybeMonad, tfa2) as MaybeBox<ListBox<number>>
+        $case<void, void>({
+            nothing: () => t.pass(''),
+            just: () => t.fail('expected nothing'),
+        })(result2)
     })
 })
