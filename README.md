@@ -32,9 +32,15 @@ npm test
      | Comonad Apply    |
      +------------------+
 
- +-----------+
- | Foldable  |
- +-----------+
+ +-----------+     +----------+
+ | Foldable  |     | Functor  |
+ +-----------+     +----------+
+      \\             /
+       \\           /
+        v         v
+     +-------------+
+     | Traversable |
+     +-------------+
 ```
 
 ## Instances
@@ -43,18 +49,18 @@ npm test
 `*` = requires the underlying value type to have the same instance
 
 ```
-Type        Functor Applicative Monad Comonad ComonadApply Foldable Semigroup Monoid
-------------------------------------------------------------------------------------
-Maybe          ✓        ✓         ✓      -        -           ✓       ✓*     ✓*
-Either e       ✓        ✓         ✓      -        -           ✓       ✓*     ✓*
-List           ✓        ✓         ✓      -        -           ✓       ✓      ✓
-NonEmpty       ✓        ✓         ✓      ✓        ✓           ✓       ✓      -
-Reader r       ✓        ✓         ✓      ✓        ✓           ✓       ✓*     ✓*
-Writer w       ✓        ✓         ✓      ✓        ✓           ✓       ✓*     ✓*
-(->) r         ✓        ✓         ✓      ✓        ✓           ✓       ✓*     ✓*
-Tuple2 a       ✓        ✓         ✓      ✓        ✓           ✓       ✓*     ✓*
-Promise        ✓        ✓         ✓      -        -           ✓       ✓*     ✓*
-Unit ()        -        -         -      -        -           -       ✓      ✓
+Type        Functor Applicative Monad Comonad ComonadApply Foldable Traversable Semigroup Monoid
+------------------------------------------------------------------------------------------------
+Maybe          ✓        ✓         ✓      -        -           ✓        ✓        ✓*     ✓*
+Either e       ✓        ✓         ✓      -        -           ✓        ✓        ✓*     ✓*
+List           ✓        ✓         ✓      -        -           ✓        ✓        ✓      ✓
+NonEmpty       ✓        ✓         ✓      ✓        ✓           ✓        ✓        ✓      -
+Reader r       ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*     ✓*
+Writer w       ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*     ✓*
+(->) r         ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*     ✓*
+Tuple2 a       ✓        ✓         ✓      ✓        ✓           ✓        ✓        ✓*     ✓*
+Promise        ✓        ✓         ✓      -        -           ✓        -        ✓*     ✓*
+Unit ()        -        -         -      -        -           -        -        ✓      ✓
 ```
 
 ## References
@@ -65,14 +71,15 @@ Unit ()        -        -         -      -        -           -       ✓      �
 - [Comonad](src/control/comonad.ts)
 - [ComonadApply](src/control/comonad-apply.ts)
 - [Foldable](src/data/foldable.ts)
+- [Traversable](src/data/traversable.ts)
 - [Semigroup](src/ghc/base/semigroup.ts)
 - [Monoid](src/ghc/base/monoid.ts)
-- [Maybe](src/ghc/base/maybe/maybe.ts) ([Foldable](src/ghc/base/maybe/foldable.ts))
-- [Either](src/data/either/either.ts) ([Foldable](src/data/either/foldable.ts))
-- [List](src/ghc/base/list/list.ts) ([Foldable](src/ghc/base/list/foldable.ts))
-- [NonEmpty list](src/ghc/base/non-empty/list.ts) ([Foldable](src/ghc/base/non-empty/foldable.ts))
+- [Maybe](src/ghc/base/maybe/maybe.ts) ([Foldable](src/ghc/base/maybe/foldable.ts), [Traversable](src/ghc/base/maybe/traversable.ts))
+- [Either](src/data/either/either.ts) ([Foldable](src/data/either/foldable.ts), [Traversable](src/data/either/traversable.ts))
+- [List](src/ghc/base/list/list.ts) ([Foldable](src/ghc/base/list/foldable.ts), [Traversable](src/ghc/base/list/traversable.ts))
+- [NonEmpty list](src/ghc/base/non-empty/list.ts) ([Foldable](src/ghc/base/non-empty/foldable.ts), [Traversable](src/ghc/base/non-empty/traversable.ts))
 - [Reader](src/control/reader/reader.ts) ([Foldable](src/control/reader/foldable.ts))
 - [Writer](src/control/writer/writer.ts) ([Foldable](src/control/writer/foldable.ts))
 - [Function arrow \`(->)\`](src/ghc/prim/function-arrow/index.ts) ([Foldable](src/control/reader/foldable.ts))
-- [Tuple2 and Unit](src/ghc/base/tuple/tuple.ts) ([Foldable](src/ghc/base/tuple/foldable.ts))
+- [Tuple2 and Unit](src/ghc/base/tuple/tuple.ts) ([Foldable](src/ghc/base/tuple/foldable.ts), [Traversable](src/ghc/base/tuple/tuple2-traversable.ts))
 - [Promise](src/extra/promise/promise.ts) ([Foldable](src/extra/promise/foldable.ts))
