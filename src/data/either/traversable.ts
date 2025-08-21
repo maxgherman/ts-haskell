@@ -1,5 +1,5 @@
 import { Applicative } from 'ghc/base/applicative'
-import { Traversable, traversable as createTraversable, BaseImplementation } from 'ghc/base/traversable'
+import { Traversable, traversable as createTraversable, BaseImplementation } from 'data/traversable'
 import { functor } from './functor'
 import { foldable } from './foldable'
 import { $case, left, right, EitherBox } from './either'

@@ -1,6 +1,6 @@
 import tap from 'tap'
 import type { Test } from 'tap'
-import { kindOf, Traversable, traversable as createTraversable } from 'ghc/base/traversable'
+import { kindOf, Traversable, traversable as createTraversable } from 'data/traversable'
 import { traversable as listTraversable } from 'ghc/base/list/traversable'
 import { functor as listFunctor } from 'ghc/base/list/functor'
 import { foldable as listFoldable } from 'ghc/base/list/foldable'
