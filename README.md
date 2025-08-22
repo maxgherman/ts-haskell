@@ -38,16 +38,16 @@ npm test
 ```
 Type        Functor Applicative Monad Comonad ComonadApply Foldable Traversable Semigroup Monoid
 ------------------------------------------------------------------------------------------------
-Maybe          ✓        ✓         ✓      -        -           ✓        ✓        ✓*     ✓*
-Either e       ✓        ✓         ✓      -        -           ✓        ✓        ✓*     ✓*
-List           ✓        ✓         ✓      -        -           ✓        ✓        ✓      ✓
-NonEmpty       ✓        ✓         ✓      ✓        ✓           ✓        ✓        ✓      -
-Reader r       ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*     ✓*
-Writer w       ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*     ✓*
-(->) r         ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*     ✓*
-Tuple2 a       ✓        ✓         ✓      ✓        ✓           ✓        ✓        ✓*     ✓*
-Promise        ✓        ✓         ✓      -        -           ✓        -        ✓*     ✓*
-Unit ()        -        -         -      -        -           -        -        ✓      ✓
+Maybe          ✓        ✓         ✓      -        -           ✓        ✓        ✓*      ✓*
+Either e       ✓        ✓         ✓      -        -           ✓        ✓        ✓*      ✓*
+List           ✓        ✓         ✓      -        -           ✓        ✓         ✓      ✓
+NonEmpty       ✓        ✓         ✓      ✓        ✓           ✓        ✓         ✓      -
+Reader r       ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*      ✓*
+Writer w       ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*      ✓*
+(->) r         ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*      ✓*
+Tuple2 a       ✓        ✓         ✓      ✓        ✓           ✓        ✓        ✓*      ✓*
+Promise        ✓        ✓         ✓       -        -           ✓        -        ✓*      ✓*
+Unit ()        -        -         -        -        -           -        -         ✓       ✓
 ```
 
 ## References
