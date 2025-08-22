@@ -44,6 +44,7 @@ List           ✓        ✓         ✓      -        -           ✓        �
 NonEmpty       ✓        ✓         ✓      ✓        ✓           ✓        ✓         ✓      -
 Reader r       ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*      ✓*
 Writer w       ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*      ✓*
+State s        ✓        ✓         ✓      -        -           -        -        -       -
 (->) r         ✓        ✓         ✓      ✓        ✓           ✓        -        ✓*      ✓*
 Tuple2 a       ✓        ✓         ✓      ✓        ✓           ✓        ✓        ✓*      ✓*
 Promise        ✓        ✓         ✓       -        -           ✓        -        ✓*      ✓*
@@ -67,6 +68,7 @@ Unit ()        -        -         -        -        -           -        -      
 - [NonEmpty list](src/ghc/base/non-empty/list.ts) ([Foldable](src/ghc/base/non-empty/foldable.ts), [Traversable](src/ghc/base/non-empty/traversable.ts))
 - [Reader](src/control/reader/reader.ts) ([Foldable](src/control/reader/foldable.ts))
 - [Writer](src/control/writer/writer.ts) ([Foldable](src/control/writer/foldable.ts))
+- [State](src/control/state/state.ts) ([Functor](src/control/state/functor.ts), [Applicative](src/control/state/applicative.ts), [Monad](src/control/state/monad.ts))
 - [Function arrow \`(->)\`](src/ghc/prim/function-arrow/index.ts) ([Foldable](src/control/reader/foldable.ts))
 - [Tuple2 and Unit](src/ghc/base/tuple/tuple.ts) ([Foldable](src/ghc/base/tuple/foldable.ts), [Traversable](src/ghc/base/tuple/tuple2-traversable.ts))
 - [Promise](src/extra/promise/promise.ts) ([Foldable](src/extra/promise/foldable.ts))
