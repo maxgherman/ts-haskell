@@ -1,5 +1,17 @@
 import tap from 'tap'
-import { state, runState, evalState, execState, mapState, withState, StateBox } from 'control/state/state'
+import {
+    state,
+    runState,
+    evalState,
+    execState,
+    mapState,
+    withState,
+    get,
+    put,
+    modify,
+    gets,
+    StateBox,
+} from 'control/state/state'
 import { fst, snd, tuple2 } from 'ghc/base/tuple/tuple'
 
 tap.test('state and runState', async (t) => {
@@ -34,4 +46,32 @@ tap.test('withState modifies the input state', async (t) => {
     const result = runState(modified, 3)
     t.equal(fst(result), 6)
     t.equal(snd(result), 7)
+})
+
+tap.test('get returns the current state as the value', async (t) => {
+    const computation = get<number>()
+    const result = runState(computation, 5)
+    t.equal(fst(result), 5)
+    t.equal(snd(result), 5)
+})
+
+tap.test('put replaces the state and returns unit', async (t) => {
+    const computation = put<number>(10)
+    const result = runState(computation, 5)
+    t.same(fst(result), [])
+    t.equal(snd(result), 10)
+})
+
+tap.test('modify updates the state using a function', async (t) => {
+    const computation = modify<number>((s) => s + 3)
+    const result = runState(computation, 7)
+    t.same(fst(result), [])
+    t.equal(snd(result), 10)
+})
+
+tap.test('gets extracts a value from the state without modifying it', async (t) => {
+    const computation = gets<number, number>((s) => s * 2)
+    const result = runState(computation, 4)
+    t.equal(fst(result), 8)
+    t.equal(snd(result), 4)
 })
