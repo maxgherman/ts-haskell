@@ -1,6 +1,6 @@
 import { alternative as createAlternative, Alternative, BaseImplementation } from 'control/alternative/alternative'
 import { Type } from 'data/kind'
-import { concat, nil, ListBox, cons, map, $null } from 'ghc/base/list/list'
+import { concat, nil, ListBox, cons, map, $null, head, tail } from 'ghc/base/list/list'
 import { comp } from './comprehension'
 import { applicative } from './applicative'
 
@@ -33,10 +33,9 @@ const some = <T>(fa: ListBox<T>): ListBox<ListBox<T>> => {
             if ($null(xs)) {
                 return ys()()
             }
-            const value = xs()
             return {
-                head: value.head as ListBox<T>,
-                tail: append(value.tail as ListBox<ListBox<T>>, ys),
+                head: head(xs) as ListBox<T>,
+                tail: append(tail(xs) as ListBox<ListBox<T>>, ys),
             }
         }
         ;(node as unknown as { kind: (_: '*') => Type }).kind = (_: '*') => '*' as Type
