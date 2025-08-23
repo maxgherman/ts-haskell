@@ -53,8 +53,8 @@ const some = <T>(fa: ListBox<T>): ListBox<ListBox<T>> => {
         let cache: unknown = null
         const node = () => {
             if (cache === null) {
-                const { value, done } = iterator.next()
-                cache = done ? [] : { head: value, tail: build() }
+                const { value } = iterator.next()
+                cache = { head: value as ListBox<T>, tail: build() }
             }
             return cache
         }

@@ -23,6 +23,7 @@ tap.test('Alternative', async (t) => {
     await t.test('some', async (t) => {
         const value = listOf(1, 2)
         const result = alternative.some(value)
+        t.equal((result as unknown as { kind: (_: '*') => '*' }).kind('*'), '*')
         const first4 = toArray(take(4, result)).map((lst) => toArray(lst))
         t.same(first4, [[1], [2], [1, 1], [1, 2]])
     })
