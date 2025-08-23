@@ -1,6 +1,7 @@
 import { alternative as createAlternative, Alternative, BaseImplementation } from 'control/alternative/alternative'
 import { Type } from 'data/kind'
-import { concat, nil, ListBox, cons, toArray, $null } from 'ghc/base/list/list'
+import { concat, nil, ListBox, cons, map, $null } from 'ghc/base/list/list'
+import { comp } from './comprehension'
 import { applicative } from './applicative'
 
 export interface ListAlternative<T> extends Alternative {
@@ -20,49 +21,31 @@ const some = <T>(fa: ListBox<T>): ListBox<ListBox<T>> => {
         return nil()
     }
 
-    const values = toArray(fa)
-
-    const fromArray = (arr: T[]): ListBox<T> => arr.reduceRight((acc, x) => cons(x as NonNullable<T>)(acc), nil<T>())
-
-    function* gen(): Generator<ListBox<T>> {
-        let n = 1
-        while (true) {
-            const idx = Array(n).fill(0)
-            while (true) {
-                yield fromArray(idx.map((i) => values[i]!))
-
-                let i = n - 1
-                while (i >= 0 && idx[i] === values.length - 1) {
-                    i--
-                }
-                if (i < 0) {
-                    break
-                }
-                idx[i]++
-                for (let j = i + 1; j < n; j++) {
-                    idx[j] = 0
-                }
-            }
-            n++
+    const buildN = (n: number): ListBox<ListBox<T>> => {
+        if (n === 1) {
+            return map((x: T) => cons(x as NonNullable<T>)(nil<T>()), fa)
         }
+        return comp((x: T, xs: ListBox<T>) => cons(x as NonNullable<T>)(xs), [fa, buildN(n - 1)])
     }
 
-    const iterator = gen()
-
-    const build = (): ListBox<ListBox<T>> => {
-        let cache: unknown = null
+    const append = (xs: ListBox<ListBox<T>>, ys: () => ListBox<ListBox<T>>): ListBox<ListBox<T>> => {
         const node = () => {
-            if (cache === null) {
-                const { value } = iterator.next()
-                cache = { head: value as ListBox<T>, tail: build() }
+            if ($null(xs)) {
+                return ys()()
             }
-            return cache
+            const value = xs()
+            return {
+                head: value.head as ListBox<T>,
+                tail: append(value.tail as ListBox<ListBox<T>>, ys),
+            }
         }
         ;(node as unknown as { kind: (_: '*') => Type }).kind = (_: '*') => '*' as Type
         return node as ListBox<ListBox<T>>
     }
 
-    return build()
+    const build = (n: number): ListBox<ListBox<T>> => append(buildN(n), () => build(n + 1))
+
+    return build(1)
 }
 
 const many = <T>(fa: ListBox<T>): ListBox<ListBox<T>> =>
