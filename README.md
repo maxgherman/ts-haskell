@@ -36,21 +36,19 @@ npm test
 `✓` = available instance
 `*` = requires the underlying value type to have the same instance
 
-```
-Type        Functor Applicative Alternative Monad Comonad ComonadApply Foldable Traversable Semigroup Monoid
-------------------------------------------------------------------------------------------------------------
-Maybe          ✓        ✓           ✓      ✓      -        -           ✓        ✓        ✓*      ✓*
-Either e       ✓        ✓           -      ✓      -        -           ✓        ✓        ✓*      ✓*
-List           ✓        ✓           ✓      ✓      -        -           ✓        ✓         ✓      ✓
-NonEmpty       ✓        ✓           -      ✓      ✓        ✓           ✓        ✓         ✓      -
-Reader r       ✓        ✓           -      ✓      ✓        ✓           ✓        -        ✓*      ✓*
-Writer w       ✓        ✓           -      ✓      ✓        ✓           ✓        -        ✓*      ✓*
-State s        ✓        ✓           -      ✓      -        -           -        -        -       -
-(->) r         ✓        ✓           -      ✓      ✓        ✓           ✓        -        ✓*      ✓*
-Tuple2 a       ✓        ✓           -      ✓      ✓        ✓           ✓        ✓        ✓*      ✓*
-Promise        ✓        ✓           -      ✓       -        -           ✓        -        ✓*      ✓*
-Unit ()        -        -           -      -       -        -           -        -         ✓       ✓
-```
+| Type       | Functor | Applicative | Alternative | Monad | Comonad | ComonadApply | Foldable | Traversable | Semigroup | Monoid |
+| ---------- | :-----: | :---------: | :---------: | :---: | :-----: | :----------: | :------: | :---------: | :-------: | :----: |
+| Maybe      | ✓       | ✓           | ✓           | ✓     | -       | -            | ✓        | ✓           | ✓*        | ✓*     |
+| Either e   | ✓       | ✓           | -           | ✓     | -       | -            | ✓        | ✓           | ✓*        | ✓*     |
+| List       | ✓       | ✓           | ✓           | ✓     | -       | -            | ✓        | ✓           | ✓         | ✓      |
+| NonEmpty   | ✓       | ✓           | -           | ✓     | ✓       | ✓            | ✓        | ✓           | ✓         | -      |
+| Reader r   | ✓       | ✓           | -           | ✓     | ✓       | ✓            | ✓        | -           | ✓*        | ✓*     |
+| Writer w   | ✓       | ✓           | -           | ✓     | ✓       | ✓            | ✓        | -           | ✓*        | ✓*     |
+| State s    | ✓       | ✓           | -           | ✓     | -       | -            | -        | -           | -         | -      |
+| (->) r     | ✓       | ✓           | -           | ✓     | ✓       | ✓            | ✓        | -           | ✓*        | ✓*     |
+| Tuple2 a   | ✓       | ✓           | -           | ✓     | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*     |
+| Promise    | ✓       | ✓           | -           | ✓     | -       | -            | ✓        | -           | ✓*        | ✓*     |
+| Unit ()    | -       | -           | -           | -     | -       | -            | -        | -           | ✓         | ✓      |
 
 ## References
 
