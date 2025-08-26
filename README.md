@@ -43,7 +43,7 @@ npm test
 | Type       | Functor | Applicative | Alternative | Monad | MonadPlus | Comonad | ComonadApply | Foldable | Traversable | Semigroup | Monoid |
 | ---------- | :-----: | :---------: | :---------: | :---: | :-------: | :-----: | :----------: | :------: | :---------: | :-------: | :----: |
 | Maybe      | ✓       | ✓           | ✓           | ✓     | ✓         |         |              | ✓        | ✓           | ✓*        | ✓*  |
-| Either e   | ✓       | ✓           |             | ✓     |           |         |              | ✓        | ✓           | ✓*        | ✓*  |
+| Either e   | ✓       | ✓           | ✓*          | ✓     | ✓*        |         |              | ✓        | ✓           | ✓*        | ✓*  |
 | List       | ✓       | ✓           | ✓           | ✓     | ✓         |         |              | ✓        | ✓           | ✓         | ✓  |
 | NonEmpty   | ✓       | ✓           |             | ✓     |           | ✓       | ✓            | ✓        | ✓           | ✓         |  |
 | Reader r   | ✓       | ✓           |             | ✓     |           | ✓       | ✓            | ✓        |             | ✓*        | ✓*  |
@@ -68,7 +68,7 @@ npm test
 - [Semigroup](src/ghc/base/semigroup.ts)
 - [Monoid](src/ghc/base/monoid.ts)
 - [Maybe](src/ghc/base/maybe/maybe.ts) ([Alternative](src/ghc/base/maybe/alternative.ts), [MonadPlus](src/control/monad-plus/maybe.ts), [Foldable](src/ghc/base/maybe/foldable.ts), [Traversable](src/ghc/base/maybe/traversable.ts))
-- [Either](src/data/either/either.ts) ([Foldable](src/data/either/foldable.ts), [Traversable](src/data/either/traversable.ts))
+- [Either](src/data/either/either.ts) ([Alternative](src/data/either/alternative.ts), [MonadPlus](src/control/monad-plus/either.ts), [Foldable](src/data/either/foldable.ts), [Traversable](src/data/either/traversable.ts))
 - [List](src/ghc/base/list/list.ts) ([Alternative](src/ghc/base/list/alternative.ts), [MonadPlus](src/control/monad-plus/list.ts), [Foldable](src/ghc/base/list/foldable.ts), [Traversable](src/ghc/base/list/traversable.ts))
 - [NonEmpty list](src/ghc/base/non-empty/list.ts) ([Foldable](src/ghc/base/non-empty/foldable.ts), [Traversable](src/ghc/base/non-empty/traversable.ts))
 - [Reader](src/control/reader/reader.ts) ([Foldable](src/control/reader/foldable.ts))
