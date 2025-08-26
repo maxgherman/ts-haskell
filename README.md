@@ -18,12 +18,16 @@ npm test
                                                               +--------------+
                        |------------------------------------- | APPLICATIVE  │
                        |                                      +--------------+
-                       |                                              ^
-                       v                  |---------------------------|
-            +-----------+            +--------+       +------------+      +---------------+
-            │   MONAD   │ <--------- │FUNCTOR │-----> │  COMONAD   │----> │ COMONAD APPLY │
-            +-----------+  .         +--------+       +------------+      +---------------+
-                           .              |
+                       |                                              |
+                       v                                              v
+            +-----------+            +--------+       +------------+ +--------------+
+            │   MONAD   │ <--------- │FUNCTOR │-----> │  COMONAD   │ │ ALTERNATIVE  │
+            +-----------+            +--------+       +------------+ +--------------+
+               \\                                                         |
+                \\                                                        v
+                 \\------------------------------------------------> +--------------+
+                                                                    │  MONADPLUS   │
+                                                                    +--------------+
                            .              | ----------\
    (Monad as a monoid      .              v            \     +-------------+
     in endofunctors) .......    +--------------+        \--> | TRAVERSABLE │
@@ -36,19 +40,19 @@ npm test
 - `✓` = available instance
 - `*` = requires the underlying value type to have the same instance
 
-| Type       | Functor | Applicative | Alternative | Monad | Comonad | ComonadApply | Foldable | Traversable | Semigroup | Monoid |
-| ---------- | :-----: | :---------: | :---------: | :---: | :-----: | :----------: | :------: | :---------: | :-------: | :----: |
-| Maybe      | ✓       | ✓           | ✓           | ✓     |         |              | ✓        | ✓           | ✓*        | ✓*     |
-| Either e   | ✓       | ✓           |             | ✓     |         |              | ✓        | ✓           | ✓*        | ✓*     |
-| List       | ✓       | ✓           | ✓           | ✓     |         |              | ✓        | ✓           | ✓         | ✓      |
-| NonEmpty   | ✓       | ✓           |             | ✓     | ✓       | ✓            | ✓        | ✓           | ✓         |        |
-| Reader r   | ✓       | ✓           |             | ✓     | ✓       | ✓            | ✓        |             | ✓*        | ✓*     |
-| Writer w   | ✓       | ✓           |             | ✓     | ✓       | ✓            | ✓        |             | ✓*        | ✓*     |
-| State s    | ✓       | ✓           |             | ✓     |         |              |          |             |           |        |
-| (->) r     | ✓       | ✓           |             | ✓     | ✓       | ✓            | ✓        |             | ✓*        | ✓*     |
-| Tuple2 a   | ✓       | ✓           |             | ✓     | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*     |
-| Promise    | ✓       | ✓           |             | ✓     |         |              | ✓        |             | ✓*        | ✓*     |
-| Unit ()    |         |             |             |       |         |              |          |             | ✓         | ✓      |
+| Type       | Functor | Applicative | Alternative | Monad | MonadPlus | Comonad | ComonadApply | Foldable | Traversable | Semigroup | Monoid |
+| ---------- | :-----: | :---------: | :---------: | :---: | :-------: | :-----: | :----------: | :------: | :---------: | :-------: | :----: |
+| Maybe      | ✓       | ✓           | ✓           | ✓     | ✓         |         |              | ✓        | ✓           | ✓*        | ✓*  |
+| Either e   | ✓       | ✓           |             | ✓     |           |         |              | ✓        | ✓           | ✓*        | ✓*  |
+| List       | ✓       | ✓           | ✓           | ✓     | ✓         |         |              | ✓        | ✓           | ✓         | ✓  |
+| NonEmpty   | ✓       | ✓           |             | ✓     |           | ✓       | ✓            | ✓        | ✓           | ✓         |  |
+| Reader r   | ✓       | ✓           |             | ✓     |           | ✓       | ✓            | ✓        |             | ✓*        | ✓*  |
+| Writer w   | ✓       | ✓           |             | ✓     |           | ✓       | ✓            | ✓        |             | ✓*        | ✓*  |
+| State s    | ✓       | ✓           |             | ✓     |           |         |              |          |             |           |  |
+| (->) r     | ✓       | ✓           |             | ✓     |           | ✓       | ✓            | ✓        |             | ✓*        | ✓*  |
+| Tuple2 a   | ✓       | ✓           |             | ✓     |           | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| Promise    | ✓       | ✓           |             | ✓     |           |         |              | ✓        |             | ✓*        | ✓*  |
+| Unit ()    |         |             |             |       |           |         |              |          |             | ✓         | ✓  |
 
 ## References
 
@@ -56,15 +60,16 @@ npm test
 - [Applicative](src/ghc/base/applicative.ts)
 - [Alternative](src/control/alternative/alternative.ts)
 - [Monad](src/ghc/base/monad/monad.ts)
+- [MonadPlus](src/control/monad-plus/monad-plus.ts)
 - [Comonad](src/control/comonad.ts)
 - [ComonadApply](src/control/comonad-apply.ts)
 - [Foldable](src/data/foldable.ts)
 - [Traversable](src/data/traversable.ts)
 - [Semigroup](src/ghc/base/semigroup.ts)
 - [Monoid](src/ghc/base/monoid.ts)
-- [Maybe](src/ghc/base/maybe/maybe.ts) ([Alternative](src/ghc/base/maybe/alternative.ts), [Foldable](src/ghc/base/maybe/foldable.ts), [Traversable](src/ghc/base/maybe/traversable.ts))
+- [Maybe](src/ghc/base/maybe/maybe.ts) ([Alternative](src/ghc/base/maybe/alternative.ts), [MonadPlus](src/control/monad-plus/maybe.ts), [Foldable](src/ghc/base/maybe/foldable.ts), [Traversable](src/ghc/base/maybe/traversable.ts))
 - [Either](src/data/either/either.ts) ([Foldable](src/data/either/foldable.ts), [Traversable](src/data/either/traversable.ts))
-- [List](src/ghc/base/list/list.ts) ([Alternative](src/ghc/base/list/alternative.ts), [Foldable](src/ghc/base/list/foldable.ts), [Traversable](src/ghc/base/list/traversable.ts))
+- [List](src/ghc/base/list/list.ts) ([Alternative](src/ghc/base/list/alternative.ts), [MonadPlus](src/control/monad-plus/list.ts), [Foldable](src/ghc/base/list/foldable.ts), [Traversable](src/ghc/base/list/traversable.ts))
 - [NonEmpty list](src/ghc/base/non-empty/list.ts) ([Foldable](src/ghc/base/non-empty/foldable.ts), [Traversable](src/ghc/base/non-empty/traversable.ts))
 - [Reader](src/control/reader/reader.ts) ([Foldable](src/control/reader/foldable.ts))
 - [Writer](src/control/writer/writer.ts) ([Foldable](src/control/writer/foldable.ts))
