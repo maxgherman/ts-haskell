@@ -1,6 +1,6 @@
 import tap from 'tap'
 import { id, dot, Dot } from 'ghc/base/functions'
-import { applicative } from 'extra/promise/applicaive'
+import { applicative } from 'extra/promise/applicative'
 import { PromiseBox } from 'extra/promise/promise'
 import type { FunctionArrow } from 'ghc/prim/function-arrow'
 
@@ -101,7 +101,7 @@ tap.test('List applicative', async (t) => {
         t.same(right, 246)
     })
 
-    t.test('Applicative forth law (Composition): pure (.) <*> u <*> v <*> w = u <*> (v <*> w)', async (t) => {
+    t.test('Applicative fourth law (Composition): pure (.) <*> u <*> v <*> w = u <*> (v <*> w)', async (t) => {
         const pureDot = applicative.pure(dot) as PromiseBox<Dot<number, number, number>>
 
         const v = applicative.pure((x: number) => x * 2)

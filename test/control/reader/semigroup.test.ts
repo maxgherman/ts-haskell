@@ -3,7 +3,7 @@ import { semigroup as createReaderSemigroup } from 'control/reader/semigroup'
 import { reader, ReaderBox, ReaderMinBox } from 'control/reader/reader'
 import { semigroup as createListSemigroup } from 'ghc/base/list/semigroup'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
-import { formList, NonEmptyBox, toList } from 'ghc/base/non-empty/list'
+import { fromList, NonEmptyBox, toList } from 'ghc/base/non-empty/list'
 import { semigroup as createMaybeSemigroup } from 'ghc/base/maybe/semigroup'
 import { $case as maybeCase, just, MaybeBox } from 'ghc/base/maybe/maybe'
 import { semigroup as createEitherSemigroup } from 'data/either/semigroup'
@@ -45,7 +45,7 @@ const nonEmptySemigroup = createNonEmptySemigroup<number>()
 const nonEmptyReaderSemigroup = createReaderSemigroup<string, NonEmptyBox<number>>(nonEmptySemigroup)
 
 const createNonEmptyValue = (separator: string): ReaderBox<string, NonEmptyBox<number>> =>
-    reader((x: string) => formList(buildList(separator, x)))
+    reader((x: string) => fromList(buildList(separator, x)))
 
 const tupleSemigroup = createTuple2Semigroup<ListBox<number>, ListBox<number>>(listSemigroup, listSemigroup)
 const tupleReaderSemigroup = createReaderSemigroup<string, TupleMinBox<ListBox<number>, ListBox<number>>>(
@@ -79,7 +79,7 @@ tap.test('ReaderSemigroup List', async (t) => {
         const value3 = createListValue('3')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = listReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<string, ListBox<number>>
+        const result = listReaderSemigroup.sconcat(fromList(value4)) as ReaderMinBox<string, ListBox<number>>
 
         t.same(toArray(result.runReader('56') as ListBox<number>), [5, 3, 6, 5, 2, 6, 5, 1, 6])
     })
@@ -132,7 +132,7 @@ tap.test('ReaderSemigroup Maybe', async (t) => {
         const value3 = createMaybeValue('3')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = maybeReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
+        const result = maybeReaderSemigroup.sconcat(fromList(value4)) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
         const toArr = maybeCase<ListBox<number>, number[]>({
             nothing: () => [],
             just: toArray,
@@ -197,7 +197,7 @@ tap.test('ReaderSemigroup Either', async (t) => {
         const value3 = createEitherRight('C')
         const values = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = eitherReaderSemigroup.sconcat(formList(values)) as ReaderMinBox<string, EitherBox<Error, string>>
+        const result = eitherReaderSemigroup.sconcat(fromList(values)) as ReaderMinBox<string, EitherBox<Error, string>>
 
         t.equal(rightCase(result.runReader('X') as EitherBox<Error, string>), 'XC')
     })
@@ -244,7 +244,7 @@ tap.test('ReaderSemigroup NonEmptyList', async (t) => {
         const value3 = createNonEmptyValue('3')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = nonEmptyReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<string, NonEmptyBox<number>>
+        const result = nonEmptyReaderSemigroup.sconcat(fromList(value4)) as ReaderMinBox<string, NonEmptyBox<number>>
 
         t.same(toArray(toList(result.runReader('56') as NonEmptyBox<number>)), [5, 3, 6, 5, 2, 6, 5, 1, 6])
     })
@@ -299,7 +299,7 @@ tap.test('ReaderSemigroup Tuple', async (t) => {
         const value3 = createTupleValue('3', '6')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = tupleReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<
+        const result = tupleReaderSemigroup.sconcat(fromList(value4)) as ReaderMinBox<
             string,
             TupleMinBox<ListBox<number>, ListBox<number>>
         >
@@ -370,7 +370,7 @@ tap.test('ReaderSemigroup Promise', async (t) => {
         const value3 = createPromiseValue('3')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = promiseReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<
+        const result = promiseReaderSemigroup.sconcat(fromList(value4)) as ReaderMinBox<
             string,
             PromiseBox<ListBox<number>>
         >

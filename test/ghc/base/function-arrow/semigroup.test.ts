@@ -3,7 +3,7 @@ import { semigroup as createSemigroup } from 'ghc/base/function-arrow/semigroup'
 import { FunctionArrowBox, withKind } from 'ghc/prim/function-arrow'
 import { semigroup as createListSemigroup, ListSemigroup } from 'ghc/base/list/semigroup'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
-import { formList } from 'ghc/base/non-empty/list'
+import { fromList } from 'ghc/base/non-empty/list'
 
 const listSemigroup = createListSemigroup<number>()
 const semigroup = createSemigroup<string, ListSemigroup<number>>(listSemigroup)
@@ -32,7 +32,7 @@ tap.test('FunctionArrowSemigroup', async (t) => {
         const value3 = createValue('3')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = semigroup.sconcat(formList(value4))
+        const result = semigroup.sconcat(fromList(value4))
 
         t.same(toArray(result('56') as ListBox<number>), [5, 3, 6, 5, 2, 6, 5, 1, 6])
     })

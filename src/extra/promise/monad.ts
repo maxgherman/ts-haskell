@@ -1,5 +1,5 @@
 import { Monad, monad as createMonad } from 'ghc/base/monad/monad'
-import { applicative } from './applicaive'
+import { applicative } from './applicative'
 import { PromiseBox } from './promise'
 import { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
 

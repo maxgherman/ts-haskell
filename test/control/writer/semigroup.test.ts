@@ -3,7 +3,7 @@ import { writer, runWriter, WriterMinBox } from 'control/writer/writer'
 import { semigroup as createWriterSemigroup } from 'control/writer/semigroup'
 import { semigroup as createListSemigroup } from 'ghc/base/list/semigroup'
 import { cons, nil, ListBox, toArray } from 'ghc/base/list/list'
-import { formList } from 'ghc/base/non-empty/list'
+import { fromList } from 'ghc/base/non-empty/list'
 import { tuple2 } from 'ghc/base/tuple/tuple'
 import { semigroup as createMaybeSemigroup } from 'ghc/base/maybe/semigroup'
 import { $case as maybeCase, just, nothing, MaybeBox } from 'ghc/base/maybe/maybe'
@@ -38,7 +38,7 @@ tap.test('WriterSemigroup', async (t) => {
         const w1 = createWriter([1], ['a'])
         const w2 = createWriter([2], ['b'])
         const w3 = createWriter([3], ['c'])
-        const list = formList(createList([w1, w2, w3]))
+        const list = fromList(createList([w1, w2, w3]))
         const result = semigroup.sconcat(list) as WriterMinBox<ListBox<string>, ListBox<number>>
         const [v, l] = runWriter(result)
         t.same(toArray(v as ListBox<number>), [1, 2, 3])

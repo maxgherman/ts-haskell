@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose } from 'ghc/base/functions'
 import { semigroup as createSemigroup } from 'ghc/base/non-empty/semigroup'
-import { cons, formList, NonEmptyBox, toList } from 'ghc/base/non-empty/list'
+import { cons, fromList, NonEmptyBox, toList } from 'ghc/base/non-empty/list'
 import { cons as listCons, ListBox, nil, toArray } from 'ghc/base/list/list'
 
 const semigroup = createSemigroup<number>()
@@ -10,7 +10,7 @@ const createList = (value: number[]): ListBox<number> =>
     value.reduceRight((acc, curr) => listCons(curr)(acc), nil<number>())
 
 const createNonEmptyList = (value: number[]): NonEmptyBox<number> =>
-    compose<number[], ListBox<number>, NonEmptyBox<number>>(formList, createList)(value)
+    compose<number[], ListBox<number>, NonEmptyBox<number>>(fromList, createList)(value)
 
 tap.test('NonEmptySemigroup', async (t) => {
     t.test('<>', async (t) => {

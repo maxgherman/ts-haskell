@@ -4,7 +4,7 @@ import { semigroup as createSemigroup } from 'ghc/base/maybe/semigroup'
 import { $case, just, nothing } from 'ghc/base/maybe/maybe'
 import { ListSemigroup, semigroup as createListSemigroup } from 'ghc/base/list/semigroup'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
-import { formList } from 'ghc/base/non-empty/list'
+import { fromList } from 'ghc/base/non-empty/list'
 
 const listSemigroup = createListSemigroup<string>()
 const semigroup = createSemigroup<ListSemigroup<string>>(listSemigroup)
@@ -34,18 +34,18 @@ tap.test('MaybeSemigroup', async (t) => {
     })
 
     t.test('sconcat', async (t) => {
-        const value1 = compose(formList, cons(nothing()))(nil())
-        const value2 = compose(formList, cons(nothing()), cons(nothing()))(nil())
+        const value1 = compose(fromList, cons(nothing()))(nil())
+        const value2 = compose(fromList, cons(nothing()), cons(nothing()))(nil())
 
         const value3 = compose(
-            formList,
+            fromList,
             cons(just(createList('Hello'))),
             cons(just(createList(' '))),
             cons(just(createList('world'))),
         )(nil())
 
         const value4 = compose(
-            formList,
+            fromList,
             cons(nothing()),
             cons(just(createList('Hello'))),
             cons(nothing()),

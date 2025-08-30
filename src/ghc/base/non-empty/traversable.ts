@@ -2,7 +2,7 @@ import { Applicative } from 'ghc/base/applicative'
 import { Traversable, traversable as createTraversable, BaseImplementation } from 'data/traversable'
 import { functor } from './functor'
 import { foldable } from './foldable'
-import { NonEmptyBox, toList, formList } from './list'
+import { NonEmptyBox, toList, fromList } from './list'
 import { traversable as listTraversable } from 'ghc/base/list/traversable'
 import { MinBox1 } from 'data/kind'
 
@@ -13,7 +13,7 @@ export interface NonEmptyTraversable extends Traversable {
 
 const base: BaseImplementation = {
     sequenceA: <A>(app: Applicative, tfa: NonEmptyBox<MinBox1<A>>): MinBox1<NonEmptyBox<A>> =>
-        app['<$>'](formList, listTraversable.sequenceA(app, toList(tfa))),
+        app['<$>'](fromList, listTraversable.sequenceA(app, toList(tfa))),
 }
 
 export const traversable = createTraversable(base, functor, foldable) as NonEmptyTraversable
