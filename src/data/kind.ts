@@ -12,7 +12,10 @@ export type Kind2 =
 
 export type Kind3 = (_: Type) => (_: Type) => Type // ex. (,), Either
 
-export type Kind = Kind1 | Kind2 | Kind3
+// Higher-kinded constraint over a binary type constructor, e.g. Bifunctor
+export type KindC3 = (_: (_: '*') => (_: '*') => '*') => Constraint
+
+export type Kind = Kind1 | Kind2 | Kind3 | KindC3
 
 export type Box<K extends Kind, _> = {
     readonly kind: K
