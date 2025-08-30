@@ -14,6 +14,8 @@ export interface ReaderComonadApply<R> extends ComonadApply {
         wc: ReaderBox<R, C>,
     ): ReaderBox<R, D>
 
+    kfix<A>(w: ReaderBox<R, (wa: ReaderBox<R, A>) => A>): ReaderBox<R, A>
+
     extract<A>(wa: ReaderBox<R, A>): A
     extend<A, B>(f: (wa: ReaderBox<R, A>) => B, wa: ReaderBox<R, A>): ReaderBox<R, B>
     duplicate<A>(wa: ReaderBox<R, A>): ReaderBox<R, ReaderBox<R, A>>

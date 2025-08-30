@@ -11,7 +11,7 @@ import { just, nothing, $case, MaybeBox } from 'ghc/base/maybe/maybe'
 
 tap.test('traversable', async () => {
     tap.test('kindOf', async (t) => {
-        const kind = kindOf({} as Traversable) as Function
+        const kind = kindOf({} as Traversable) as (_: (_: '*') => '*') => 'Constraint'
         const result = kind({} as (_: '*') => '*')
         t.equal(result, 'Constraint')
     })

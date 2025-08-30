@@ -11,7 +11,7 @@ const caseMaybe = <A>(t: Test, mb: MaybeBox<A>, onJust: (a: A) => void) =>
 
 tap.test('Either traversable', async (t) => {
     t.test('sequenceA', async (t) => {
-        const tfa = right<string, any>(just(7)) as EitherBox<string, any>
+        const tfa = right<string, MaybeBox<number>>(just(7)) as EitherBox<string, MaybeBox<number>>
         const res = traversable<string>().sequenceA(maybeApplicative, tfa) as MaybeBox<EitherBox<string, number>>
         caseMaybe<EitherBox<string, number>>(t, res, (e) =>
             eitherCase<string, number, void>({
@@ -20,7 +20,7 @@ tap.test('Either traversable', async (t) => {
             })(e),
         )
 
-        const tfa2 = left<string, any>('err') as EitherBox<string, any>
+        const tfa2 = left<string, MaybeBox<number>>('err') as EitherBox<string, MaybeBox<number>>
         const res2 = traversable<string>().sequenceA(maybeApplicative, tfa2) as MaybeBox<EitherBox<string, number>>
         caseMaybe<EitherBox<string, number>>(t, res2, (e) =>
             eitherCase<string, number, void>({
@@ -95,7 +95,7 @@ tap.test('Either traversable', async (t) => {
     })
 
     t.test('sequence', async (t) => {
-        const tfa = right<string, any>(just(7)) as EitherBox<string, any>
+        const tfa = right<string, MaybeBox<number>>(just(7)) as EitherBox<string, MaybeBox<number>>
         const res = traversable<string>().sequence(maybeMonad, tfa) as MaybeBox<EitherBox<string, number>>
         caseMaybe<EitherBox<string, number>>(t, res, (e) =>
             eitherCase<string, number, void>({
@@ -104,7 +104,7 @@ tap.test('Either traversable', async (t) => {
             })(e),
         )
 
-        const tfa2 = left<string, any>('err') as EitherBox<string, any>
+        const tfa2 = left<string, MaybeBox<number>>('err') as EitherBox<string, MaybeBox<number>>
         const res2 = traversable<string>().sequence(maybeMonad, tfa2) as MaybeBox<EitherBox<string, number>>
         caseMaybe<EitherBox<string, number>>(t, res2, (e) =>
             eitherCase<string, number, void>({
@@ -113,7 +113,7 @@ tap.test('Either traversable', async (t) => {
             })(e),
         )
 
-        const tfa3 = right<string, any>(nothing<number>()) as EitherBox<string, any>
+        const tfa3 = right<string, MaybeBox<number>>(nothing<number>()) as EitherBox<string, MaybeBox<number>>
         const res3 = traversable<string>().sequence(maybeMonad, tfa3) as MaybeBox<EitherBox<string, number>>
         $case<EitherBox<string, number>, void>({
             nothing: () => t.pass(''),

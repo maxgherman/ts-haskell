@@ -3,7 +3,7 @@ import { kindOf, Functor } from 'ghc/base/functor'
 
 tap.test('functor', async () => {
     tap.test('kindOf', async (t) => {
-        const kind = kindOf({} as Functor) as Function
+        const kind = kindOf({} as Functor) as (_: (_: '*') => '*') => 'Constraint'
         const result = kind({} as (_: '*') => '*')
 
         t.equal(result, 'Constraint')

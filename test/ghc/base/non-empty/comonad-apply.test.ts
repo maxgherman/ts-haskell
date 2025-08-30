@@ -5,9 +5,10 @@ import { cons as listCons, ListBox, nil, toArray } from 'ghc/base/list/list'
 
 const ca = comonadApply
 
-const createList = (value: any[]): ListBox<any> => value.reduceRight((acc, curr) => listCons(curr)(acc), nil())
+const createList = <T>(value: NonNullable<T>[]): ListBox<T> =>
+    value.reduceRight((acc, curr) => listCons(curr)(acc), nil<T>())
 
-const createNonEmpty = <T>(value: T[]): NonEmptyBox<T> => formList(createList(value))
+const createNonEmpty = <T>(value: NonNullable<T>[]): NonEmptyBox<T> => formList(createList(value))
 
 tap.test('NonEmpty ComonadApply', async (t) => {
     t.test('<@>', async (t) => {

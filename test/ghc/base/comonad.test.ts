@@ -3,6 +3,7 @@ import { comonad as writerComonad } from 'control/writer/comonad'
 import { functor as writerFunctor } from 'control/writer/functor'
 import { writer, WriterBox } from 'control/writer/writer'
 import { comonad as createComonad, BaseImplementation } from 'control/comonad'
+import type { WriterComonad } from 'control/writer/comonad'
 import { tuple2 } from 'ghc/base/tuple/tuple'
 
 const cm = writerComonad<string>()
@@ -35,10 +36,10 @@ tap.test('Comonad', async (t) => {
                     return tuple2(f(wb), w)
                 }),
         }
-        const derived = createComonad(base as BaseImplementation, functor as any) as any
+        const derived = createComonad(base as BaseImplementation, functor) as unknown as WriterComonad<string>
 
         const dup = derived.duplicate(wa)
-        const ext = derived.extend((w: any) => w, wa)
+        const ext = derived.extend((w: WriterBox<string, number>) => w, wa)
         t.same(run(dup), run(ext))
     })
 
@@ -52,7 +53,7 @@ tap.test('Comonad', async (t) => {
                     return tuple2(wb, w)
                 }),
         }
-        const derived = createComonad(base as any, functor as any) as any
+        const derived = createComonad(base as BaseImplementation, functor) as unknown as WriterComonad<string>
 
         const f = (w: WriterBox<string, number>) => w.runWriter()[0] + 1
         const left = derived.extend(f, wa)
