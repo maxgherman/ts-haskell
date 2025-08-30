@@ -2,7 +2,7 @@
 
 import { applicative as createApplicative, Applicative, BaseImplementation } from 'ghc/base/applicative'
 import { functor } from './functor'
-import { NonEmptyBox, cons, toList, formList } from './list'
+import { NonEmptyBox, cons, toList, fromList } from './list'
 import { nil, ListBox } from 'ghc/base/list/list'
 import { monad } from 'ghc/base/list/monad'
 import type { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
@@ -42,7 +42,7 @@ const baseImplementation: BaseImplementation = {
         const faList = toList(fa)
 
         const result = ap(monad, fList, faList) as ListBox<B>
-        return formList(result)
+        return fromList(result)
     },
 
     liftA2: <A, B, C>(
@@ -54,7 +54,7 @@ const baseImplementation: BaseImplementation = {
         const fbList = toList(fb)
 
         const result = liftM2(monad, f, faList, fbList) as ListBox<C>
-        return formList(result)
+        return fromList(result)
     },
 }
 

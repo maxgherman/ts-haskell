@@ -3,7 +3,7 @@
 import { compose } from 'ghc/base/functions'
 import { Monad, monad as createMonad } from 'ghc/base/monad/monad'
 import { applicative } from 'ghc/base/non-empty/applicative'
-import { NonEmptyBox, toList, head, tail, cons, formList } from 'ghc/base/non-empty/list'
+import { NonEmptyBox, toList, head, tail, cons, fromList } from 'ghc/base/non-empty/list'
 import { concat } from 'ghc/base/list/list'
 import { FunctionArrow, FunctionArrow2 } from 'ghc/prim/function-arrow'
 import { monad as listMonad } from 'ghc/base/list/monad'
@@ -47,7 +47,7 @@ const baseImplementation = {
         const b = toList(f(a))
         const bs = listMonad['>>='](as, compose(toList, f))
 
-        return formList(concat(b, bs))
+        return fromList(concat(b, bs))
     },
 }
 

@@ -9,7 +9,7 @@ import { applicative as eitherApplicative } from 'data/either/applicative'
 import { tuple2, snd, Tuple2Box, UnitBox, unit } from 'ghc/base/tuple/tuple'
 import { applicative as tupleApplicative } from 'ghc/base/tuple/tuple2-applicative'
 import { monoid as unitMonoid } from 'ghc/base/tuple/unit-monoid'
-import { applicative as promiseApplicative } from 'extra/promise/applicaive'
+import { applicative as promiseApplicative } from 'extra/promise/applicative'
 import { PromiseBox } from 'extra/promise/promise'
 
 const applicative = createApplicative<string>()

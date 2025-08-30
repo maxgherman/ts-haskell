@@ -2,7 +2,7 @@ import tap from 'tap'
 import { compose } from 'ghc/base/functions'
 import { semigroup as createSemigroup } from 'ghc/base/list/semigroup'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
-import { formList } from 'ghc/base/non-empty/list'
+import { fromList } from 'ghc/base/non-empty/list'
 
 const semigroup = createSemigroup<number>()
 
@@ -27,8 +27,8 @@ tap.test('ListSemigroup', async (t) => {
         const innerList1 = cons(createList(1))(nil())
         const innerList2 = compose(cons(createList(1)), cons(createList(2)), cons(createList(3)))(nil())
 
-        const data1 = formList(innerList1)
-        const data2 = formList(innerList2)
+        const data1 = fromList(innerList1)
+        const data2 = fromList(innerList2)
 
         const result1 = semigroup.sconcat(data1)
         const result2 = semigroup.sconcat(data2)

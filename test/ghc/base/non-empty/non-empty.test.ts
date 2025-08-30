@@ -1,7 +1,7 @@
 import tap from 'tap'
 import { compose, Func } from 'ghc/base/functions'
 import { $null, cons as listCons, head as listHead, List, nil, tail as listTail, toArray } from 'ghc/base/list/list'
-import { $case, _, cons, formList, head, map, NonEmpty, nonEmpty, tail, toList } from 'ghc/base/non-empty/list'
+import { $case, _, cons, fromList, head, map, NonEmpty, nonEmpty, tail, toList } from 'ghc/base/non-empty/list'
 
 type KindFunc = Func & { kind: Func }
 
@@ -65,9 +65,9 @@ tap.test('NonEmpty', async (t) => {
         const list1 = nil<number>()
         const list2 = listCons<number>(2)(listCons<number>(3)(nil()))
 
-        const result2 = formList(list2)
+        const result2 = fromList(list2)
 
-        t.throws(() => formList(list1))
+        t.throws(() => fromList(list1))
         t.equal(((result2 as Func)() as never[])[0], 2)
         t.equal(listHead(((result2 as Func)() as never[])[1] as unknown as List<number>), 3)
         t.ok($null(listTail(((result2 as Func)() as never[])[1] as unknown as List<number>)))
@@ -98,9 +98,9 @@ tap.test('NonEmpty', async (t) => {
     })
 
     t.test('$case', async (t) => {
-        const value1 = compose(formList, listCons<number>(1))(nil())
-        const value2 = compose(formList, listCons<number>(1), listCons(2))(nil())
-        const value3 = compose(formList, listCons<number>(1), listCons<number>(2), listCons<number>(3))(nil())
+        const value1 = compose(fromList, listCons<number>(1))(nil())
+        const value2 = compose(fromList, listCons<number>(1), listCons(2))(nil())
+        const value3 = compose(fromList, listCons<number>(1), listCons<number>(2), listCons<number>(3))(nil())
 
         const result0 = $case([
             [
@@ -154,18 +154,18 @@ tap.test('NonEmpty', async (t) => {
         const empty = nil<number>()
         const value = compose(listCons<number>(4), listCons<number>(3), listCons<number>(2), listCons<number>(1))(empty)
 
-        const result1 = $case([[[_], (a) => listHead(a)]])(formList(value))
+        const result1 = $case([[[_], (a) => listHead(a)]])(fromList(value))
 
-        const result2 = $case([[[_, _], (a, b) => `${a} ${listHead(b)}`]])(formList(value))
+        const result2 = $case([[[_, _], (a, b) => `${a} ${listHead(b)}`]])(fromList(value))
 
-        const result3 = $case([[[_, _, _], (a, b, c) => `${a} ${b} ${listHead(c)}`]])(formList(value))
+        const result3 = $case([[[_, _, _], (a, b, c) => `${a} ${b} ${listHead(c)}`]])(fromList(value))
 
-        const result4 = $case([[[_, _, _, _], (a, b, c, d) => `${a} ${b} ${c} ${d}`]])(formList(value))
+        const result4 = $case([[[_, _, _, _], (a, b, c, d) => `${a} ${b} ${c} ${d}`]])(fromList(value))
 
         const result5 = $case([
             [[], (a) => a],
             [[_, _, _], (a, b) => `${a} - ${b}`],
-        ])(formList(value))
+        ])(fromList(value))
 
         t.equal(result1, 4)
         t.equal(result2, '4 3')

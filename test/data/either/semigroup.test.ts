@@ -2,7 +2,7 @@ import tap from 'tap'
 import { compose, id } from 'ghc/base/functions'
 import { semigroup as createSemigroup } from 'data/either/semigroup'
 import { $case, left, right } from 'data/either/either'
-import { formList } from 'ghc/base/non-empty/list'
+import { fromList } from 'ghc/base/non-empty/list'
 import { cons, nil } from 'ghc/base/list/list'
 
 const semigroup = createSemigroup<Error, string>()
@@ -35,7 +35,7 @@ tap.test('EitherSemigroup', async (t) => {
 
     t.test('sconcat', async (t) => {
         const value = compose(
-            formList,
+            fromList,
             cons(right<Error, string>('Hello')),
             cons(right<Error, string>(' ')),
             cons(left<Error, string>(new Error('test error'))),

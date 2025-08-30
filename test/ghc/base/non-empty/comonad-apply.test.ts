@@ -1,6 +1,6 @@
 import tap from 'tap'
 import { comonadApply } from 'ghc/base/non-empty/comonad-apply'
-import { formList, NonEmptyBox, toList } from 'ghc/base/non-empty/list'
+import { fromList, NonEmptyBox, toList } from 'ghc/base/non-empty/list'
 import { cons as listCons, ListBox, nil, toArray } from 'ghc/base/list/list'
 
 const ca = comonadApply
@@ -8,7 +8,7 @@ const ca = comonadApply
 const createList = <T>(value: NonNullable<T>[]): ListBox<T> =>
     value.reduceRight((acc, curr) => listCons(curr)(acc), nil<T>())
 
-const createNonEmpty = <T>(value: NonNullable<T>[]): NonEmptyBox<T> => formList(createList(value))
+const createNonEmpty = <T>(value: NonNullable<T>[]): NonEmptyBox<T> => fromList(createList(value))
 
 tap.test('NonEmpty ComonadApply', async (t) => {
     t.test('<@>', async (t) => {

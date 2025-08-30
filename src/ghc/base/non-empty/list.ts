@@ -25,13 +25,13 @@ export const nonEmpty = <T>(list: List<T>): MaybeBox<NonEmptyBox<T>> =>
 export const cons =
     <T>(value: NonNullable<T>) =>
     (list: ListBox<T>) =>
-        formList<T>(listCons(value)(list))
+        fromList<T>(listCons(value)(list))
 
 export const head = <T>(nonEmp: NonEmpty<T>): NonNullable<T> => fst(nonEmp())
 
 export const tail = <T>(nonEmp: NonEmpty<T>): ListBox<T> => snd(nonEmp()) as ListBox<T>
 
-export const formList = <T>(list: List<T>): NonEmptyBox<T> =>
+export const fromList = <T>(list: List<T>): NonEmptyBox<T> =>
     listCase<T, NonEmptyBox<T>>([
         [
             [],

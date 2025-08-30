@@ -6,7 +6,7 @@ import { semigroup as createMaybeSemigroup } from 'ghc/base/maybe/semigroup'
 import { $case as maybeCase, just, MaybeBox } from 'ghc/base/maybe/maybe'
 import { cons, ListBox, nil, toArray } from 'ghc/base/list/list'
 import { fst, snd, tuple2 } from 'ghc/base/tuple/tuple'
-import { formList } from 'ghc/base/non-empty/list'
+import { fromList } from 'ghc/base/non-empty/list'
 
 const listSemigroup = createListSemigroup<number>()
 const maybeSemigroup = createMaybeSemigroup(createListSemigroup<string>())
@@ -40,7 +40,7 @@ tap.test('Tuple2 semigroup', async (t) => {
         const value1 = tuple2(list1, just(list2))
         const value2 = tuple2(list1, just(list2))
 
-        const value = compose(formList, cons(value1), cons(value2))(nil())
+        const value = compose(fromList, cons(value1), cons(value2))(nil())
         const result = semigroup.sconcat(value)
 
         t.same(toArray(fst(result) as ListBox<number>), [1, 2, 1, 2])

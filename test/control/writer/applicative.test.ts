@@ -12,7 +12,7 @@ import { applicative as eitherApplicative } from 'data/either/applicative'
 import { applicative as tupleApplicative } from 'ghc/base/tuple/tuple2-applicative'
 import { monoid as unitMonoid } from 'ghc/base/tuple/unit-monoid'
 import { PromiseBox } from 'extra/promise/promise'
-import { applicative as promiseApplicative } from 'extra/promise/applicaive'
+import { applicative as promiseApplicative } from 'extra/promise/applicative'
 
 const createList = <T>(values: NonNullable<T>[]): ListBox<T> =>
     values.reduceRight((acc, curr) => cons(curr)(acc), nil<T>())

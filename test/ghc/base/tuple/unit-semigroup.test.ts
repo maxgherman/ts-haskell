@@ -2,7 +2,7 @@ import tap from 'tap'
 import { compose } from 'ghc/base/functions'
 import { semigroup } from 'ghc/base/tuple/unit-semigroup'
 import { unit } from 'ghc/base/tuple/tuple'
-import { formList } from 'ghc/base/non-empty/list'
+import { fromList } from 'ghc/base/non-empty/list'
 import { cons, nil } from 'ghc/base/list/list'
 
 tap.test('Unit semigroup', async (t) => {
@@ -12,8 +12,8 @@ tap.test('Unit semigroup', async (t) => {
     })
 
     t.test('sconcat', async (t) => {
-        const data1 = compose(formList, cons(unit()), cons(unit()))(nil())
-        const data2 = compose(formList, cons(unit()))(nil())
+        const data1 = compose(fromList, cons(unit()), cons(unit()))(nil())
+        const data2 = compose(fromList, cons(unit()))(nil())
         const result1 = semigroup.sconcat(data1)
         const result2 = semigroup.sconcat(data2)
 

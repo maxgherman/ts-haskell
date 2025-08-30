@@ -4,7 +4,7 @@ import { PromiseBox } from 'extra/promise/promise'
 import { semigroup as createSemigroup } from 'extra/promise/semigroup'
 import { semigroup as listSemigroup } from 'ghc/base/list/semigroup'
 import { cons, nil, ListBox, toArray } from 'ghc/base/list/list'
-import { formList } from 'ghc/base/non-empty/list'
+import { fromList } from 'ghc/base/non-empty/list'
 
 const innerSemigroup = listSemigroup<number>()
 const semigroup = createSemigroup<ListBox<number>>(innerSemigroup)
@@ -36,7 +36,7 @@ tap.test('PromiseSemigroup', async (t) => {
             ListBox<number>
         >
 
-        const value = formList(compose(cons(part1), cons(part2), cons(part3))(nil<PromiseBox<ListBox<number>>>()))
+        const value = fromList(compose(cons(part1), cons(part2), cons(part3))(nil<PromiseBox<ListBox<number>>>()))
 
         const result = semigroup.sconcat(value)
 

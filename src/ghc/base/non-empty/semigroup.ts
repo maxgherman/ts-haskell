@@ -1,6 +1,6 @@
 import { compose } from 'ghc/base/functions'
 import { Semigroup, semigroup as createSemigroup, SemigroupBase } from 'ghc/base/semigroup'
-import { formList, head, NonEmpty, NonEmptyBox, tail } from './list'
+import { fromList, head, NonEmpty, NonEmptyBox, tail } from './list'
 import { concat, cons, ListBox } from 'ghc/base/list/list'
 
 export interface NonEmptySemigroup<T> extends Semigroup<NonEmptyBox<T>> {
@@ -16,7 +16,7 @@ const base = <T>(): SemigroupBase<NonEmptyBox<T>> => ({
         const tailA = tail(a)
         const tailB = tail(b)
 
-        return compose(formList, cons(headA), (x: ListBox<T>) => concat(tailA, x), cons(headB))(tailB)
+        return compose(fromList, cons(headA), (x: ListBox<T>) => concat(tailA, x), cons(headB))(tailB) as NonEmptyBox<T>
     },
 })
 
