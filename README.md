@@ -1,5 +1,5 @@
 # ts-haskell
-Mapping Haskell typeclasses to typescript
+Mapping Haskell typeclasses to TypeScript
 
 ```bash
 npm i
@@ -76,4 +76,4 @@ npm test
 - [State](src/control/state/state.ts) ([Functor](src/control/state/functor.ts), [Applicative](src/control/state/applicative.ts), [Monad](src/control/state/monad.ts))
 - [Function arrow `(->)`](src/ghc/prim/function-arrow/index.ts) ([Comonad](src/control/reader/comonad.ts), [ComonadApply](src/control/reader/comonad-apply.ts), [Foldable](src/control/reader/foldable.ts), [Traversable](src/control/reader/traversable.ts))
 - [Tuple2 and Unit](src/ghc/base/tuple/tuple.ts) ([Comonad](src/ghc/base/tuple/tuple2-comonad.ts), [ComonadApply](src/ghc/base/tuple/tuple2-comonad-apply.ts), [Foldable](src/ghc/base/tuple/foldable.ts), [Traversable](src/ghc/base/tuple/tuple2-traversable.ts))
-- [Promise](src/extra/promise/promise.ts) ([Foldable](src/extra/promise/foldable.ts))
+- [Promise](src/extra/promise/promise.ts) ([Foldable](src/extra/promise/foldable.ts), [Semigroup](src/extra/promise/semigroup.ts), [Monoid](src/extra/promise/monoid.ts))
