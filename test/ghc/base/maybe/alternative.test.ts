@@ -58,4 +58,3 @@ tap.test('Maybe alternative', async (t) => {
         t.same(getList(r2), [])
     })
 })
-

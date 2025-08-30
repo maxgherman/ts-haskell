@@ -30,12 +30,7 @@ tap.test('Reader ComonadApply', async (t) => {
         const wa = reader((_: void) => 1)
         const wb = reader((_: void) => 2)
         const wc = reader((_: void) => 3)
-        const result = ca.liftW3(
-            (a: number) => (b: number) => (c: number) => a + b + c,
-            wa,
-            wb,
-            wc,
-        )
+        const result = ca.liftW3((a: number) => (b: number) => (c: number) => a + b + c, wa, wb, wc)
         t.equal(ca.extract(result), 6)
     })
 

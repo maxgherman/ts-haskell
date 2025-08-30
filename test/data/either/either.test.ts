@@ -41,8 +41,8 @@ tap.test('Either', async (t) => {
         const boxedValue = new Error()
         const value = left<Error, string>(boxedValue)
 
-        const f = (value as unknown as { from: string })
-        f.from = 'test';
+        const f = value as unknown as { from: string }
+        f.from = 'test'
 
         const result = () =>
             $case({
@@ -89,7 +89,7 @@ tap.test('Either', async (t) => {
     t.test('kind', async (t) => {
         const leftValue = left<Error, string>(new Error())
         const rightValue = right<Error, string>('123')
-   
+
         t.equal(leftValue.kind('*')('*'), '*')
         t.equal(rightValue.kind('*')('*'), '*')
 

@@ -24,12 +24,7 @@ tap.test('Writer ComonadApply', async (t) => {
         const wa = writer(() => tuple2(1, 'a'))
         const wb = writer(() => tuple2(2, 'b'))
         const wc = writer(() => tuple2(3, 'c'))
-        const result = ca.liftW3(
-            (a: number) => (b: number) => (c: number) => a + b + c,
-            wa,
-            wb,
-            wc,
-        )
+        const result = ca.liftW3((a: number) => (b: number) => (c: number) => a + b + c, wa, wb, wc)
         t.equal(ca.extract(result), 6)
     })
 })

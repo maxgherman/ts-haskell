@@ -4,12 +4,7 @@ import { reader, ReaderBox } from 'control/reader/reader'
 import { doNotation } from 'ghc/base/monad/do-notation'
 import { $case as maybeCase, just, nothing, MaybeBox } from 'ghc/base/maybe/maybe'
 import { monad as maybeMonad } from 'ghc/base/maybe/monad'
-import {
-    $case as eitherCase,
-    left,
-    right,
-    EitherBox,
-} from 'data/either/either'
+import { $case as eitherCase, left, right, EitherBox } from 'data/either/either'
 import { monad as eitherMonad } from 'data/either/monad'
 import { tuple2, fst, snd, Tuple2Box } from 'ghc/base/tuple/tuple'
 import { monad as promiseMonad } from 'extra/promise/monad'
@@ -85,18 +80,14 @@ tap.test('Reader monad', async (t) => {
             const value1 = (yield reader((env: string) => env.length)) as number
             const value2 = (yield reader((env: string) => env.length * 2)) as number
             return value1 + value2
-        },
-        monad)
+        }, monad)
 
         t.equal(run(result, 'abcd'), 12)
     })
 
     t.test('Monad with Maybe', async (t) => {
         const value = reader((env: string) => env.length)
-        const f = (x: number) =>
-            reader((env: string) =>
-                env.includes('!') ? just(x + env.length) : nothing<number>(),
-            )
+        const f = (x: number) => reader((env: string) => (env.includes('!') ? just(x + env.length) : nothing<number>()))
 
         const result = monad['>>='](value, f)
 
@@ -122,14 +113,10 @@ tap.test('Reader monad', async (t) => {
                 env.length > 0 ? just(env.length) : nothing<number>(),
             )) as MaybeBox<number>
             const value2 = (yield reader((env: string) =>
-                env.includes('!')
-                    ? just(env.length * 2)
-                    : nothing<number>(),
+                env.includes('!') ? just(env.length * 2) : nothing<number>(),
             )) as MaybeBox<number>
 
-            return maybeM['>>='](value1, (x: number) =>
-                maybeM['>>='](value2, (y: number) => maybeM.pure(x + y)),
-            )
+            return maybeM['>>='](value1, (x: number) => maybeM['>>='](value2, (y: number) => maybeM.pure(x + y)))
         }, monad)
 
         const runMaybe = (env: string) =>
@@ -150,8 +137,8 @@ tap.test('Reader monad', async (t) => {
                 env.length === 0
                     ? left<string, number>('empty')
                     : env.includes('!')
-                    ? right<string, number>(x + env.length)
-                    : left<string, number>('no bang'),
+                      ? right<string, number>(x + env.length)
+                      : left<string, number>('no bang'),
             )
 
         const result = monad['>>='](value, f)
@@ -175,19 +162,13 @@ tap.test('Reader monad', async (t) => {
             EitherBox<string, number>
         > {
             const value1 = (yield reader((env: string) =>
-                env.length > 0
-                    ? right<string, number>(env.length)
-                    : left<string, number>('empty'),
+                env.length > 0 ? right<string, number>(env.length) : left<string, number>('empty'),
             )) as EitherBox<string, number>
             const value2 = (yield reader((env: string) =>
-                env.includes('!')
-                    ? right<string, number>(env.length * 2)
-                    : left<string, number>('no bang'),
+                env.includes('!') ? right<string, number>(env.length * 2) : left<string, number>('no bang'),
             )) as EitherBox<string, number>
 
-            return eitherM['>>='](value1, (x: number) =>
-                eitherM['>>='](value2, (y: number) => eitherM.pure(x + y)),
-            )
+            return eitherM['>>='](value1, (x: number) => eitherM['>>='](value2, (y: number) => eitherM.pure(x + y)))
         }, monad)
 
         const runEither = (env: string) =>
@@ -204,9 +185,7 @@ tap.test('Reader monad', async (t) => {
     t.test('Monad with Tuple', async (t) => {
         const value = reader((env: string) => tuple2(env.length, env.toUpperCase()))
         const f = (tuple: Tuple2Box<number, string>) =>
-            reader((env: string) =>
-                tuple2(fst(tuple) + env.length, snd(tuple) + env.toLowerCase()),
-            )
+            reader((env: string) => tuple2(fst(tuple) + env.length, snd(tuple) + env.toLowerCase()))
 
         const result = monad['>>='](value, f)
 
@@ -224,17 +203,16 @@ tap.test('Reader monad', async (t) => {
             Tuple2Box<number, string>,
             Tuple2Box<number, string>
         > {
-            const tuple1 = (yield reader((env: string) =>
-                tuple2(env.length, env.toUpperCase()),
-            )) as Tuple2Box<number, string>
-            const tuple2Val = (yield reader((env: string) =>
-                tuple2(env.length * 2, env.toLowerCase()),
-            )) as Tuple2Box<number, string>
+            const tuple1 = (yield reader((env: string) => tuple2(env.length, env.toUpperCase()))) as Tuple2Box<
+                number,
+                string
+            >
+            const tuple2Val = (yield reader((env: string) => tuple2(env.length * 2, env.toLowerCase()))) as Tuple2Box<
+                number,
+                string
+            >
 
-            return tuple2(
-                fst(tuple1) + fst(tuple2Val),
-                snd(tuple1) + snd(tuple2Val),
-            )
+            return tuple2(fst(tuple1) + fst(tuple2Val), snd(tuple1) + snd(tuple2Val))
         }, monad)
 
         const runTuple = (env: string): [number, string] => {
@@ -246,15 +224,12 @@ tap.test('Reader monad', async (t) => {
     })
 })
 
-
 tap.test('Reader monad with Promise', async (t) => {
     t.test('Monad with Promise', async (t) => {
         const value = reader((env: string) => Promise.resolve(env.length) as PromiseBox<number>)
         const f = (p: PromiseBox<number>) =>
             reader((env: string) =>
-                promiseMonad['>>='](p, (x: number) =>
-                    Promise.resolve(x + env.length) as PromiseBox<number>,
-                ),
+                promiseMonad['>>='](p, (x: number) => Promise.resolve(x + env.length) as PromiseBox<number>),
             )
 
         const result = monad['>>='](value, f) as ReaderBox<string, PromiseBox<number>>
@@ -268,8 +243,12 @@ tap.test('Reader monad with Promise', async (t) => {
             PromiseBox<number>,
             PromiseBox<number>
         > {
-            const value1 = (yield reader((env: string) => Promise.resolve(env.length) as PromiseBox<number>)) as PromiseBox<number>
-            const value2 = (yield reader((env: string) => Promise.resolve(env.length * 2) as PromiseBox<number>)) as PromiseBox<number>
+            const value1 = (yield reader(
+                (env: string) => Promise.resolve(env.length) as PromiseBox<number>,
+            )) as PromiseBox<number>
+            const value2 = (yield reader(
+                (env: string) => Promise.resolve(env.length * 2) as PromiseBox<number>,
+            )) as PromiseBox<number>
 
             return promiseMonad['>>='](value1, (x: number) =>
                 promiseMonad['>>='](value2, (y: number) => promiseMonad.pure(x + y)),
@@ -279,4 +258,3 @@ tap.test('Reader monad with Promise', async (t) => {
         t.equal(await run(result, 'abcd'), 12)
     })
 })
-

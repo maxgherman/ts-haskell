@@ -28,21 +28,17 @@ tap.test('Tuple2 traversable', async (t) => {
 
     t.test('traverse', async (t) => {
         const fa = tuple2('x', 5) as Tuple2Box<string, number>
-        const res = traversable<string>().traverse(
-            maybeApplicative,
-            (x: number) => just(x + 1),
-            fa,
-        ) as MaybeBox<Tuple2Box<string, number>>
+        const res = traversable<string>().traverse(maybeApplicative, (x: number) => just(x + 1), fa) as MaybeBox<
+            Tuple2Box<string, number>
+        >
         caseMaybe<Tuple2Box<string, number>>(t, res, (p) => {
             t.equal(fst(p), 'x')
             t.equal(snd(p), 6)
         })
 
-        const res2 = traversable<string>().traverse(
-            maybeApplicative,
-            (_: number) => nothing<number>(),
-            fa,
-        ) as MaybeBox<Tuple2Box<string, number>>
+        const res2 = traversable<string>().traverse(maybeApplicative, (_: number) => nothing<number>(), fa) as MaybeBox<
+            Tuple2Box<string, number>
+        >
         $case<Tuple2Box<string, number>, void>({
             nothing: () => t.pass(''),
             just: () => t.fail('expected nothing'),
@@ -51,21 +47,17 @@ tap.test('Tuple2 traversable', async (t) => {
 
     t.test('mapM', async (t) => {
         const fa = tuple2('x', 5) as Tuple2Box<string, number>
-        const res = traversable<string>().mapM(
-            maybeMonad,
-            (x: number) => just(x + 1),
-            fa,
-        ) as MaybeBox<Tuple2Box<string, number>>
+        const res = traversable<string>().mapM(maybeMonad, (x: number) => just(x + 1), fa) as MaybeBox<
+            Tuple2Box<string, number>
+        >
         caseMaybe<Tuple2Box<string, number>>(t, res, (p) => {
             t.equal(fst(p), 'x')
             t.equal(snd(p), 6)
         })
 
-        const res2 = traversable<string>().mapM(
-            maybeMonad,
-            (_: number) => nothing<number>(),
-            fa,
-        ) as MaybeBox<Tuple2Box<string, number>>
+        const res2 = traversable<string>().mapM(maybeMonad, (_: number) => nothing<number>(), fa) as MaybeBox<
+            Tuple2Box<string, number>
+        >
         $case<Tuple2Box<string, number>, void>({
             nothing: () => t.pass(''),
             just: () => t.fail('expected nothing'),

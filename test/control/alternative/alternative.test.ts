@@ -4,8 +4,7 @@ import { cons, nil, toArray, take, ListBox } from 'ghc/base/list/list'
 
 const alternative = listAlternative<number>()
 
-const listOf = (...xs: number[]): ListBox<number> =>
-    xs.reduceRight((acc, x) => cons(x)(acc), nil<number>())
+const listOf = (...xs: number[]): ListBox<number> => xs.reduceRight((acc, x) => cons(x)(acc), nil<number>())
 
 tap.test('Alternative', async (t) => {
     await t.test('empty', async (t) => {
@@ -36,5 +35,4 @@ tap.test('Alternative', async (t) => {
         const first4 = toArray(take(4, alternative.many(value))).map((lst) => toArray(lst))
         t.same(first4, [[1], [2], [1, 1], [1, 2]])
     })
-
 })

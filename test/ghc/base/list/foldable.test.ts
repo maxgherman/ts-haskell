@@ -10,10 +10,22 @@ const listMon = listMonoid<number>()
 tap.test('List foldable', (t) => {
     const lst = listOf(1, 2, 3)
 
-    t.equal(foldable.foldr((x: number, acc: number) => x + acc, 0, lst), 6)
-    t.equal(foldable.foldl((acc: number, x: number) => acc + x, 0, lst), 6)
-    t.equal(foldable.foldr1((a: number, b: number) => a + b, lst), 6)
-    t.equal(foldable.foldl1((a: number, b: number) => a + b, lst), 6)
+    t.equal(
+        foldable.foldr((x: number, acc: number) => x + acc, 0, lst),
+        6,
+    )
+    t.equal(
+        foldable.foldl((acc: number, x: number) => acc + x, 0, lst),
+        6,
+    )
+    t.equal(
+        foldable.foldr1((a: number, b: number) => a + b, lst),
+        6,
+    )
+    t.equal(
+        foldable.foldl1((a: number, b: number) => a + b, lst),
+        6,
+    )
     const mapped = foldable.foldMap(listMon, (x: number) => cons(x)(nil<number>()), lst) as unknown as ListBox<number>
     t.same(toArray(mapped), [1, 2, 3])
     t.same(toArray(foldable.toList(lst)), [1, 2, 3])

@@ -62,4 +62,3 @@ tap.test('Either alternative', async (t) => {
         t.same(toArray(getRight(ml) as ListBox<number>), [])
     })
 })
-

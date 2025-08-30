@@ -30,8 +30,10 @@ tap.test('Tuple2 monad', async (t) => {
 
     t.test('>>', async (t) => {
         const list1: Tuple2BoxT<ListBox<number>, number> = tuple2(compose(cons<number>(1), cons(2))(nil()), 5)
-        const list2: Tuple2BoxT<ListBox<number>, number> =
-            tuple2(compose(cons<number>(4), cons<number>(5), cons(6))(nil()), 7)
+        const list2: Tuple2BoxT<ListBox<number>, number> = tuple2(
+            compose(cons<number>(4), cons<number>(5), cons(6))(nil()),
+            7,
+        )
 
         const [first, second] = monad['>>'](list1, list2)
 
@@ -93,8 +95,7 @@ tap.test('Tuple2 monad', async (t) => {
             const value2 = yield tuple2(cons<number>(7)(cons(8)(nil())), 11)
 
             return value1 + value2
-        },
-        monad)
+        }, monad)
 
         t.same(toArray(first as ListBox<number>), [5, 6, 7, 8])
         t.equal(second, 21)

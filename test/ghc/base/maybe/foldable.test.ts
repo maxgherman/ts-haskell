@@ -7,8 +7,14 @@ tap.test('Maybe foldable', (t) => {
     const j = just(5)
     const n = nothing<number>()
 
-    t.equal(foldable.foldr((a: number, b: number) => a + b, 0, j), 5)
-    t.equal(foldable.foldr((a: number, b: number) => a + b, 0, n), 0)
+    t.equal(
+        foldable.foldr((a: number, b: number) => a + b, 0, j),
+        5,
+    )
+    t.equal(
+        foldable.foldr((a: number, b: number) => a + b, 0, n),
+        0,
+    )
 
     t.same(toArray(foldable.toList(j)), [5])
     t.same(toArray(foldable.toList(n)), [])

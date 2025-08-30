@@ -3,8 +3,7 @@ import { monadPlus as listMonadPlus } from 'control/monad-plus/list'
 import { guard } from 'control/monad-plus/monad-plus'
 import { cons, nil, toArray, ListBox, List } from 'ghc/base/list/list'
 
-const listOf = (...xs: number[]): ListBox<number> =>
-    xs.reduceRight((acc, x) => cons(x)(acc), nil<number>())
+const listOf = (...xs: number[]): ListBox<number> => xs.reduceRight((acc, x) => cons(x)(acc), nil<number>())
 
 const listOfLists = (...xs: ListBox<number>[]): List<ListBox<number>> =>
     xs.reduceRight((acc, x) => cons(x)(acc), nil<ListBox<number>>())
@@ -39,4 +38,3 @@ tap.test('List MonadPlus', async (t) => {
         t.same(toArray(result2), [])
     })
 })
-

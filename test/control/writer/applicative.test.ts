@@ -7,12 +7,7 @@ import { cons, nil, toArray, ListBox } from 'ghc/base/list/list'
 import { applicative as listApplicative } from 'ghc/base/list/applicative'
 import { $case as maybeCase, just, nothing, MaybeBox } from 'ghc/base/maybe/maybe'
 import { applicative as maybeApplicative } from 'ghc/base/maybe/applicative'
-import {
-    $case as eitherCase,
-    left,
-    right,
-    EitherBox,
-} from 'data/either/either'
+import { $case as eitherCase, left, right, EitherBox } from 'data/either/either'
 import { applicative as eitherApplicative } from 'data/either/applicative'
 import { applicative as tupleApplicative } from 'ghc/base/tuple/tuple2-applicative'
 import { monoid as unitMonoid } from 'ghc/base/tuple/unit-monoid'
@@ -84,9 +79,8 @@ tap.test('Writer applicative', async (t) => {
         const w1 = writer(() => tuple2(createList([1, 2]), createList(['a'])))
         const w2 = writer(() => tuple2(createList([3, 4]), createList(['b'])))
         const result = applicative.liftA2(
-            (l1: ListBox<number>) =>
-                (l2: ListBox<number>) =>
-                    listApplicative.liftA2((x: number) => (y: number) => x + y, l1, l2),
+            (l1: ListBox<number>) => (l2: ListBox<number>) =>
+                listApplicative.liftA2((x: number) => (y: number) => x + y, l1, l2),
             w1,
             w2,
         )
@@ -99,9 +93,8 @@ tap.test('Writer applicative', async (t) => {
         const w1 = writer(() => tuple2(just(2), createList(['a'])))
         const w2 = writer(() => tuple2(just(3), createList(['b'])))
         const result = applicative.liftA2(
-            (m1: MaybeBox<number>) =>
-                (m2: MaybeBox<number>) =>
-                    maybeApplicative.liftA2((x: number) => (y: number) => x + y, m1, m2),
+            (m1: MaybeBox<number>) => (m2: MaybeBox<number>) =>
+                maybeApplicative.liftA2((x: number) => (y: number) => x + y, m1, m2),
             w1,
             w2,
         )
@@ -118,9 +111,8 @@ tap.test('Writer applicative', async (t) => {
         const w2 = writer(() => tuple2(right<string, number>(3), createList(['b'])))
         const eitherApp = eitherApplicative<string>()
         const result = applicative.liftA2(
-            (e1: EitherBox<string, number>) =>
-                (e2: EitherBox<string, number>) =>
-                    eitherApp.liftA2((x: number) => (y: number) => x + y, e1, e2),
+            (e1: EitherBox<string, number>) => (e2: EitherBox<string, number>) =>
+                eitherApp.liftA2((x: number) => (y: number) => x + y, e1, e2),
             w1,
             w2,
         )
@@ -137,9 +129,8 @@ tap.test('Writer applicative', async (t) => {
         const w1 = writer(() => tuple2(tuple2(unit(), 2), createList(['a'])))
         const w2 = writer(() => tuple2(tuple2(unit(), 3), createList(['b'])))
         const result = applicative.liftA2(
-            (t1: Tuple2Box<UnitBox, number>) =>
-                (t2: Tuple2Box<UnitBox, number>) =>
-                    tupleApp.liftA2((x: number) => (y: number) => x + y, t1, t2),
+            (t1: Tuple2Box<UnitBox, number>) => (t2: Tuple2Box<UnitBox, number>) =>
+                tupleApp.liftA2((x: number) => (y: number) => x + y, t1, t2),
             w1,
             w2,
         )
@@ -152,9 +143,8 @@ tap.test('Writer applicative', async (t) => {
         const w1 = writer(() => tuple2(Promise.resolve(2) as PromiseBox<number>, createList(['a'])))
         const w2 = writer(() => tuple2(Promise.resolve(3) as PromiseBox<number>, createList(['b'])))
         const result = applicative.liftA2(
-            (p1: PromiseBox<number>) =>
-                (p2: PromiseBox<number>) =>
-                    promiseApplicative.liftA2((x: number) => (y: number) => x + y, p1, p2),
+            (p1: PromiseBox<number>) => (p2: PromiseBox<number>) =>
+                promiseApplicative.liftA2((x: number) => (y: number) => x + y, p1, p2),
             w1,
             w2,
         )
@@ -163,4 +153,3 @@ tap.test('Writer applicative', async (t) => {
         t.same(toArray(l), ['a', 'b'])
     })
 })
-

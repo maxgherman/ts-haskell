@@ -8,8 +8,14 @@ const listOf = <A>(...xs: NonNullable<A>[]) => xs.reduceRight((acc, x) => listCo
 tap.test('NonEmpty foldable', (t) => {
     const ne = formList(listOf(1, 2, 3)) as NonEmptyBox<number>
 
-    t.equal(foldable.foldr((x: number, acc: number) => x + acc, 0, ne), 6)
-    t.equal(foldable.foldl((acc: number, x: number) => acc + x, 0, ne), 6)
+    t.equal(
+        foldable.foldr((x: number, acc: number) => x + acc, 0, ne),
+        6,
+    )
+    t.equal(
+        foldable.foldl((acc: number, x: number) => acc + x, 0, ne),
+        6,
+    )
     t.same(toArray(foldable.toList(ne)), [1, 2, 3])
     t.equal(foldable.length(ne), 3)
     t.notOk(foldable.null(ne))
