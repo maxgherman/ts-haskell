@@ -7,7 +7,7 @@ import type { FunctionArrow } from 'ghc/prim/function-arrow'
 
 const toArray = <T>(x: NonEmptyBox<T>) => compose<NonEmptyBox<T>, ListBox<T>, T[]>(listToArray, toList)(x)
 
-tap.test('NonEmpty applicative', { skip: true }, async (t) => {
+tap.test('NonEmpty applicative', async (t) => {
     t.test('pure', async (t) => {
         const result = applicative.pure(3)
 
@@ -112,7 +112,7 @@ tap.test('NonEmpty applicative', { skip: true }, async (t) => {
         t.same(toArray(right), [246, 124])
     })
 
-    t.test('Applicative forth law (Composition): pure (.) <*> u <*> v <*> w = u <*> (v <*> w)', async (t) => {
+    t.test('Applicative fourth law (Composition): pure (.) <*> u <*> v <*> w = u <*> (v <*> w)', async (t) => {
         const pureDot = applicative.pure(dot) as NonEmptyBox<Dot<number, number, number>>
 
         t.test('no - empty', async (t) => {
