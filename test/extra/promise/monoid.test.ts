@@ -16,8 +16,12 @@ tap.test('PromiseMonoid', async (t) => {
     })
 
     t.test('<>', async (t) => {
-        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())) as PromiseBox<ListBox<number>>
-        const part2 = Promise.resolve(compose(cons<number>(4), cons<number>(5), cons<number>(6))(nil())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())) as PromiseBox<
+            ListBox<number>
+        >
+        const part2 = Promise.resolve(compose(cons<number>(4), cons<number>(5), cons<number>(6))(nil())) as PromiseBox<
+            ListBox<number>
+        >
         const part3 = Promise.resolve(nil<number>()) as PromiseBox<ListBox<number>>
 
         const result1 = monoid['<>'](part1, part2)
@@ -32,8 +36,12 @@ tap.test('PromiseMonoid', async (t) => {
     })
 
     t.test('mappend', async (t) => {
-        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())) as PromiseBox<ListBox<number>>
-        const part2 = Promise.resolve(compose(cons<number>(4), cons<number>(5), cons<number>(6))(nil())) as PromiseBox<ListBox<number>>
+        const part1 = Promise.resolve(compose(cons<number>(1), cons<number>(2), cons<number>(3))(nil())) as PromiseBox<
+            ListBox<number>
+        >
+        const part2 = Promise.resolve(compose(cons<number>(4), cons<number>(5), cons<number>(6))(nil())) as PromiseBox<
+            ListBox<number>
+        >
         const part3 = Promise.resolve(nil<number>()) as PromiseBox<ListBox<number>>
 
         const result1 = monoid.mappend(part1, part2)
@@ -55,7 +63,8 @@ tap.test('PromiseMonoid', async (t) => {
         const list = compose(
             cons<Promise<ListBox<number>>>(part1),
             cons<Promise<ListBox<number>>>(part2),
-            cons<Promise<ListBox<number>>>(part3))(nil()) as List<PromiseBox<ListBox<number>>>
+            cons<Promise<ListBox<number>>>(part3),
+        )(nil()) as List<PromiseBox<ListBox<number>>>
         const result1 = monoid.mconcat(list)
         const result2 = monoid.mconcat(nil())
 

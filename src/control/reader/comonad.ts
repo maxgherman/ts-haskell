@@ -13,6 +13,15 @@ export interface ReaderComonad<R> extends Comonad {
     '$>'<A, B>(fa: ReaderBox<R, A>, b: B): ReaderBox<R, B>
     '<&>'<A, B>(fa: ReaderBox<R, A>, f: (a: A) => B): ReaderBox<R, B>
     void<A>(fa: ReaderBox<R, A>): ReaderBox<R, []>
+
+    // Specialized Comonad methods with ReaderBox
+    liftW<A, B>(f: (a: A) => B, wa: ReaderBox<R, A>): ReaderBox<R, B>
+    wfix<A>(w: ReaderBox<R, (wa: ReaderBox<R, A>) => A>): A
+    cfix<A>(f: (wa: ReaderBox<R, A>) => A): ReaderBox<R, A>
+    '=>>'<A, B>(wa: ReaderBox<R, A>, f: (wa: ReaderBox<R, A>) => B): ReaderBox<R, B>
+    '<<='<A, B>(f: (wa: ReaderBox<R, A>) => B, wa: ReaderBox<R, A>): ReaderBox<R, B>
+    '=<='<A, B, C>(f: (wb: ReaderBox<R, B>) => C, g: (wa: ReaderBox<R, A>) => B, wa: ReaderBox<R, A>): C
+    '=>='<A, B, C>(f: (wa: ReaderBox<R, A>) => B, g: (wb: ReaderBox<R, B>) => C, wa: ReaderBox<R, A>): C
 }
 
 const baseImplementation = <R>(): BaseImplementation => ({

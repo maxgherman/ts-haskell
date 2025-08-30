@@ -1,14 +1,6 @@
 import tap from 'tap'
 import { compose, Func } from 'ghc/base/functions'
-import {
-    $null,
-    cons as listCons,
-    head as listHead,
-    List,
-    nil,
-    tail as listTail,
-    toArray,
-} from 'ghc/base/list/list'
+import { $null, cons as listCons, head as listHead, List, nil, tail as listTail, toArray } from 'ghc/base/list/list'
 import { $case, _, cons, formList, head, map, NonEmpty, nonEmpty, tail, toList } from 'ghc/base/non-empty/list'
 
 type KindFunc = Func & { kind: Func }
@@ -31,9 +23,9 @@ tap.test('NonEmpty', async (t) => {
         t.equal(((value3() as Func)() as never[])[0], 1)
         t.equal(listHead(((value3() as Func)() as never[])[1] as unknown as List<number>), 2)
         t.equal(listHead(listTail(((value3() as Func)() as never[])[1] as unknown as List<number>)), 3)
-        t.equal(((value1() as KindFunc).kind('*')), '*')
-        t.equal(((value2() as KindFunc).kind('*')), '*')
-        t.equal(((value3() as KindFunc).kind('*')), '*')
+        t.equal((value1() as KindFunc).kind('*'), '*')
+        t.equal((value2() as KindFunc).kind('*'), '*')
+        t.equal((value3() as KindFunc).kind('*'), '*')
     })
 
     t.test('cons', async (t) => {
@@ -83,7 +75,10 @@ tap.test('NonEmpty', async (t) => {
     })
 
     t.test('toListList', async (t) => {
-        const list: NonEmpty<number> = () => [0, compose(listCons<number>(1), listCons<number>(2), listCons<number>(3))(nil())]
+        const list: NonEmpty<number> = () => [
+            0,
+            compose(listCons<number>(1), listCons<number>(2), listCons<number>(3))(nil()),
+        ]
 
         const result = toList(list)
 
@@ -91,7 +86,10 @@ tap.test('NonEmpty', async (t) => {
     })
 
     t.test('map', async (t) => {
-        const list: NonEmpty<number> = () => [0, compose(listCons<number>(1), listCons<number>(2), listCons<number>(3))(nil())]
+        const list: NonEmpty<number> = () => [
+            0,
+            compose(listCons<number>(1), listCons<number>(2), listCons<number>(3))(nil()),
+        ]
 
         const result = map((x) => x + 1, list)
 

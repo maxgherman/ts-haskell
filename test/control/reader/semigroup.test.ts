@@ -30,9 +30,7 @@ const createListValue = (separator: string): ReaderBox<string, ListBox<number>> 
 const maybeSemigroup = createMaybeSemigroup<ListBox<number>>(listSemigroup)
 const maybeReaderSemigroup = createReaderSemigroup<string, MaybeBox<ListBox<number>>>(maybeSemigroup)
 
-const createMaybeValue = (
-    separator: string,
-): ReaderBox<string, MaybeBox<ListBox<number>>> =>
+const createMaybeValue = (separator: string): ReaderBox<string, MaybeBox<ListBox<number>>> =>
     reader((x: string) => just(buildList(separator, x)))
 
 const eitherSemigroup = createEitherSemigroup<Error, string>()
@@ -46,16 +44,13 @@ const createEitherLeft = (msg: string): ReaderBox<string, EitherBox<Error, strin
 const nonEmptySemigroup = createNonEmptySemigroup<number>()
 const nonEmptyReaderSemigroup = createReaderSemigroup<string, NonEmptyBox<number>>(nonEmptySemigroup)
 
-const createNonEmptyValue = (
-    separator: string,
-): ReaderBox<string, NonEmptyBox<number>> =>
+const createNonEmptyValue = (separator: string): ReaderBox<string, NonEmptyBox<number>> =>
     reader((x: string) => formList(buildList(separator, x)))
 
 const tupleSemigroup = createTuple2Semigroup<ListBox<number>, ListBox<number>>(listSemigroup, listSemigroup)
-const tupleReaderSemigroup = createReaderSemigroup<
-    string,
-    TupleMinBox<ListBox<number>, ListBox<number>>
->(tupleSemigroup)
+const tupleReaderSemigroup = createReaderSemigroup<string, TupleMinBox<ListBox<number>, ListBox<number>>>(
+    tupleSemigroup,
+)
 
 const createTupleValue = (
     sep1: string,
@@ -123,10 +118,7 @@ tap.test('ReaderSemigroup Maybe', async (t) => {
         const value1 = createMaybeValue('7')
         const value2 = createMaybeValue('0')
 
-        const result = maybeReaderSemigroup['<>'](
-            value1,
-            value2,
-        ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
+        const result = maybeReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
         const toArr = maybeCase<ListBox<number>, number[]>({
             nothing: () => [],
             just: toArray,
@@ -140,9 +132,7 @@ tap.test('ReaderSemigroup Maybe', async (t) => {
         const value3 = createMaybeValue('3')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = maybeReaderSemigroup.sconcat(
-            formList(value4),
-        ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
+        const result = maybeReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
         const toArr = maybeCase<ListBox<number>, number[]>({
             nothing: () => [],
             just: toArray,
@@ -153,10 +143,7 @@ tap.test('ReaderSemigroup Maybe', async (t) => {
     t.test('stimes', async (t) => {
         const value1 = createMaybeValue('1')
 
-        const result = maybeReaderSemigroup.stimes(
-            3,
-            value1,
-        ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
+        const result = maybeReaderSemigroup.stimes(3, value1) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
         const toArr = maybeCase<ListBox<number>, number[]>({
             nothing: () => [],
             just: toArray,
@@ -164,38 +151,29 @@ tap.test('ReaderSemigroup Maybe', async (t) => {
         t.same(toArr(result.runReader('00') as MaybeBox<ListBox<number>>), [0, 1, 0, 0, 1, 0, 0, 1, 0])
     })
 
-    t.test(
-        'semigroup law - associativity: (x <> y) <> z = x <> (y <> z)',
-        async (t) => {
-            const value1 = createMaybeValue('11')
-            const value2 = createMaybeValue('22')
-            const value3 = createMaybeValue('33')
+    t.test('semigroup law - associativity: (x <> y) <> z = x <> (y <> z)', async (t) => {
+        const value1 = createMaybeValue('11')
+        const value2 = createMaybeValue('22')
+        const value3 = createMaybeValue('33')
 
-            const result1 = maybeReaderSemigroup['<>'](
-                maybeReaderSemigroup['<>'](
-                    value1,
-                    value2,
-                ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>,
-                value3,
-            ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
-            const result2 = maybeReaderSemigroup['<>'](
-                value1,
-                maybeReaderSemigroup['<>'](
-                    value2,
-                    value3,
-                ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>,
-            ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
+        const result1 = maybeReaderSemigroup['<>'](
+            maybeReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, MaybeBox<ListBox<number>>>,
+            value3,
+        ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
+        const result2 = maybeReaderSemigroup['<>'](
+            value1,
+            maybeReaderSemigroup['<>'](value2, value3) as ReaderMinBox<string, MaybeBox<ListBox<number>>>,
+        ) as ReaderMinBox<string, MaybeBox<ListBox<number>>>
 
-            const expected = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
-            const toArr = maybeCase<ListBox<number>, number[]>({
-                nothing: () => [],
-                just: toArray,
-            })
+        const expected = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
+        const toArr = maybeCase<ListBox<number>, number[]>({
+            nothing: () => [],
+            just: toArray,
+        })
 
-            t.same(toArr(result1.runReader('56') as MaybeBox<ListBox<number>>), expected)
-            t.same(toArr(result2.runReader('56') as MaybeBox<ListBox<number>>), expected)
-        },
-    )
+        t.same(toArr(result1.runReader('56') as MaybeBox<ListBox<number>>), expected)
+        t.same(toArr(result2.runReader('56') as MaybeBox<ListBox<number>>), expected)
+    })
 })
 
 tap.test('ReaderSemigroup Either', async (t) => {
@@ -206,16 +184,8 @@ tap.test('ReaderSemigroup Either', async (t) => {
         const value2 = createEitherRight('B')
         const value3 = createEitherLeft('err')
 
-        const result1 =
-            eitherReaderSemigroup['<>'](value1, value2) as ReaderMinBox<
-                string,
-                EitherBox<Error, string>
-            >
-        const result2 =
-            eitherReaderSemigroup['<>'](value3, value1) as ReaderMinBox<
-                string,
-                EitherBox<Error, string>
-            >
+        const result1 = eitherReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, EitherBox<Error, string>>
+        const result2 = eitherReaderSemigroup['<>'](value3, value1) as ReaderMinBox<string, EitherBox<Error, string>>
 
         t.equal(rightCase(result1.runReader('X') as EitherBox<Error, string>), 'XA')
         t.equal(rightCase(result2.runReader('X') as EitherBox<Error, string>), 'XA')
@@ -227,64 +197,36 @@ tap.test('ReaderSemigroup Either', async (t) => {
         const value3 = createEitherRight('C')
         const values = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result =
-            eitherReaderSemigroup.sconcat(
-                formList(values),
-            ) as ReaderMinBox<string, EitherBox<Error, string>>
+        const result = eitherReaderSemigroup.sconcat(formList(values)) as ReaderMinBox<string, EitherBox<Error, string>>
 
-        t.equal(
-            rightCase(result.runReader('X') as EitherBox<Error, string>),
-            'XC',
-        )
+        t.equal(rightCase(result.runReader('X') as EitherBox<Error, string>), 'XC')
     })
 
     t.test('stimes', async (t) => {
         const value1 = createEitherRight('A')
 
-        const result =
-            eitherReaderSemigroup.stimes(
-                5,
-                value1,
-            ) as ReaderMinBox<string, EitherBox<Error, string>>
+        const result = eitherReaderSemigroup.stimes(5, value1) as ReaderMinBox<string, EitherBox<Error, string>>
 
-        t.equal(
-            rightCase(result.runReader('X') as EitherBox<Error, string>),
-            'XA',
-        )
+        t.equal(rightCase(result.runReader('X') as EitherBox<Error, string>), 'XA')
     })
 
-    t.test(
-        'semigroup law - associativity: (x <> y) <> z = x <> (y <> z)',
-        async (t) => {
-            const value1 = createEitherRight('A')
-            const value2 = createEitherRight('B')
-            const value3 = createEitherRight('C')
+    t.test('semigroup law - associativity: (x <> y) <> z = x <> (y <> z)', async (t) => {
+        const value1 = createEitherRight('A')
+        const value2 = createEitherRight('B')
+        const value3 = createEitherRight('C')
 
-            const result1 = eitherReaderSemigroup['<>'](
-                eitherReaderSemigroup['<>'](
-                    value1,
-                    value2,
-                ) as ReaderMinBox<string, EitherBox<Error, string>>,
-                value3,
-            ) as ReaderMinBox<string, EitherBox<Error, string>>
-            const result2 = eitherReaderSemigroup['<>'](
-                value1,
-                eitherReaderSemigroup['<>'](
-                    value2,
-                    value3,
-                ) as ReaderMinBox<string, EitherBox<Error, string>>,
-            ) as ReaderMinBox<string, EitherBox<Error, string>>
+        const result1 = eitherReaderSemigroup['<>'](
+            eitherReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, EitherBox<Error, string>>,
+            value3,
+        ) as ReaderMinBox<string, EitherBox<Error, string>>
+        const result2 = eitherReaderSemigroup['<>'](
+            value1,
+            eitherReaderSemigroup['<>'](value2, value3) as ReaderMinBox<string, EitherBox<Error, string>>,
+        ) as ReaderMinBox<string, EitherBox<Error, string>>
 
-            t.equal(
-                rightCase(result1.runReader('X') as EitherBox<Error, string>),
-                'XA',
-            )
-            t.equal(
-                rightCase(result2.runReader('X') as EitherBox<Error, string>),
-                'XA',
-            )
-        },
-    )
+        t.equal(rightCase(result1.runReader('X') as EitherBox<Error, string>), 'XA')
+        t.equal(rightCase(result2.runReader('X') as EitherBox<Error, string>), 'XA')
+    })
 })
 
 tap.test('ReaderSemigroup NonEmptyList', async (t) => {
@@ -292,14 +234,8 @@ tap.test('ReaderSemigroup NonEmptyList', async (t) => {
         const value1 = createNonEmptyValue('7')
         const value2 = createNonEmptyValue('0')
 
-        const result = nonEmptyReaderSemigroup['<>'](
-            value1,
-            value2,
-        ) as ReaderMinBox<string, NonEmptyBox<number>>
-        t.same(
-            toArray(toList(result.runReader('123') as NonEmptyBox<number>)),
-            [1, 7, 2, 7, 3, 1, 0, 2, 0, 3],
-        )
+        const result = nonEmptyReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, NonEmptyBox<number>>
+        t.same(toArray(toList(result.runReader('123') as NonEmptyBox<number>)), [1, 7, 2, 7, 3, 1, 0, 2, 0, 3])
     })
 
     t.test('sconcat', async (t) => {
@@ -308,64 +244,38 @@ tap.test('ReaderSemigroup NonEmptyList', async (t) => {
         const value3 = createNonEmptyValue('3')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = nonEmptyReaderSemigroup.sconcat(
-            formList(value4),
-        ) as ReaderMinBox<string, NonEmptyBox<number>>
+        const result = nonEmptyReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<string, NonEmptyBox<number>>
 
-        t.same(
-            toArray(toList(result.runReader('56') as NonEmptyBox<number>)),
-            [5, 3, 6, 5, 2, 6, 5, 1, 6],
-        )
+        t.same(toArray(toList(result.runReader('56') as NonEmptyBox<number>)), [5, 3, 6, 5, 2, 6, 5, 1, 6])
     })
 
     t.test('stimes', async (t) => {
         const value1 = createNonEmptyValue('1')
 
-        const result = nonEmptyReaderSemigroup.stimes(
-            3,
-            value1,
-        ) as ReaderMinBox<string, NonEmptyBox<number>>
+        const result = nonEmptyReaderSemigroup.stimes(3, value1) as ReaderMinBox<string, NonEmptyBox<number>>
 
-        t.same(
-            toArray(toList(result.runReader('00') as NonEmptyBox<number>)),
-            [0, 1, 0, 0, 1, 0, 0, 1, 0],
-        )
+        t.same(toArray(toList(result.runReader('00') as NonEmptyBox<number>)), [0, 1, 0, 0, 1, 0, 0, 1, 0])
     })
 
-    t.test(
-        'semigroup law - associativity: (x <> y) <> z = x <> (y <> z)',
-        async (t) => {
-            const value1 = createNonEmptyValue('11')
-            const value2 = createNonEmptyValue('22')
-            const value3 = createNonEmptyValue('33')
+    t.test('semigroup law - associativity: (x <> y) <> z = x <> (y <> z)', async (t) => {
+        const value1 = createNonEmptyValue('11')
+        const value2 = createNonEmptyValue('22')
+        const value3 = createNonEmptyValue('33')
 
-            const result1 = nonEmptyReaderSemigroup['<>'](
-                nonEmptyReaderSemigroup['<>'](
-                    value1,
-                    value2,
-                ) as ReaderMinBox<string, NonEmptyBox<number>>,
-                value3,
-            ) as ReaderMinBox<string, NonEmptyBox<number>>
-            const result2 = nonEmptyReaderSemigroup['<>'](
-                value1,
-                nonEmptyReaderSemigroup['<>'](
-                    value2,
-                    value3,
-                ) as ReaderMinBox<string, NonEmptyBox<number>>,
-            ) as ReaderMinBox<string, NonEmptyBox<number>>
+        const result1 = nonEmptyReaderSemigroup['<>'](
+            nonEmptyReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, NonEmptyBox<number>>,
+            value3,
+        ) as ReaderMinBox<string, NonEmptyBox<number>>
+        const result2 = nonEmptyReaderSemigroup['<>'](
+            value1,
+            nonEmptyReaderSemigroup['<>'](value2, value3) as ReaderMinBox<string, NonEmptyBox<number>>,
+        ) as ReaderMinBox<string, NonEmptyBox<number>>
 
-            const expected = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
+        const expected = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
 
-            t.same(
-                toArray(toList(result1.runReader('56') as NonEmptyBox<number>)),
-                expected,
-            )
-            t.same(
-                toArray(toList(result2.runReader('56') as NonEmptyBox<number>)),
-                expected,
-            )
-        },
-    )
+        t.same(toArray(toList(result1.runReader('56') as NonEmptyBox<number>)), expected)
+        t.same(toArray(toList(result2.runReader('56') as NonEmptyBox<number>)), expected)
+    })
 })
 
 tap.test('ReaderSemigroup Tuple', async (t) => {
@@ -373,10 +283,10 @@ tap.test('ReaderSemigroup Tuple', async (t) => {
         const value1 = createTupleValue('7', '8')
         const value2 = createTupleValue('0', '9')
 
-        const result = tupleReaderSemigroup['<>'](
-            value1,
-            value2,
-        ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>
+        const result = tupleReaderSemigroup['<>'](value1, value2) as ReaderMinBox<
+            string,
+            TupleMinBox<ListBox<number>, ListBox<number>>
+        >
 
         const tupleResult = result.runReader('123') as TupleMinBox<ListBox<number>, ListBox<number>>
         t.same(toArray(fst(tupleResult) as ListBox<number>), [1, 7, 2, 7, 3, 1, 0, 2, 0, 3])
@@ -389,9 +299,10 @@ tap.test('ReaderSemigroup Tuple', async (t) => {
         const value3 = createTupleValue('3', '6')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = tupleReaderSemigroup.sconcat(
-            formList(value4),
-        ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>
+        const result = tupleReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<
+            string,
+            TupleMinBox<ListBox<number>, ListBox<number>>
+        >
 
         const tupleResult = result.runReader('56') as TupleMinBox<ListBox<number>, ListBox<number>>
         t.same(toArray(fst(tupleResult) as ListBox<number>), [5, 3, 6, 5, 2, 6, 5, 1, 6])
@@ -401,49 +312,46 @@ tap.test('ReaderSemigroup Tuple', async (t) => {
     t.test('stimes', async (t) => {
         const value1 = createTupleValue('1', '2')
 
-        const result = tupleReaderSemigroup.stimes(
-            3,
-            value1,
-        ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>
+        const result = tupleReaderSemigroup.stimes(3, value1) as ReaderMinBox<
+            string,
+            TupleMinBox<ListBox<number>, ListBox<number>>
+        >
 
         const tupleResult = result.runReader('00') as TupleMinBox<ListBox<number>, ListBox<number>>
         t.same(toArray(fst(tupleResult) as ListBox<number>), [0, 1, 0, 0, 1, 0, 0, 1, 0])
         t.same(toArray(snd(tupleResult) as ListBox<number>), [0, 2, 0, 0, 2, 0, 0, 2, 0])
     })
 
-    t.test(
-        'semigroup law - associativity: (x <> y) <> z = x <> (y <> z)',
-        async (t) => {
-            const value1 = createTupleValue('11', '44')
-            const value2 = createTupleValue('22', '55')
-            const value3 = createTupleValue('33', '66')
+    t.test('semigroup law - associativity: (x <> y) <> z = x <> (y <> z)', async (t) => {
+        const value1 = createTupleValue('11', '44')
+        const value2 = createTupleValue('22', '55')
+        const value3 = createTupleValue('33', '66')
 
-            const result1 = tupleReaderSemigroup['<>'](
-                tupleReaderSemigroup['<>'](
-                    value1,
-                    value2,
-                ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>,
-                value3,
-            ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>
-            const result2 = tupleReaderSemigroup['<>'](
-                value1,
-                tupleReaderSemigroup['<>'](
-                    value2,
-                    value3,
-                ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>,
-            ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>
+        const result1 = tupleReaderSemigroup['<>'](
+            tupleReaderSemigroup['<>'](value1, value2) as ReaderMinBox<
+                string,
+                TupleMinBox<ListBox<number>, ListBox<number>>
+            >,
+            value3,
+        ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>
+        const result2 = tupleReaderSemigroup['<>'](
+            value1,
+            tupleReaderSemigroup['<>'](value2, value3) as ReaderMinBox<
+                string,
+                TupleMinBox<ListBox<number>, ListBox<number>>
+            >,
+        ) as ReaderMinBox<string, TupleMinBox<ListBox<number>, ListBox<number>>>
 
-            const tuple1 = result1.runReader('56') as TupleMinBox<ListBox<number>, ListBox<number>>
-            const tuple2 = result2.runReader('56') as TupleMinBox<ListBox<number>, ListBox<number>>
-            const expected1 = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
-            const expected2 = [5, 4, 4, 6, 5, 5, 5, 6, 5, 6, 6, 6]
+        const tuple1 = result1.runReader('56') as TupleMinBox<ListBox<number>, ListBox<number>>
+        const tuple2 = result2.runReader('56') as TupleMinBox<ListBox<number>, ListBox<number>>
+        const expected1 = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
+        const expected2 = [5, 4, 4, 6, 5, 5, 5, 6, 5, 6, 6, 6]
 
-            t.same(toArray(fst(tuple1) as ListBox<number>), expected1)
-            t.same(toArray(fst(tuple2) as ListBox<number>), expected1)
-            t.same(toArray(snd(tuple1) as ListBox<number>), expected2)
-            t.same(toArray(snd(tuple2) as ListBox<number>), expected2)
-        },
-    )
+        t.same(toArray(fst(tuple1) as ListBox<number>), expected1)
+        t.same(toArray(fst(tuple2) as ListBox<number>), expected1)
+        t.same(toArray(snd(tuple1) as ListBox<number>), expected2)
+        t.same(toArray(snd(tuple2) as ListBox<number>), expected2)
+    })
 })
 
 tap.test('ReaderSemigroup Promise', async (t) => {
@@ -453,10 +361,7 @@ tap.test('ReaderSemigroup Promise', async (t) => {
 
         const result = promiseReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
 
-        t.same(
-            toArray(await (result.runReader('123') as PromiseBox<ListBox<number>>)),
-            [1, 7, 2, 7, 3, 1, 0, 2, 0, 3],
-        )
+        t.same(toArray(await (result.runReader('123') as PromiseBox<ListBox<number>>)), [1, 7, 2, 7, 3, 1, 0, 2, 0, 3])
     })
 
     t.test('sconcat', async (t) => {
@@ -465,63 +370,39 @@ tap.test('ReaderSemigroup Promise', async (t) => {
         const value3 = createPromiseValue('3')
         const value4 = cons(value3)(cons(value2)(cons(value1)(nil())))
 
-        const result = promiseReaderSemigroup.sconcat(
-            formList(value4),
-        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        const result = promiseReaderSemigroup.sconcat(formList(value4)) as ReaderMinBox<
+            string,
+            PromiseBox<ListBox<number>>
+        >
 
-        t.same(
-            toArray(await (result.runReader('56') as PromiseBox<ListBox<number>>)),
-            [5, 3, 6, 5, 2, 6, 5, 1, 6],
-        )
+        t.same(toArray(await (result.runReader('56') as PromiseBox<ListBox<number>>)), [5, 3, 6, 5, 2, 6, 5, 1, 6])
     })
 
     t.test('stimes', async (t) => {
         const value1 = createPromiseValue('1')
 
-        const result = promiseReaderSemigroup.stimes(
-            3,
-            value1,
-        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        const result = promiseReaderSemigroup.stimes(3, value1) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
 
-        t.same(
-            toArray(await (result.runReader('00') as PromiseBox<ListBox<number>>)),
-            [0, 1, 0, 0, 1, 0, 0, 1, 0],
-        )
+        t.same(toArray(await (result.runReader('00') as PromiseBox<ListBox<number>>)), [0, 1, 0, 0, 1, 0, 0, 1, 0])
     })
 
-    t.test(
-        'semigroup law - associativity: (x <> y) <> z = x <> (y <> z)',
-        async (t) => {
-            const value1 = createPromiseValue('11')
-            const value2 = createPromiseValue('22')
-            const value3 = createPromiseValue('33')
+    t.test('semigroup law - associativity: (x <> y) <> z = x <> (y <> z)', async (t) => {
+        const value1 = createPromiseValue('11')
+        const value2 = createPromiseValue('22')
+        const value3 = createPromiseValue('33')
 
-            const result1 = promiseReaderSemigroup['<>'](
-                promiseReaderSemigroup['<>'](
-                    value1,
-                    value2,
-                ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>,
-                value3,
-            ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
-            const result2 = promiseReaderSemigroup['<>'](
-                value1,
-                promiseReaderSemigroup['<>'](
-                    value2,
-                    value3,
-                ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>,
-            ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        const result1 = promiseReaderSemigroup['<>'](
+            promiseReaderSemigroup['<>'](value1, value2) as ReaderMinBox<string, PromiseBox<ListBox<number>>>,
+            value3,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
+        const result2 = promiseReaderSemigroup['<>'](
+            value1,
+            promiseReaderSemigroup['<>'](value2, value3) as ReaderMinBox<string, PromiseBox<ListBox<number>>>,
+        ) as ReaderMinBox<string, PromiseBox<ListBox<number>>>
 
-            const expected = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
+        const expected = [5, 1, 1, 6, 5, 2, 2, 6, 5, 3, 3, 6]
 
-            t.same(
-                toArray(await (result1.runReader('56') as PromiseBox<ListBox<number>>)),
-                expected,
-            )
-            t.same(
-                toArray(await (result2.runReader('56') as PromiseBox<ListBox<number>>)),
-                expected,
-            )
-        },
-    )
+        t.same(toArray(await (result1.runReader('56') as PromiseBox<ListBox<number>>)), expected)
+        t.same(toArray(await (result2.runReader('56') as PromiseBox<ListBox<number>>)), expected)
+    })
 })
-

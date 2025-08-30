@@ -19,7 +19,10 @@ tap.test('State monad', async (t) => {
     t.equal(fst(r1), 4)
     t.equal(snd(r1), 3)
 
-    const seq = monad['>>'](state((s: number) => tuple2('ignore', s + 1)), m)
+    const seq = monad['>>'](
+        state((s: number) => tuple2('ignore', s + 1)),
+        m,
+    )
     const r2 = run(seq, 2)
     t.equal(fst(r2), 4)
     t.equal(snd(r2), 4)

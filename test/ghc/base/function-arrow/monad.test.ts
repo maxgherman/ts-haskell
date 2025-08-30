@@ -74,8 +74,7 @@ tap.test('FunctionArrow monad', async (t) => {
             const value3 = yield withKind((x: number) => `${x} + 3`)
 
             return `${value1} - ${value2} - ${value3}`
-        },
-        monad)
+        }, monad)
 
         t.equal(result(10), '10 + 1 - 10 + 2 - 10 + 3')
     })

@@ -40,8 +40,12 @@ tap.test('ListSemigroup', async (t) => {
     t.test('stimes', async (t) => {
         const result1 = compose((x: ListBox<number>) => semigroup.stimes(10, x), cons(1))(nil())
 
-        const result2 = compose((x: ListBox<number>) =>
-            semigroup.stimes(0, x), cons<number>(1), cons<number>(2), cons(3))(nil())
+        const result2 = compose(
+            (x: ListBox<number>) => semigroup.stimes(0, x),
+            cons<number>(1),
+            cons<number>(2),
+            cons(3),
+        )(nil())
 
         const result3 = semigroup.stimes(20, nil())
         const result4 = () => semigroup.stimes(-1, nil())

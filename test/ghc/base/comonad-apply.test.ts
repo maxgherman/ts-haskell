@@ -3,8 +3,10 @@ import { comonad as writerComonad } from 'control/writer/comonad'
 import { comonadApply as writerComonadApply } from 'control/writer/comonad-apply'
 import { writer, WriterBox } from 'control/writer/writer'
 import { comonadApply as createComonadApply } from 'control/comonad-apply'
+import type { BaseImplementation as CAImplementation } from 'control/comonad-apply'
+import type { WriterComonadApply } from 'control/writer/comonad-apply'
 import { tuple2 } from 'ghc/base/tuple/tuple'
-import { id } from 'ghc/base/functions'
+// import { id } from 'ghc/base/functions'
 
 const ca = writerComonadApply<string>()
 
@@ -50,7 +52,10 @@ tap.test('ComonadApply', async (t) => {
                     return tuple2(f(a), w)
                 }),
         }
-        const derived = createComonadApply(base as any, cm as any) as any
+        const derived = createComonadApply(
+            base as unknown as CAImplementation,
+            cm,
+        ) as unknown as WriterComonadApply<string>
 
         const f = (x: number) => (y: number) => x + y
         const a = writer(() => tuple2(1, 'a'))
@@ -74,13 +79,17 @@ tap.test('ComonadApply', async (t) => {
                     return tuple2(f(a)(b), w)
                 }),
         }
-        const derived = createComonadApply(base as any, cm as any) as any
+        const derived = createComonadApply(
+            base as unknown as CAImplementation,
+            cm,
+        ) as unknown as WriterComonadApply<string>
 
         const wf = writer(() => tuple2((x: number) => x + 1, 'f'))
         const wa = writer(() => tuple2(1, 'a'))
 
         const left = derived['<@>'](wf, wa)
-        const right = derived.liftW2(id as any, wf, wa)
+        const ap = (f: (a: number) => number) => (a: number) => f(a)
+        const right = derived.liftW2(ap, wf, wa)
         t.same(run(left), run(right))
     })
 
@@ -98,7 +107,10 @@ tap.test('ComonadApply', async (t) => {
                     return tuple2(f(a)(b), w)
                 }),
         }
-        const derived = createComonadApply(base as any, cm as any) as any
+        const derived = createComonadApply(
+            base as unknown as CAImplementation,
+            cm,
+        ) as unknown as WriterComonadApply<string>
 
         const wa = writer(() => tuple2(1, 'a'))
         const wf = writer(() => tuple2((x: number) => x + 1, 'f'))
@@ -117,7 +129,10 @@ tap.test('ComonadApply', async (t) => {
                     return tuple2(f(a), w)
                 }),
         }
-        const derived = createComonadApply(base as any, cm as any) as any
+        const derived = createComonadApply(
+            base as unknown as CAImplementation,
+            cm,
+        ) as unknown as WriterComonadApply<string>
 
         const f = (x: number) => (y: number) => (z: number) => x + y + z
         const a = writer(() => tuple2(1, 'a'))

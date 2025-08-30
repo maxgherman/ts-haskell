@@ -52,7 +52,12 @@ tap.test('Writer monad', async (t) => {
         const listM = listMonad
         const w1 = writer(() => tuple2(createList([1, 2]), createList(['a'])))
         const f = (l: ListBox<number>) =>
-            writer(() => tuple2(listM['>>='](l, (x: number) => createList([x, x + 1])), createList(['b'])))
+            writer(() =>
+                tuple2(
+                    listM['>>='](l, (x: number) => createList([x, x + 1])),
+                    createList(['b']),
+                ),
+            )
         const result = monad['>>='](w1, f)
         const [v, l] = run(result)
         t.same(toArray(v as ListBox<number>), [1, 2, 2, 3])
@@ -63,7 +68,12 @@ tap.test('Writer monad', async (t) => {
         const maybeM = maybeMonad
         const w1 = writer(() => tuple2(just(2), createList(['a'])))
         const f = (m: MaybeBox<number>) =>
-            writer(() => tuple2(maybeM['>>='](m, (x: number) => maybeM.pure(x + 1)), createList(['b'])))
+            writer(() =>
+                tuple2(
+                    maybeM['>>='](m, (x: number) => maybeM.pure(x + 1)),
+                    createList(['b']),
+                ),
+            )
         const result = monad['>>='](w1, f)
         const [v, l] = run(result)
         maybeCase({
@@ -77,7 +87,12 @@ tap.test('Writer monad', async (t) => {
         const eitherM = eitherMonad<string>()
         const w1 = writer(() => tuple2(right<string, number>(2), createList(['a'])))
         const f = (e: EitherBox<string, number>) =>
-            writer(() => tuple2(eitherM['>>='](e, (x: number) => eitherM.pure(x + 1)), createList(['b'])))
+            writer(() =>
+                tuple2(
+                    eitherM['>>='](e, (x: number) => eitherM.pure(x + 1)),
+                    createList(['b']),
+                ),
+            )
         const result = monad['>>='](w1, f)
         const [v, l] = run(result)
         eitherCase({
@@ -91,7 +106,12 @@ tap.test('Writer monad', async (t) => {
         const tupleM = tupleMonad(unitMonoid)
         const w1 = writer(() => tuple2(tuple2(unit(), 2), createList(['a'])))
         const f = (tp: Tuple2Box<UnitBox, number>) =>
-            writer(() => tuple2(tupleM['>>='](tp, (x: number) => tuple2(unit(), x + 1)), createList(['b'])))
+            writer(() =>
+                tuple2(
+                    tupleM['>>='](tp, (x: number) => tuple2(unit(), x + 1)),
+                    createList(['b']),
+                ),
+            )
         const result = monad['>>='](w1, f)
         const [v, l] = run(result)
         t.equal(snd(v as Tuple2Box<UnitBox, number>), 3)
@@ -114,25 +134,16 @@ tap.test('Writer monad', async (t) => {
     })
 
     t.test('Monad with List and do-notation', async (t) => {
-        const result = doNotation<WriterBox<ListBox<string>, ListBox<number>>>(
-            function* (): Generator<
-                WriterBox<ListBox<string>, ListBox<number>>,
-                ListBox<number>,
-                ListBox<number>
-            > {
-                const list1 = (yield writer(() =>
-                    tuple2(createList([1, 2]), createList(['a'])),
-                )) as ListBox<number>
-                const list2 = (yield writer(() =>
-                    tuple2(createList([3, 4]), createList(['b'])),
-                )) as ListBox<number>
+        const result = doNotation<WriterBox<ListBox<string>, ListBox<number>>>(function* (): Generator<
+            WriterBox<ListBox<string>, ListBox<number>>,
+            ListBox<number>,
+            ListBox<number>
+        > {
+            const list1 = (yield writer(() => tuple2(createList([1, 2]), createList(['a'])))) as ListBox<number>
+            const list2 = (yield writer(() => tuple2(createList([3, 4]), createList(['b'])))) as ListBox<number>
 
-                return listMonad['>>='](list1, (x: number) =>
-                    listMonad['>>='](list2, (y: number) => listMonad.pure(x + y)),
-                )
-            },
-            monad,
-        )
+            return listMonad['>>='](list1, (x: number) => listMonad['>>='](list2, (y: number) => listMonad.pure(x + y)))
+        }, monad)
 
         const [v, l] = run(result)
         t.same(toArray(v as ListBox<number>), [4, 5, 5, 6])
@@ -141,25 +152,16 @@ tap.test('Writer monad', async (t) => {
 
     t.test('Monad with Maybe and do-notation', async (t) => {
         const maybeM = maybeMonad
-        const result = doNotation<WriterBox<ListBox<string>, MaybeBox<number>>>(
-            function* (): Generator<
-                WriterBox<ListBox<string>, MaybeBox<number>>,
-                MaybeBox<number>,
-                MaybeBox<number>
-            > {
-                const value1 = (yield writer(() =>
-                    tuple2(just(2), createList(['a'])),
-                )) as MaybeBox<number>
-                const value2 = (yield writer(() =>
-                    tuple2(just(3), createList(['b'])),
-                )) as MaybeBox<number>
+        const result = doNotation<WriterBox<ListBox<string>, MaybeBox<number>>>(function* (): Generator<
+            WriterBox<ListBox<string>, MaybeBox<number>>,
+            MaybeBox<number>,
+            MaybeBox<number>
+        > {
+            const value1 = (yield writer(() => tuple2(just(2), createList(['a'])))) as MaybeBox<number>
+            const value2 = (yield writer(() => tuple2(just(3), createList(['b'])))) as MaybeBox<number>
 
-                return maybeM['>>='](value1, (x: number) =>
-                    maybeM['>>='](value2, (y: number) => maybeM.pure(x + y)),
-                )
-            },
-            monad,
-        )
+            return maybeM['>>='](value1, (x: number) => maybeM['>>='](value2, (y: number) => maybeM.pure(x + y)))
+        }, monad)
 
         const [v, l] = run(result)
         maybeCase({
@@ -171,25 +173,22 @@ tap.test('Writer monad', async (t) => {
 
     t.test('Monad with Either and do-notation', async (t) => {
         const eitherM = eitherMonad<string>()
-        const result = doNotation<WriterBox<ListBox<string>, EitherBox<string, number>>>(
-            function* (): Generator<
-                WriterBox<ListBox<string>, EitherBox<string, number>>,
-                EitherBox<string, number>,
-                EitherBox<string, number>
-            > {
-                const value1 = (yield writer(() =>
-                    tuple2(right<string, number>(2), createList(['a'])),
-                )) as EitherBox<string, number>
-                const value2 = (yield writer(() =>
-                    tuple2(right<string, number>(3), createList(['b'])),
-                )) as EitherBox<string, number>
+        const result = doNotation<WriterBox<ListBox<string>, EitherBox<string, number>>>(function* (): Generator<
+            WriterBox<ListBox<string>, EitherBox<string, number>>,
+            EitherBox<string, number>,
+            EitherBox<string, number>
+        > {
+            const value1 = (yield writer(() => tuple2(right<string, number>(2), createList(['a'])))) as EitherBox<
+                string,
+                number
+            >
+            const value2 = (yield writer(() => tuple2(right<string, number>(3), createList(['b'])))) as EitherBox<
+                string,
+                number
+            >
 
-                return eitherM['>>='](value1, (x: number) =>
-                    eitherM['>>='](value2, (y: number) => eitherM.pure(x + y)),
-                )
-            },
-            monad,
-        )
+            return eitherM['>>='](value1, (x: number) => eitherM['>>='](value2, (y: number) => eitherM.pure(x + y)))
+        }, monad)
 
         const [v, l] = run(result)
         eitherCase({
@@ -201,25 +200,22 @@ tap.test('Writer monad', async (t) => {
 
     t.test('Monad with Tuple and do-notation', async (t) => {
         const tupleM = tupleMonad(unitMonoid)
-        const result = doNotation<WriterBox<ListBox<string>, Tuple2BoxT<UnitBox, number>>>(
-            function* (): Generator<
-                WriterBox<ListBox<string>, Tuple2BoxT<UnitBox, number>>,
-                Tuple2BoxT<UnitBox, number>,
-                Tuple2BoxT<UnitBox, number>
-            > {
-                const tuple1 = (yield writer(() =>
-                    tuple2(tuple2(unit(), 2), createList(['a'])),
-                )) as Tuple2BoxT<UnitBox, number>
-                const tuple2Val = (yield writer(() =>
-                    tuple2(tuple2(unit(), 3), createList(['b'])),
-                )) as Tuple2BoxT<UnitBox, number>
+        const result = doNotation<WriterBox<ListBox<string>, Tuple2BoxT<UnitBox, number>>>(function* (): Generator<
+            WriterBox<ListBox<string>, Tuple2BoxT<UnitBox, number>>,
+            Tuple2BoxT<UnitBox, number>,
+            Tuple2BoxT<UnitBox, number>
+        > {
+            const tuple1 = (yield writer(() => tuple2(tuple2(unit(), 2), createList(['a'])))) as Tuple2BoxT<
+                UnitBox,
+                number
+            >
+            const tuple2Val = (yield writer(() => tuple2(tuple2(unit(), 3), createList(['b'])))) as Tuple2BoxT<
+                UnitBox,
+                number
+            >
 
-                return tupleM['>>='](tuple1, (x: number) =>
-                    tupleM['>>='](tuple2Val, (y: number) => tupleM.pure(x + y)),
-                )
-            },
-            monad,
-        )
+            return tupleM['>>='](tuple1, (x: number) => tupleM['>>='](tuple2Val, (y: number) => tupleM.pure(x + y)))
+        }, monad)
 
         const [v, l] = run(result)
         t.equal(snd(v as Tuple2BoxT<UnitBox, number>), 5)
@@ -227,29 +223,25 @@ tap.test('Writer monad', async (t) => {
     })
 
     t.test('Monad with Promise and do-notation', async (t) => {
-        const result = doNotation<WriterBox<ListBox<string>, PromiseBox<number>>>(
-            function* (): Generator<
-                WriterBox<ListBox<string>, PromiseBox<number>>,
-                PromiseBox<number>,
-                PromiseBox<number>
-            > {
-                const p1 = (yield writer(() =>
-                    tuple2(Promise.resolve(2) as PromiseBox<number>, createList(['a'])),
-                )) as PromiseBox<number>
-                const p2 = (yield writer(() =>
-                    tuple2(Promise.resolve(3) as PromiseBox<number>, createList(['b'])),
-                )) as PromiseBox<number>
+        const result = doNotation<WriterBox<ListBox<string>, PromiseBox<number>>>(function* (): Generator<
+            WriterBox<ListBox<string>, PromiseBox<number>>,
+            PromiseBox<number>,
+            PromiseBox<number>
+        > {
+            const p1 = (yield writer(() =>
+                tuple2(Promise.resolve(2) as PromiseBox<number>, createList(['a'])),
+            )) as PromiseBox<number>
+            const p2 = (yield writer(() =>
+                tuple2(Promise.resolve(3) as PromiseBox<number>, createList(['b'])),
+            )) as PromiseBox<number>
 
-                return promiseMonad['>>='](p1, (x: number) =>
-                    promiseMonad['>>='](p2, (y: number) => promiseMonad.pure(x + y)),
-                )
-            },
-            monad,
-        ) as WriterBox<ListBox<string>, PromiseBox<number>>
+            return promiseMonad['>>='](p1, (x: number) =>
+                promiseMonad['>>='](p2, (y: number) => promiseMonad.pure(x + y)),
+            )
+        }, monad) as WriterBox<ListBox<string>, PromiseBox<number>>
 
         const [v, l] = run(result)
         t.equal(await v, 5)
         t.same(toArray(l), ['a', 'b'])
     })
 })
-

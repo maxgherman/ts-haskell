@@ -6,8 +6,7 @@ import { monad as maybeMonad } from 'ghc/base/maybe/monad'
 import { just, nothing, $case, MaybeBox } from 'ghc/base/maybe/maybe'
 import { cons, nil, toArray, ListBox } from 'ghc/base/list/list'
 
-const listOf = <A>(...xs: NonNullable<A>[]) =>
-    xs.reduceRight((acc, x) => cons(x)(acc), nil<A>())
+const listOf = <A>(...xs: NonNullable<A>[]) => xs.reduceRight((acc, x) => cons(x)(acc), nil<A>())
 
 const caseMaybe = <A>(t: Test, mb: MaybeBox<A>, onJust: (a: A) => void) =>
     $case<A, void>({
@@ -30,26 +29,17 @@ tap.test('List traversable', async (t) => {
     })
 
     t.test('traverse', async (t) => {
-          const lst = listOf(1, 2)
-          const res =
-              traversable.traverse(maybeApplicative, (x: number) => just(x + 1), lst) as MaybeBox<ListBox<number>>
-          caseMaybe(t, res, (lst: ListBox<number>) => t.same(toArray(lst), [2, 3]))
+        const lst = listOf(1, 2)
+        const res = traversable.traverse(maybeApplicative, (x: number) => just(x + 1), lst) as MaybeBox<ListBox<number>>
+        caseMaybe(t, res, (lst: ListBox<number>) => t.same(toArray(lst), [2, 3]))
     })
 
     t.test('mapM', async (t) => {
         const lst = listOf(1, 2)
-        const res = traversable.mapM(
-            maybeMonad,
-            (x: number) => just(x + 1),
-            lst,
-        ) as MaybeBox<ListBox<number>>
+        const res = traversable.mapM(maybeMonad, (x: number) => just(x + 1), lst) as MaybeBox<ListBox<number>>
         caseMaybe(t, res, (lst: ListBox<number>) => t.same(toArray(lst), [2, 3]))
 
-        const res2 = traversable.mapM(
-            maybeMonad,
-            (_: number) => nothing<number>(),
-            lst,
-        ) as MaybeBox<ListBox<number>>
+        const res2 = traversable.mapM(maybeMonad, (_: number) => nothing<number>(), lst) as MaybeBox<ListBox<number>>
         $case<void, void>({
             nothing: () => t.pass(''),
             just: () => t.fail('expected nothing'),
@@ -57,16 +47,14 @@ tap.test('List traversable', async (t) => {
     })
 
     t.test('sequenceA = traverse id', async (t) => {
-          const tfa = listOf(just(1), just(2))
-          const seq = traversable.sequenceA(maybeApplicative, tfa) as MaybeBox<ListBox<number>>
-          const trav = traversable.traverse(
-              maybeApplicative,
-              (x: MaybeBox<number>) => x,
-              tfa,
-          ) as MaybeBox<ListBox<number>>
-          caseMaybe(t, seq, (lst1: ListBox<number>) =>
-              caseMaybe(t, trav, (lst2: ListBox<number>) => t.same(toArray(lst1), toArray(lst2))),
-          )
+        const tfa = listOf(just(1), just(2))
+        const seq = traversable.sequenceA(maybeApplicative, tfa) as MaybeBox<ListBox<number>>
+        const trav = traversable.traverse(maybeApplicative, (x: MaybeBox<number>) => x, tfa) as MaybeBox<
+            ListBox<number>
+        >
+        caseMaybe(t, seq, (lst1: ListBox<number>) =>
+            caseMaybe(t, trav, (lst2: ListBox<number>) => t.same(toArray(lst1), toArray(lst2))),
+        )
     })
 
     t.test('sequence', async (t) => {

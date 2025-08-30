@@ -4,12 +4,7 @@ import { applicative as createApplicative } from 'control/reader/applicative'
 import { reader, ReaderBox } from 'control/reader/reader'
 import { $case as maybeCase, just, nothing, MaybeBox } from 'ghc/base/maybe/maybe'
 import { applicative as maybeApplicative } from 'ghc/base/maybe/applicative'
-import {
-    $case as eitherCase,
-    left,
-    right,
-    EitherBox,
-} from 'data/either/either'
+import { $case as eitherCase, left, right, EitherBox } from 'data/either/either'
 import { applicative as eitherApplicative } from 'data/either/applicative'
 import { tuple2, snd, Tuple2Box, UnitBox, unit } from 'ghc/base/tuple/tuple'
 import { applicative as tupleApplicative } from 'ghc/base/tuple/tuple2-applicative'
@@ -38,7 +33,10 @@ tap.test('Reader applicative', async (t) => {
     })
 
     t.test('liftA2', async (t) => {
-        const app = (x: number) => (y: number): number => x + y
+        const app =
+            (x: number) =>
+            (y: number): number =>
+                x + y
         const r1 = reader((env: string) => env.length)
         const r2 = reader((env: string) => env.length * 2)
 
@@ -83,21 +81,12 @@ tap.test('Reader applicative', async (t) => {
     })
 
     t.test('Applicative with Maybe', async (t) => {
-        const r1 = reader((env: string) =>
-            env.length > 0 ? just(env.length) : nothing<number>(),
-        )
-        const r2 = reader((env: string) =>
-            env.includes('!') ? just(env.length) : nothing<number>(),
-        )
+        const r1 = reader((env: string) => (env.length > 0 ? just(env.length) : nothing<number>()))
+        const r2 = reader((env: string) => (env.includes('!') ? just(env.length) : nothing<number>()))
 
         const result = applicative.liftA2(
-            (m1: MaybeBox<number>) =>
-            (m2: MaybeBox<number>) =>
-                maybeApplicative.liftA2(
-                    (x: number) => (y: number) => x + y,
-                    m1,
-                    m2,
-                ),
+            (m1: MaybeBox<number>) => (m2: MaybeBox<number>) =>
+                maybeApplicative.liftA2((x: number) => (y: number) => x + y, m1, m2),
             r1,
             r2,
         )
@@ -114,25 +103,16 @@ tap.test('Reader applicative', async (t) => {
 
     t.test('Applicative with Either', async (t) => {
         const r1 = reader((env: string) =>
-            env.length > 0
-                ? right<string, number>(env.length)
-                : left<string, number>('empty'),
+            env.length > 0 ? right<string, number>(env.length) : left<string, number>('empty'),
         )
         const r2 = reader((env: string) =>
-            env.includes('!')
-                ? right<string, number>(env.length)
-                : left<string, number>('no bang'),
+            env.includes('!') ? right<string, number>(env.length) : left<string, number>('no bang'),
         )
 
         const eitherApp = eitherApplicative<string>()
         const result = applicative.liftA2(
-            (e1: EitherBox<string, number>) =>
-            (e2: EitherBox<string, number>) =>
-                eitherApp.liftA2(
-                    (x: number) => (y: number) => x + y,
-                    e1,
-                    e2,
-                ),
+            (e1: EitherBox<string, number>) => (e2: EitherBox<string, number>) =>
+                eitherApp.liftA2((x: number) => (y: number) => x + y, e1, e2),
             r1,
             r2,
         )
@@ -155,13 +135,8 @@ tap.test('Reader applicative', async (t) => {
         const r2 = reader((env: string) => tuple2(unit(), env.length * 2))
 
         const result = applicative.liftA2(
-            (t1: Tuple2Box<UnitBox, number>) =>
-            (t2: Tuple2Box<UnitBox, number>) =>
-                tupleApp.liftA2(
-                    (x: number) => (y: number) => x + y,
-                    t1,
-                    t2,
-                ),
+            (t1: Tuple2Box<UnitBox, number>) => (t2: Tuple2Box<UnitBox, number>) =>
+                tupleApp.liftA2((x: number) => (y: number) => x + y, t1, t2),
             r1,
             r2,
         )
@@ -175,13 +150,8 @@ tap.test('Reader applicative', async (t) => {
         const r2 = reader((env: string) => Promise.resolve(env.length * 2) as PromiseBox<number>)
 
         const result = applicative.liftA2(
-            (p1: PromiseBox<number>) =>
-            (p2: PromiseBox<number>) =>
-                promiseApplicative.liftA2(
-                    (x: number) => (y: number) => x + y,
-                    p1,
-                    p2,
-                ),
+            (p1: PromiseBox<number>) => (p2: PromiseBox<number>) =>
+                promiseApplicative.liftA2((x: number) => (y: number) => x + y, p1, p2),
             r1,
             r2,
         )
@@ -236,4 +206,3 @@ tap.test('Reader applicative', async (t) => {
         t.equal(run(right, 'abc'), 12)
     })
 })
-

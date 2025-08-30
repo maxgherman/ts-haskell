@@ -14,11 +14,9 @@ const caseMaybe = <A>(t: Test, mb: MaybeBox<A>, onJust: (a: A) => void) =>
 tap.test('Writer traversable', async (t) => {
     t.test('traverse', async (t) => {
         const w = writer((): Tuple2Box<number, string> => tuple2(3, 'log'))
-        const res = traversable<string>().traverse(
-            maybeApplicative,
-            (x: number) => just(x + 1),
-            w,
-        ) as MaybeBox<WriterBox<string, number>>
+        const res = traversable<string>().traverse(maybeApplicative, (x: number) => just(x + 1), w) as MaybeBox<
+            WriterBox<string, number>
+        >
         caseMaybe(t, res, (ww) => t.same(ww.runWriter(), [4, 'log']))
 
         const res2 = traversable<string>().traverse(maybeApplicative, (_: number) => nothing<number>(), w)
@@ -29,11 +27,9 @@ tap.test('Writer traversable', async (t) => {
 
     t.test('mapM', async (t) => {
         const w = writer((): Tuple2Box<number, string> => tuple2(3, 'log'))
-        const res = traversable<string>().mapM(
-            maybeMonad,
-            (x: number) => just(x + 1),
-            w,
-        ) as MaybeBox<WriterBox<string, number>>
+        const res = traversable<string>().mapM(maybeMonad, (x: number) => just(x + 1), w) as MaybeBox<
+            WriterBox<string, number>
+        >
         caseMaybe(t, res, (ww) => t.same(ww.runWriter(), [4, 'log']))
 
         const res2 = traversable<string>().mapM(maybeMonad, (_: number) => nothing<number>(), w)

@@ -8,8 +8,14 @@ tap.test('Writer foldable', (t) => {
     const w = writer(() => tuple2(5, 'log'))
 
     const fb = foldable<string>()
-    t.equal(fb.foldr((x: number, acc: number) => x + acc, 0, w), 5)
-    t.equal(fb.foldl((acc: number, x: number) => acc + x, 0, w), 5)
+    t.equal(
+        fb.foldr((x: number, acc: number) => x + acc, 0, w),
+        5,
+    )
+    t.equal(
+        fb.foldl((acc: number, x: number) => acc + x, 0, w),
+        5,
+    )
     t.same(toArray(fb.toList(w)), [5])
     t.equal(fb.length(w), 1)
     t.notOk(fb.null(w))

@@ -21,14 +21,8 @@ const valueSemigroup = createListSemigroup<number>()
 const logSemigroup = createListSemigroup<string>()
 const semigroup = createWriterSemigroup<ListBox<string>, ListBox<number>>(logSemigroup, valueSemigroup)
 
-const createWriter = (
-    values: number[],
-    logs: string[],
-): WriterMinBox<ListBox<string>, ListBox<number>> =>
-    writer(() => tuple2(createList(values), createList(logs))) as WriterMinBox<
-        ListBox<string>,
-        ListBox<number>
-    >
+const createWriter = (values: number[], logs: string[]): WriterMinBox<ListBox<string>, ListBox<number>> =>
+    writer(() => tuple2(createList(values), createList(logs))) as WriterMinBox<ListBox<string>, ListBox<number>>
 
 tap.test('WriterSemigroup', async (t) => {
     t.test('<>', async (t) => {
@@ -70,14 +64,8 @@ tap.test('WriterSemigroup', async (t) => {
         const w1 = createWriter([1], ['a'])
         const w2 = createWriter([2], ['b'])
         const w3 = createWriter([3], ['c'])
-        const left = semigroup['<>'](semigroup['<>'](w1, w2), w3) as WriterMinBox<
-            ListBox<string>,
-            ListBox<number>
-        >
-        const right = semigroup['<>'](w1, semigroup['<>'](w2, w3)) as WriterMinBox<
-            ListBox<string>,
-            ListBox<number>
-        >
+        const left = semigroup['<>'](semigroup['<>'](w1, w2), w3) as WriterMinBox<ListBox<string>, ListBox<number>>
+        const right = semigroup['<>'](w1, semigroup['<>'](w2, w3)) as WriterMinBox<ListBox<string>, ListBox<number>>
         const [lv, ll] = runWriter(left)
         const [rv, rl] = runWriter(right)
         t.same(toArray(lv as ListBox<number>), toArray(rv as ListBox<number>))
@@ -92,17 +80,16 @@ tap.test('WriterSemigroup Maybe', async (t) => {
         maybeValueSemigroup,
     )
 
-    const w1 = writer(() =>
-        tuple2(just(createList([1])), createList(['a']))
-    ) as WriterMinBox<ListBox<string>, MaybeBox<ListBox<number>>>
-    const w2 = writer(() =>
-        tuple2(nothing<ListBox<number>>(), createList(['b']))
-    ) as WriterMinBox<ListBox<string>, MaybeBox<ListBox<number>>>
-
-    const result = maybeSemigroup['<>'](w1, w2) as WriterMinBox<
+    const w1 = writer(() => tuple2(just(createList([1])), createList(['a']))) as WriterMinBox<
         ListBox<string>,
         MaybeBox<ListBox<number>>
     >
+    const w2 = writer(() => tuple2(nothing<ListBox<number>>(), createList(['b']))) as WriterMinBox<
+        ListBox<string>,
+        MaybeBox<ListBox<number>>
+    >
+
+    const result = maybeSemigroup['<>'](w1, w2) as WriterMinBox<ListBox<string>, MaybeBox<ListBox<number>>>
     const [v, l] = runWriter(result)
 
     maybeCase({
@@ -120,17 +107,16 @@ tap.test('WriterSemigroup Either', async (t) => {
         eitherValueSemigroup,
     )
 
-    const w1 = writer(() =>
-        tuple2(right<Error, string>('ok'), createList(['a']))
-    ) as WriterMinBox<ListBox<string>, EitherBox<Error, string>>
-    const w2 = writer(() =>
-        tuple2(left<Error, string>(new Error('fail')), createList(['b']))
-    ) as WriterMinBox<ListBox<string>, EitherBox<Error, string>>
-
-    const result = eitherSemigroup['<>'](w1, w2) as WriterMinBox<
+    const w1 = writer(() => tuple2(right<Error, string>('ok'), createList(['a']))) as WriterMinBox<
         ListBox<string>,
         EitherBox<Error, string>
     >
+    const w2 = writer(() => tuple2(left<Error, string>(new Error('fail')), createList(['b']))) as WriterMinBox<
+        ListBox<string>,
+        EitherBox<Error, string>
+    >
+
+    const result = eitherSemigroup['<>'](w1, w2) as WriterMinBox<ListBox<string>, EitherBox<Error, string>>
     const [v, l] = runWriter(result)
 
     eitherCase({
@@ -143,17 +129,19 @@ tap.test('WriterSemigroup Either', async (t) => {
 
 tap.test('WriterSemigroup Tuple', async (t) => {
     const tupleValueSemigroup = createTupleSemigroup<ListBox<number>, ListBox<number>>(valueSemigroup, valueSemigroup)
-    const tupleSemigroup = createWriterSemigroup<
+    const tupleSemigroup = createWriterSemigroup<ListBox<string>, TupleMinBox<ListBox<number>, ListBox<number>>>(
+        logSemigroup,
+        tupleValueSemigroup,
+    )
+
+    const w1 = writer(() => tuple2(tuple2(createList([1]), createList([2])), createList(['a']))) as WriterMinBox<
         ListBox<string>,
         TupleMinBox<ListBox<number>, ListBox<number>>
-    >(logSemigroup, tupleValueSemigroup)
-
-    const w1 = writer(() =>
-        tuple2(tuple2(createList([1]), createList([2])), createList(['a']))
-    ) as WriterMinBox<ListBox<string>, TupleMinBox<ListBox<number>, ListBox<number>>>
-    const w2 = writer(() =>
-        tuple2(tuple2(createList([3]), createList([4])), createList(['b']))
-    ) as WriterMinBox<ListBox<string>, TupleMinBox<ListBox<number>, ListBox<number>>>
+    >
+    const w2 = writer(() => tuple2(tuple2(createList([3]), createList([4])), createList(['b']))) as WriterMinBox<
+        ListBox<string>,
+        TupleMinBox<ListBox<number>, ListBox<number>>
+    >
 
     const result = tupleSemigroup['<>'](w1, w2) as WriterMinBox<
         ListBox<string>,
@@ -161,14 +149,8 @@ tap.test('WriterSemigroup Tuple', async (t) => {
     >
     const [v, l] = runWriter(result)
 
-    t.same(
-        toArray(fst(v as TupleMinBox<ListBox<number>, ListBox<number>>) as ListBox<number>),
-        [1, 3],
-    )
-    t.same(
-        toArray(snd(v as TupleMinBox<ListBox<number>, ListBox<number>>) as ListBox<number>),
-        [2, 4],
-    )
+    t.same(toArray(fst(v as TupleMinBox<ListBox<number>, ListBox<number>>) as ListBox<number>), [1, 3])
+    t.same(toArray(snd(v as TupleMinBox<ListBox<number>, ListBox<number>>) as ListBox<number>), [2, 4])
     t.same(toArray(l as ListBox<string>), ['a', 'b'])
 })
 
@@ -181,23 +163,16 @@ tap.test('WriterSemigroup Promise', async (t) => {
 
     const createPromiseWriter = (values: number[], logs: string[]) =>
         writer(() =>
-            tuple2(
-                Promise.resolve(createList(values)) as PromiseBox<ListBox<number>>,
-                createList(logs),
-            ),
+            tuple2(Promise.resolve(createList(values)) as PromiseBox<ListBox<number>>, createList(logs)),
         ) as WriterMinBox<ListBox<string>, PromiseBox<ListBox<number>>>
 
     const w1 = createPromiseWriter([1], ['a'])
     const w2 = createPromiseWriter([2, 3], ['b'])
 
-    const result = promiseSemigroup['<>'](w1, w2) as WriterMinBox<
-        ListBox<string>,
-        PromiseBox<ListBox<number>>
-    >
+    const result = promiseSemigroup['<>'](w1, w2) as WriterMinBox<ListBox<string>, PromiseBox<ListBox<number>>>
     const [v, l] = runWriter(result)
 
     const array = await (v as PromiseBox<ListBox<number>>)
     t.same(toArray(array), [1, 2, 3])
     t.same(toArray(l as ListBox<string>), ['a', 'b'])
 })
-

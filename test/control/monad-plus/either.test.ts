@@ -65,4 +65,3 @@ tap.test('Either MonadPlus', async (t) => {
         t.same(toArray(getLeft(bad) as ListBox<string>), [])
     })
 })
-

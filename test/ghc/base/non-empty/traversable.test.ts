@@ -7,8 +7,7 @@ import { just, nothing, $case, MaybeBox } from 'ghc/base/maybe/maybe'
 import { cons as listCons, nil as listNil, toArray } from 'ghc/base/list/list'
 import { formList, NonEmptyBox, toList } from 'ghc/base/non-empty/list'
 
-const listOf = <A>(...xs: NonNullable<A>[]) =>
-    xs.reduceRight((acc, x) => listCons(x)(acc), listNil<A>())
+const listOf = <A>(...xs: NonNullable<A>[]) => xs.reduceRight((acc, x) => listCons(x)(acc), listNil<A>())
 
 const caseMaybe = <A>(t: Test, mb: MaybeBox<A>, onJust: (a: A) => void) =>
     $case<A, void>({ nothing: () => t.fail('expected just'), just: onJust })(mb)
@@ -29,11 +28,9 @@ tap.test('NonEmpty traversable', async (t) => {
 
     t.test('traverse', async (t) => {
         const ne = formList(listOf(1, 2)) as NonEmptyBox<number>
-        const res = traversable.traverse(
-            maybeApplicative,
-            (x: number) => just(x + 1),
-            ne,
-        ) as MaybeBox<NonEmptyBox<number>>
+        const res = traversable.traverse(maybeApplicative, (x: number) => just(x + 1), ne) as MaybeBox<
+            NonEmptyBox<number>
+        >
         caseMaybe(t, res, (ne2: NonEmptyBox<number>) => t.same(toArray(toList(ne2)), [2, 3]))
 
         const res2 = traversable.traverse(
@@ -49,11 +46,7 @@ tap.test('NonEmpty traversable', async (t) => {
 
     t.test('mapM', async (t) => {
         const ne = formList(listOf(1, 2)) as NonEmptyBox<number>
-        const res = traversable.mapM(
-            maybeMonad,
-            (x: number) => just(x + 1),
-            ne,
-        ) as MaybeBox<NonEmptyBox<number>>
+        const res = traversable.mapM(maybeMonad, (x: number) => just(x + 1), ne) as MaybeBox<NonEmptyBox<number>>
         caseMaybe(t, res, (ne2: NonEmptyBox<number>) => t.same(toArray(toList(ne2)), [2, 3]))
 
         const res2 = traversable.mapM(

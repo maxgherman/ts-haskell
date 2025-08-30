@@ -19,14 +19,8 @@ const valueMonoid = createListMonoid<number>()
 const logMonoid = createListMonoid<string>()
 const writerMonoid = createWriterMonoid<ListBox<string>, ListBox<number>>(logMonoid, valueMonoid)
 
-const createWriter = (
-    values: number[],
-    logs: string[],
-): WriterMinBox<ListBox<string>, ListBox<number>> =>
-    writer(() => tuple2(createList(values), createList(logs))) as WriterMinBox<
-        ListBox<string>,
-        ListBox<number>
-    >
+const createWriter = (values: number[], logs: string[]): WriterMinBox<ListBox<string>, ListBox<number>> =>
+    writer(() => tuple2(createList(values), createList(logs))) as WriterMinBox<ListBox<string>, ListBox<number>>
 
 tap.test('WriterMonoid List', async (t) => {
     t.test('mempty', async (t) => {
@@ -38,10 +32,7 @@ tap.test('WriterMonoid List', async (t) => {
     t.test('<>', async (t) => {
         const w1 = createWriter([1, 2], ['a'])
         const w2 = createWriter([3], ['b', 'c'])
-        const result = writerMonoid['<>'](w1, w2) as WriterMinBox<
-            ListBox<string>,
-            ListBox<number>
-        >
+        const result = writerMonoid['<>'](w1, w2) as WriterMinBox<ListBox<string>, ListBox<number>>
         const [v, l] = runWriter(result)
         t.same(toArray(v as ListBox<number>), [1, 2, 3])
         t.same(toArray(l as ListBox<string>), ['a', 'b', 'c'])
@@ -50,10 +41,7 @@ tap.test('WriterMonoid List', async (t) => {
     t.test('mappend', async (t) => {
         const w1 = createWriter([1], ['a'])
         const w2 = createWriter([2], ['b'])
-        const result = writerMonoid.mappend(w1, w2) as WriterMinBox<
-            ListBox<string>,
-            ListBox<number>
-        >
+        const result = writerMonoid.mappend(w1, w2) as WriterMinBox<ListBox<string>, ListBox<number>>
         const [v, l] = runWriter(result)
         t.same(toArray(v as ListBox<number>), [1, 2])
         t.same(toArray(l as ListBox<string>), ['a', 'b'])
@@ -63,17 +51,8 @@ tap.test('WriterMonoid List', async (t) => {
         const w1 = createWriter([1], ['a'])
         const w2 = createWriter([2], ['b'])
         const w3 = createWriter([3], ['c'])
-        const list = cons(w1)(
-            cons(w2)(
-                cons(w3)(
-                    nil() as List<WriterMinBox<ListBox<string>, ListBox<number>>>,
-                ),
-            ),
-        )
-        const result = writerMonoid.mconcat(list) as WriterMinBox<
-            ListBox<string>,
-            ListBox<number>
-        >
+        const list = cons(w1)(cons(w2)(cons(w3)(nil() as List<WriterMinBox<ListBox<string>, ListBox<number>>>)))
+        const result = writerMonoid.mconcat(list) as WriterMinBox<ListBox<string>, ListBox<number>>
         const [v, l] = runWriter(result)
         t.same(toArray(v as ListBox<number>), [1, 2, 3])
         t.same(toArray(l as ListBox<string>), ['a', 'b', 'c'])
@@ -99,10 +78,7 @@ tap.test('WriterMonoid List', async (t) => {
 
     t.test('Monoid law - right identity', async (t) => {
         const w = createWriter([1], ['a'])
-        const result = writerMonoid['<>'](w, writerMonoid.mempty) as WriterMinBox<
-            ListBox<string>,
-            ListBox<number>
-        >
+        const result = writerMonoid['<>'](w, writerMonoid.mempty) as WriterMinBox<ListBox<string>, ListBox<number>>
         const [rv, rl] = runWriter(result)
         const [wv, wl] = runWriter(w)
         t.same(toArray(rv as ListBox<number>), toArray(wv as ListBox<number>))
@@ -111,10 +87,7 @@ tap.test('WriterMonoid List', async (t) => {
 
     t.test('Monoid law - left identity', async (t) => {
         const w = createWriter([1], ['a'])
-        const result = writerMonoid['<>'](writerMonoid.mempty, w) as WriterMinBox<
-            ListBox<string>,
-            ListBox<number>
-        >
+        const result = writerMonoid['<>'](writerMonoid.mempty, w) as WriterMinBox<ListBox<string>, ListBox<number>>
         const [rv, rl] = runWriter(result)
         const [wv, wl] = runWriter(w)
         t.same(toArray(rv as ListBox<number>), toArray(wv as ListBox<number>))
@@ -129,17 +102,16 @@ tap.test('WriterMonoid Maybe', async (t) => {
         maybeValueMonoid,
     )
 
-    const w1 = writer(() =>
-        tuple2(just(createList([1])), createList(['a']))
-    ) as WriterMinBox<ListBox<string>, MaybeBox<ListBox<number>>>
-    const w2 = writer(() =>
-        tuple2(nothing<ListBox<number>>(), createList(['b']))
-    ) as WriterMinBox<ListBox<string>, MaybeBox<ListBox<number>>>
-
-    const result = maybeWriterMonoid['<>'](w1, w2) as WriterMinBox<
+    const w1 = writer(() => tuple2(just(createList([1])), createList(['a']))) as WriterMinBox<
         ListBox<string>,
         MaybeBox<ListBox<number>>
     >
+    const w2 = writer(() => tuple2(nothing<ListBox<number>>(), createList(['b']))) as WriterMinBox<
+        ListBox<string>,
+        MaybeBox<ListBox<number>>
+    >
+
+    const result = maybeWriterMonoid['<>'](w1, w2) as WriterMinBox<ListBox<string>, MaybeBox<ListBox<number>>>
     const [v, l] = runWriter(result)
     maybeCase({
         nothing: () => t.fail('expected Just'),
@@ -155,17 +127,16 @@ tap.test('WriterMonoid Either', async (t) => {
         eitherValueMonoid,
     )
 
-    const w1 = writer(() =>
-        tuple2(right<ListBox<number>, string>('ok'), createList(['a']))
-    ) as WriterMinBox<ListBox<string>, EitherBox<ListBox<number>, string>>
-    const w2 = writer(() =>
-        tuple2(left<ListBox<number>, string>(createList([1])), createList(['b']))
-    ) as WriterMinBox<ListBox<string>, EitherBox<ListBox<number>, string>>
-
-    const result = eitherWriterMonoid['<>'](w1, w2) as WriterMinBox<
+    const w1 = writer(() => tuple2(right<ListBox<number>, string>('ok'), createList(['a']))) as WriterMinBox<
         ListBox<string>,
         EitherBox<ListBox<number>, string>
     >
+    const w2 = writer(() => tuple2(left<ListBox<number>, string>(createList([1])), createList(['b']))) as WriterMinBox<
+        ListBox<string>,
+        EitherBox<ListBox<number>, string>
+    >
+
+    const result = eitherWriterMonoid['<>'](w1, w2) as WriterMinBox<ListBox<string>, EitherBox<ListBox<number>, string>>
     const [v, l] = runWriter(result)
     eitherCase({
         left: () => t.fail('expected Right'),
@@ -176,17 +147,19 @@ tap.test('WriterMonoid Either', async (t) => {
 
 tap.test('WriterMonoid Tuple', async (t) => {
     const tupleValueMonoid = createTupleMonoid<ListBox<number>, ListBox<number>>(valueMonoid, valueMonoid)
-    const tupleWriterMonoid = createWriterMonoid<
+    const tupleWriterMonoid = createWriterMonoid<ListBox<string>, TupleMinBox<ListBox<number>, ListBox<number>>>(
+        logMonoid,
+        tupleValueMonoid,
+    )
+
+    const w1 = writer(() => tuple2(tuple2(createList([1]), createList([2])), createList(['a']))) as WriterMinBox<
         ListBox<string>,
         TupleMinBox<ListBox<number>, ListBox<number>>
-    >(logMonoid, tupleValueMonoid)
-
-    const w1 = writer(() =>
-        tuple2(tuple2(createList([1]), createList([2])), createList(['a']))
-    ) as WriterMinBox<ListBox<string>, TupleMinBox<ListBox<number>, ListBox<number>>>
-    const w2 = writer(() =>
-        tuple2(tuple2(createList([3]), createList([4])), createList(['b']))
-    ) as WriterMinBox<ListBox<string>, TupleMinBox<ListBox<number>, ListBox<number>>>
+    >
+    const w2 = writer(() => tuple2(tuple2(createList([3]), createList([4])), createList(['b']))) as WriterMinBox<
+        ListBox<string>,
+        TupleMinBox<ListBox<number>, ListBox<number>>
+    >
 
     const result = tupleWriterMonoid['<>'](w1, w2) as WriterMinBox<
         ListBox<string>,
@@ -207,22 +180,15 @@ tap.test('WriterMonoid Promise', async (t) => {
 
     const createPromiseWriter = (values: number[], logs: string[]) =>
         writer(() =>
-            tuple2(
-                Promise.resolve(createList(values)) as PromiseBox<ListBox<number>>,
-                createList(logs),
-            ),
+            tuple2(Promise.resolve(createList(values)) as PromiseBox<ListBox<number>>, createList(logs)),
         ) as WriterMinBox<ListBox<string>, PromiseBox<ListBox<number>>>
 
     const w1 = createPromiseWriter([1], ['a'])
     const w2 = createPromiseWriter([2, 3], ['b'])
 
-    const result = promiseWriterMonoid['<>'](w1, w2) as WriterMinBox<
-        ListBox<string>,
-        PromiseBox<ListBox<number>>
-    >
+    const result = promiseWriterMonoid['<>'](w1, w2) as WriterMinBox<ListBox<string>, PromiseBox<ListBox<number>>>
     const [v, l] = runWriter(result)
     const array = await (v as PromiseBox<ListBox<number>>)
     t.same(toArray(array), [1, 2, 3])
     t.same(toArray(l as ListBox<string>), ['a', 'b'])
 })
-

@@ -34,12 +34,7 @@ tap.test('Tuple2 ComonadApply', async (t) => {
         const wa = tuple2('ctx' as unknown as MinBox0<string>, 1)
         const wb = tuple2('ctx2' as unknown as MinBox0<string>, 2)
         const wc = tuple2('ctx3' as unknown as MinBox0<string>, 3)
-        const result = ca.liftW3(
-            (a: number) => (b: number) => (c: number) => a + b + c,
-            wa,
-            wb,
-            wc,
-        )
+        const result = ca.liftW3((a: number) => (b: number) => (c: number) => a + b + c, wa, wb, wc)
         t.equal(fst(result), 'ctx')
         t.equal(snd(result), 6)
     })

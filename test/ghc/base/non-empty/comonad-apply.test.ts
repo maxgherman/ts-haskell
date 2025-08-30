@@ -5,17 +5,14 @@ import { cons as listCons, ListBox, nil, toArray } from 'ghc/base/list/list'
 
 const ca = comonadApply
 
-const createList = (value: any[]): ListBox<any> => value.reduceRight((acc, curr) => listCons(curr)(acc), nil())
+const createList = <T>(value: NonNullable<T>[]): ListBox<T> =>
+    value.reduceRight((acc, curr) => listCons(curr)(acc), nil<T>())
 
-const createNonEmpty = <T>(value: T[]): NonEmptyBox<T> => formList(createList(value))
+const createNonEmpty = <T>(value: NonNullable<T>[]): NonEmptyBox<T> => formList(createList(value))
 
 tap.test('NonEmpty ComonadApply', async (t) => {
     t.test('<@>', async (t) => {
-        const wf = createNonEmpty<(_: number) => number>([
-            (x) => x + 1,
-            (x) => x + 2,
-            (x) => x + 3,
-        ])
+        const wf = createNonEmpty<(_: number) => number>([(x) => x + 1, (x) => x + 2, (x) => x + 3])
         const wa = createNonEmpty([1, 2, 3])
         const result = ca['<@>'](wf, wa)
         t.same(toArray(toList(result)), [2, 4, 6])
@@ -23,11 +20,7 @@ tap.test('NonEmpty ComonadApply', async (t) => {
 
     t.test('<@@>', async (t) => {
         const wa = createNonEmpty([1, 2, 3])
-        const wf = createNonEmpty<(_: number) => number>([
-            (x) => x + 1,
-            (x) => x + 2,
-            (x) => x + 3,
-        ])
+        const wf = createNonEmpty<(_: number) => number>([(x) => x + 1, (x) => x + 2, (x) => x + 3])
         const result = ca['<@@>'](wa, wf)
         t.same(toArray(toList(result)), [2, 4, 6])
     })
@@ -43,12 +36,7 @@ tap.test('NonEmpty ComonadApply', async (t) => {
         const wa = createNonEmpty([1, 2, 3])
         const wb = createNonEmpty([4, 5, 6])
         const wc = createNonEmpty([7, 8, 9])
-        const result = ca.liftW3(
-            (a: number) => (b: number) => (c: number) => a + b + c,
-            wa,
-            wb,
-            wc,
-        )
+        const result = ca.liftW3((a: number) => (b: number) => (c: number) => a + b + c, wa, wb, wc)
         t.same(toArray(toList(result)), [12, 15, 18])
     })
 })

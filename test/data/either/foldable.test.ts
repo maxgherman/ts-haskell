@@ -8,8 +8,14 @@ tap.test('Either foldable', (t) => {
     const eRight = right<string, number>(2)
     const eLeft = left<string, number>('err')
 
-    t.equal(fb.foldr((x: number, acc: number) => x + acc, 0, eRight), 2)
-    t.equal(fb.foldr((x: number, acc: number) => x + acc, 0, eLeft), 0)
+    t.equal(
+        fb.foldr((x: number, acc: number) => x + acc, 0, eRight),
+        2,
+    )
+    t.equal(
+        fb.foldr((x: number, acc: number) => x + acc, 0, eLeft),
+        0,
+    )
 
     t.same(toArray(fb.toList(eRight)), [2])
     t.same(toArray(fb.toList(eLeft)), [])

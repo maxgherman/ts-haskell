@@ -69,8 +69,7 @@ tap.test('Promise monad', async (t) => {
             const value1 = yield Promise.resolve(3) as PromiseBox<number>
             const value2 = yield Promise.resolve(5) as PromiseBox<number>
             return value1 + value2
-        },
-        monad)
+        }, monad)
 
         t.equal(result, 8)
     })

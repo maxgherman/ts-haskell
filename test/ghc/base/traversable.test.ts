@@ -11,7 +11,7 @@ import { just, nothing, $case, MaybeBox } from 'ghc/base/maybe/maybe'
 
 tap.test('traversable', async () => {
     tap.test('kindOf', async (t) => {
-        const kind = kindOf({} as Traversable) as Function
+        const kind = kindOf({} as Traversable) as (_: (_: '*') => '*') => 'Constraint'
         const result = kind({} as (_: '*') => '*')
         t.equal(result, 'Constraint')
     })
@@ -45,18 +45,10 @@ tap.test('traversable', async () => {
         const tOnlyTraverse = createTraversable(base, listFunctor, listFoldable)
 
         const lst = listOf(1, 2)
-        const res = tOnlyTraverse.mapM(
-            maybeMonad,
-            (x: number) => just(x + 1),
-            lst,
-        ) as MaybeBox<ListBox<number>>
+        const res = tOnlyTraverse.mapM(maybeMonad, (x: number) => just(x + 1), lst) as MaybeBox<ListBox<number>>
         caseMaybe(t, res, (lst: ListBox<number>) => t.same(toArray(lst), [2, 3]))
 
-        const res2 = tOnlyTraverse.mapM(
-            maybeMonad,
-            (_: number) => nothing<number>(),
-            lst,
-        ) as MaybeBox<ListBox<number>>
+        const res2 = tOnlyTraverse.mapM(maybeMonad, (_: number) => nothing<number>(), lst) as MaybeBox<ListBox<number>>
         $case<void, void>({
             nothing: () => t.pass(''),
             just: () => t.fail('expected nothing'),

@@ -20,16 +20,38 @@ const listMon = listMonoid<number>()
 
 tap.test('Foldable base', (t) => {
     const lst = listOf(1, 2, 3)
-    t.equal(fold.foldr((x: number, acc: number) => x + acc, 0, lst), 6)
-    t.equal(fold.foldl((acc: number, x: number) => acc + x, 0, lst), 6)
-    t.equal(fold.foldr1((a: number, b: number) => a + b, lst), 6)
-    t.equal(fold.foldl1((a: number, b: number) => a + b, lst), 6)
+    t.equal(
+        fold.foldr((x: number, acc: number) => x + acc, 0, lst),
+        6,
+    )
+    t.equal(
+        fold.foldl((acc: number, x: number) => acc + x, 0, lst),
+        6,
+    )
+    t.equal(
+        fold.foldr1((a: number, b: number) => a + b, lst),
+        6,
+    )
+    t.equal(
+        fold.foldl1((a: number, b: number) => a + b, lst),
+        6,
+    )
     const mapped = fold.foldMap(listMon, (x: number) => cons(x)(nil<number>()), lst) as unknown as ListBox<number>
     t.same(toArray(mapped), [1, 2, 3])
-    const mappedPrime = fold["foldMap'"](listMon, (x: number) => cons(x)(nil<number>()), lst) as unknown as ListBox<number>
+    const mappedPrime = fold["foldMap'"](
+        listMon,
+        (x: number) => cons(x)(nil<number>()),
+        lst,
+    ) as unknown as ListBox<number>
     t.same(toArray(mappedPrime), [1, 2, 3])
-    t.equal(fold["foldr'"]((x: number, acc: number) => x + acc, 0, lst), 6)
-    t.equal(fold["foldl'"]((acc: number, x: number) => acc + x, 0, lst), 6)
+    t.equal(
+        fold["foldr'"]((x: number, acc: number) => x + acc, 0, lst),
+        6,
+    )
+    t.equal(
+        fold["foldl'"]((acc: number, x: number) => acc + x, 0, lst),
+        6,
+    )
     const nested = listOf<ListBox<number>>(listOf(1), listOf(2, 3))
     const folded = fold.fold(listMon, nested) as unknown as ListBox<number>
     t.same(toArray(folded), [1, 2, 3])
@@ -49,7 +71,10 @@ tap.test('Foldable base', (t) => {
     t.equal(fold.sum(nil()), 0)
     t.equal(fold.product(lst), 6)
     t.equal(fold.product(nil()), 1)
-    t.equal(fold.kind((_) => '*'), 'Constraint')
+    t.equal(
+        fold.kind((_) => '*'),
+        'Constraint',
+    )
     t.throws(() => fold.foldr1((a: number, b: number) => a + b, nil()), {
         message: 'foldr1: empty structure',
     })

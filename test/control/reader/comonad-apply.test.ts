@@ -1,6 +1,7 @@
 import tap from 'tap'
 import { comonadApply } from 'control/reader/comonad-apply'
 import { reader } from 'control/reader/reader'
+import type { ReaderBox } from 'control/reader/reader'
 
 const ca = comonadApply<void>()
 
@@ -30,12 +31,7 @@ tap.test('Reader ComonadApply', async (t) => {
         const wa = reader((_: void) => 1)
         const wb = reader((_: void) => 2)
         const wc = reader((_: void) => 3)
-        const result = ca.liftW3(
-            (a: number) => (b: number) => (c: number) => a + b + c,
-            wa,
-            wb,
-            wc,
-        )
+        const result = ca.liftW3((a: number) => (b: number) => (c: number) => a + b + c, wa, wb, wc)
         t.equal(ca.extract(result), 6)
     })
 
@@ -67,9 +63,9 @@ tap.test('Reader ComonadApply', async (t) => {
     })
 
     t.test('kfix', async (t) => {
-        const w = reader((_: void) => (_: unknown) => 5)
-        const result = ca.kfix(w as any)
-        const verify = ca['<@>'](w as any, ca.duplicate(result as any) as any)
-        t.equal(ca.extract(result as any), ca.extract(verify as any))
+        const w = reader((_: void) => (_: ReaderBox<void, number>) => 5)
+        const result = ca.kfix<number>(w)
+        const verify = ca['<@>'](w, ca.duplicate(result))
+        t.equal(ca.extract(result), ca.extract(verify))
     })
 })

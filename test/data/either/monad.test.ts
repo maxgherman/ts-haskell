@@ -109,8 +109,7 @@ tap.test('Either monad', async (t) => {
             const value1 = yield right(3)
             const value2 = yield right(7)
             return value1 + value2
-        },
-        monad)
+        }, monad)
 
         const result2 = doNotation<EitherBox<Error, number>>(function* (): Generator<
             EitherBox<Error, number>,
@@ -120,8 +119,7 @@ tap.test('Either monad', async (t) => {
             const value1 = yield left(new Error('test'))
             const value2 = yield right(3)
             return value1 + value2
-        },
-        monad)
+        }, monad)
 
         t.equal(getValue(result1), 10)
         t.equal((getValue(result2) as Error).message, 'test')

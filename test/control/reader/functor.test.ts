@@ -3,12 +3,7 @@ import { compose, id } from 'ghc/base/functions'
 import { functor as createFunctor } from 'control/reader/functor'
 import { reader, ReaderBox } from 'control/reader/reader'
 import { $case as maybeCase, just, nothing, MaybeBox } from 'ghc/base/maybe/maybe'
-import {
-    $case as eitherCase,
-    left,
-    right,
-    EitherBox,
-} from 'data/either/either'
+import { $case as eitherCase, left, right, EitherBox } from 'data/either/either'
 import { fst, snd, tuple2, Tuple2Box } from 'ghc/base/tuple/tuple'
 import { PromiseBox } from 'extra/promise/promise'
 import { functor as promiseFunctor } from 'extra/promise/functor'
@@ -56,9 +51,7 @@ tap.test('ReaderFunctor functor', async (t) => {
     })
 
     t.test('Functor with Maybe', async (t) => {
-        const maybeReader = reader((env: string) =>
-            env.length > 0 ? just(env.length) : nothing<number>(),
-        )
+        const maybeReader = reader((env: string) => (env.length > 0 ? just(env.length) : nothing<number>()))
 
         const result = functor.fmap(
             (m: MaybeBox<number>) =>
@@ -107,8 +100,7 @@ tap.test('ReaderFunctor functor', async (t) => {
         const tupleReader = reader((env: string) => tuple2(env.length, env))
 
         const result = functor.fmap(
-            (p: Tuple2Box<number, string>) =>
-                tuple2(fst(p) + 1, snd(p).toUpperCase()),
+            (p: Tuple2Box<number, string>) => tuple2(fst(p) + 1, snd(p).toUpperCase()),
             tupleReader,
         )
 
@@ -121,8 +113,7 @@ tap.test('ReaderFunctor functor', async (t) => {
         const promiseReader = reader((env: string) => Promise.resolve(env.length) as PromiseBox<number>)
 
         const result = functor.fmap(
-            (p: PromiseBox<number>) =>
-                promiseFunctor.fmap((x: number) => x + 1, p),
+            (p: PromiseBox<number>) => promiseFunctor.fmap((x: number) => x + 1, p),
             promiseReader,
         )
 

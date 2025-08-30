@@ -13,7 +13,7 @@ tap.test('List comprehensions', async (t) => {
         t.same(toArray(result1), [])
         t.same(toArray(result2), [NaN])
     })
-    
+
     t.test('comp finite list', async (t) => {
         const list = compose(cons<number>(1), cons<number>(2), cons(3))(nil())
 
@@ -128,6 +128,6 @@ tap.test('List comprehensions', async (t) => {
 
         const result = comp((x: number) => x + 1, [list])
 
-        t.equal(result.kind('*' as ( "*" & ((_: "*") => "*"))), '*');
+        t.equal(result.kind('*' as '*' & ((_: '*') => '*')), '*')
     })
 })

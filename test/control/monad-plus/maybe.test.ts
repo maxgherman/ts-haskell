@@ -43,4 +43,3 @@ tap.test('Maybe MonadPlus', async (t) => {
         t.equal(getValue(result2), undefined)
     })
 })
-
