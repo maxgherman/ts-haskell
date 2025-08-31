@@ -7,7 +7,7 @@
     "build": "tsc",
     "lint": "eslint --max-warnings=0",
     "lint:fix": "eslint --max-warnings=0  --fix",
-    "test": "tap run --node-arg=\"-r\"  --node-arg=\"tsconfig-paths/register\"",
+    "test": "tap --node-arg=\"-r\"  --node-arg=\"tsconfig-paths/register\"",
     "coverage:html": "tap report html"
   },
   "repository": {
