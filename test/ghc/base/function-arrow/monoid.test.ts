@@ -106,4 +106,6 @@ tap.test('FunctionArrowMonoid', async (t) => {
         t.same(toArray(getValue(result1, '123')), [124])
         t.same(toArray(getValue(result2, '123')), [])
     })
+
+    t.end()
 })
