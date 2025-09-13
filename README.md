@@ -72,6 +72,7 @@ npm test
 - [Traversable1](src/data/semigroup/traversable.ts)
 - [Semigroup](src/ghc/base/semigroup.ts)
 - [Monoid](src/ghc/base/monoid.ts)
+  - Data.Monoid: [Sum](src/data/monoid/sum.ts), [Product](src/data/monoid/product.ts), [All](src/data/monoid/all.ts), [Any](src/data/monoid/any.ts), [Dual](src/data/monoid/dual.ts), [Endo](src/data/monoid/endo.ts)
 - [Maybe](src/ghc/base/maybe/maybe.ts) ([Functor](src/ghc/base/maybe/functor.ts), [Apply](src/ghc/base/maybe/apply.ts), [Applicative](src/ghc/base/maybe/applicative.ts), [Alternative](src/ghc/base/maybe/alternative.ts), [Monad](src/ghc/base/maybe/monad.ts), [MonadPlus](src/control/monad-plus/maybe.ts), [Foldable](src/ghc/base/maybe/foldable.ts), [Traversable](src/ghc/base/maybe/traversable.ts))
 - [Either](src/data/either/either.ts) ([Functor](src/data/either/functor.ts), [Apply](src/data/either/apply.ts), [Applicative](src/data/either/applicative.ts), [Alternative](src/data/either/alternative.ts), [Monad](src/data/either/monad.ts), [MonadPlus](src/control/monad-plus/either.ts), [Bifunctor](src/data/either/bifunctor.ts), [Foldable](src/data/either/foldable.ts), [Traversable](src/data/either/traversable.ts))
 - [List](src/ghc/base/list/list.ts) ([Functor](src/ghc/base/list/functor.ts), [Apply](src/ghc/base/list/apply.ts), [Applicative](src/ghc/base/list/applicative.ts), [Alternative](src/ghc/base/list/alternative.ts), [Monad](src/ghc/base/list/monad.ts), [MonadPlus](src/control/monad-plus/list.ts), [Foldable](src/ghc/base/list/foldable.ts), [Traversable](src/ghc/base/list/traversable.ts))
