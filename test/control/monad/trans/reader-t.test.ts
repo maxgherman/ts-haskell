@@ -33,46 +33,46 @@ tap.test('ReaderT Functor laws', async (t) => {
     )
 
     // Composition
-    const f = (n: number) => n + 2
-    const g = (n: number) => n * 3
+    const addTwo = (n: number) => n + 2
+    const timesThree = (n: number) => n * 3
     t.equal(
         fromMaybe(
             run(
-                readerFunctor.fmap((x: number) => f(g(x)), incrementEnv),
+                readerFunctor.fmap((x: number) => addTwo(timesThree(x)), incrementEnv),
                 3,
             ),
         ),
-        fromMaybe(run(readerFunctor.fmap(f, readerFunctor.fmap(g, incrementEnv)), 3)),
+        fromMaybe(run(readerFunctor.fmap(addTwo, readerFunctor.fmap(timesThree, incrementEnv)), 3)),
     )
 })
 
 tap.test('ReaderT Applicative laws/basic', async (t) => {
     const readerApplicative = readerTApplicative<number>(maybeM)
     const plusOne = mkReaderT<number, number>((r) => just(r + 1))
-    const id = (x: number) => x
+    const identity = (x: number) => x
     // Identity: pure id <*> plusOne = plusOne
     t.equal(
-        fromMaybe(run(readerApplicative['<*>'](readerApplicative.pure(id), plusOne), 5)),
+        fromMaybe(run(readerApplicative['<*>'](readerApplicative.pure(identity), plusOne), 5)),
         fromMaybe(run(plusOne, 5)),
     )
 
     // Homomorphism: pure f <*> pure x = pure (f x)
-    const f = (n: number) => n + 10
+    const addTen = (n: number) => n + 10
     t.equal(
-        fromMaybe(run(readerApplicative['<*>'](readerApplicative.pure(f), readerApplicative.pure(1)), 0)),
-        fromMaybe(run(readerApplicative.pure(f(1)), 0)),
+        fromMaybe(run(readerApplicative['<*>'](readerApplicative.pure(addTen), readerApplicative.pure(1)), 0)),
+        fromMaybe(run(readerApplicative.pure(addTen(1)), 0)),
     )
 
     // Interchange: u <*> pure y = pure ($ y) <*> u
-    const u = readerApplicative.pure((n: number) => n * 2)
-    const y = 7
+    const doubleFnReader = readerApplicative.pure((n: number) => n * 2)
+    const yValue = 7
     t.equal(
-        fromMaybe(run(readerApplicative['<*>'](u, readerApplicative.pure(y)), 9)),
+        fromMaybe(run(readerApplicative['<*>'](doubleFnReader, readerApplicative.pure(yValue)), 9)),
         fromMaybe(
             run(
                 readerApplicative['<*>'](
-                    readerApplicative.pure((f: (x: number) => number) => f(y)),
-                    u,
+                    readerApplicative.pure((f: (x: number) => number) => f(yValue)),
+                    doubleFnReader,
                 ),
                 9,
             ),
@@ -81,12 +81,12 @@ tap.test('ReaderT Applicative laws/basic', async (t) => {
 })
 
 tap.test('ReaderT Applicative liftA2', async (t) => {
-    const A = readerTApplicative<number>(maybeM)
-    const ra = mkReaderT<number, number>((r) => just(r + 2))
-    const rb = mkReaderT<number, number>((r) => just(r * 3))
+    const readerApplicative2 = readerTApplicative<number>(maybeM)
+    const plusTwo = mkReaderT<number, number>((r) => just(r + 2))
+    const timesThreeReader = mkReaderT<number, number>((r) => just(r * 3))
     const r = fromMaybe(
         run(
-            A.liftA2((a: number) => (b: number) => a + b, ra, rb),
+            readerApplicative2.liftA2((a: number) => (b: number) => a + b, plusTwo, timesThreeReader),
             4,
         ),
     )
@@ -160,8 +160,8 @@ tap.test('ReaderT run helper and local lift', async (t) => {
 })
 
 tap.test('ReaderT kind function', async (t) => {
-    const x = mkReaderT<number, number>(() => just(1))
-    const kindFn = (x as unknown as { kind: (_: unknown) => (_: unknown) => string }).kind
-    const k = kindFn('*')('*')
-    t.equal(k, '*')
+    const readerForKind = mkReaderT<number, number>(() => just(1))
+    const kindFn = (readerForKind as unknown as { kind: (_: unknown) => (_: unknown) => string }).kind
+    const kindValue = kindFn('*')('*')
+    t.equal(kindValue, '*')
 })

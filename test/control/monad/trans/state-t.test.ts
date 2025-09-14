@@ -22,8 +22,8 @@ const fromMaybe = <A>(ma: MaybeBox<A>): A => $case<A, A>({ just: (x) => x })(ma)
 tap.test('StateT Functor identity', async (t) => {
     const stateFunctor = stateTFunctor<number>(maybeM)
     const plusOneState = mkStateT<number, number>((s) => just(tuple2(s + 1, s)))
-    const id = (n: number) => n
-    t.same(fromMaybe(run(stateFunctor.fmap(id, plusOneState), 3)), fromMaybe(run(plusOneState, 3)))
+    const identity = (n: number) => n
+    t.same(fromMaybe(run(stateFunctor.fmap(identity, plusOneState), 3)), fromMaybe(run(plusOneState, 3)))
 })
 
 tap.test('StateT Applicative apply sequencing', async (t) => {
@@ -75,10 +75,10 @@ tap.test('StateT tuple alias coverage', async (t) => {
 })
 
 tap.test('StateT kind function', async (t) => {
-    const x = mkStateT<number, number>((s) => just(tuple2(s, s)))
-    const kindFn = (x as unknown as { kind: (_: unknown) => (_: unknown) => string }).kind
-    const k = kindFn('*')('*')
-    t.equal(k, '*')
+    const stateForKind = mkStateT<number, number>((s) => just(tuple2(s, s)))
+    const kindFn = (stateForKind as unknown as { kind: (_: unknown) => (_: unknown) => string }).kind
+    const kindValue = kindFn('*')('*')
+    t.equal(kindValue, '*')
 })
 
 tap.test('StateT Monad laws and lift', async (t) => {
