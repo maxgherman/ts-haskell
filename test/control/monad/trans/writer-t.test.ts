@@ -16,45 +16,45 @@ import {
 import { writerT as writerTTrans } from 'control/monad/trans/monad-trans'
 import { tuple2 } from 'ghc/base/tuple/tuple'
 
-const M = maybeMonad
-const W = listMonoid<string>()
+const maybeM = maybeMonad
+const logsMonoid = listMonoid<string>()
 
 const run = <W, A>(wa: WriterTBox<W, A>): MaybeBox<[A, W]> => wa.runWriterT() as MaybeBox<[A, W]>
 const fromMaybe = <A>(ma: MaybeBox<A>): A => $case<A, A>({ just: (x) => x })(ma)
 
 tap.test('WriterT Functor laws', async (t) => {
-    const F = writerTFunctor<ListBox<string>>(M)
-    const x = mkWriterT<ListBox<string>, number>(() => just(tuple2(3, cons<string>('a')(nil<string>()))))
+    const writerFunctor = writerTFunctor<ListBox<string>>(maybeM)
+    const writerThreeA = mkWriterT<ListBox<string>, number>(() => just(tuple2(3, cons<string>('a')(nil<string>()))))
     const id = (n: number) => n
-    t.same(fromMaybe(run(F.fmap(id, x))), fromMaybe(run(x)))
+    t.same(fromMaybe(run(writerFunctor.fmap(id, writerThreeA))), fromMaybe(run(writerThreeA)))
 })
 
 tap.test('WriterT Applicative combine logs', async (t) => {
-    const A = writerTApplicative<ListBox<string>>(M, W)
+    const writerApplicative = writerTApplicative<ListBox<string>>(maybeM, logsMonoid)
     const wf = mkWriterT<ListBox<string>, (x: number) => number>(() =>
         just(tuple2((n: number) => n + 1, cons<string>('f')(nil<string>()))),
     )
     const wa = mkWriterT<ListBox<string>, number>(() => just(tuple2(10, cons<string>('a')(nil<string>()))))
 
-    const applied = A['<*>'](wf, wa)
+    const applied = writerApplicative['<*>'](wf, wa)
     const [v, logs] = fromMaybe(run(applied))
     t.equal(v, 11)
     t.same(toArray(logs), ['f', 'a'])
 })
 
 tap.test('WriterT Applicative liftA2 combine logs', async (t) => {
-    const A = writerTApplicative<ListBox<string>>(M, W)
+    const writerApplicative2 = writerTApplicative<ListBox<string>>(maybeM, logsMonoid)
     const wa = mkWriterT<ListBox<string>, number>(() => just(tuple2(2, cons<string>('a')(nil<string>()))))
     const wb = mkWriterT<ListBox<string>, number>(() => just(tuple2(3, cons<string>('b')(nil<string>()))))
 
-    const combined = A.liftA2((x: number) => (y: number) => x * y, wa, wb)
+    const combined = writerApplicative2.liftA2((x: number) => (y: number) => x * y, wa, wb)
     const [v, logs] = fromMaybe(run(combined))
     t.equal(v, 6)
     t.same(toArray(logs), ['a', 'b'])
 })
 
 tap.test('WriterT local lift function', async (t) => {
-    const lifted = liftLocal<ListBox<string>, number>(M, W, just(77))
+    const lifted = liftLocal<ListBox<string>, number>(maybeM, logsMonoid, just(77))
     const [v, logs] = fromMaybe(run(lifted))
     t.equal(v, 77)
     t.same(toArray(logs), [])
@@ -81,16 +81,16 @@ tap.test('WriterT kind function', async (t) => {
 })
 
 tap.test('WriterT Monad laws and lift', async (t) => {
-    const Wm = writerTMonad<ListBox<string>>(M, W)
-    const T = writerTTrans<ListBox<string>>(M, W)
-    const ret = (a: number) => Wm.return(a)
+    const writerMonad = writerTMonad<ListBox<string>>(maybeM, logsMonoid)
+    const writerTransformer = writerTTrans<ListBox<string>>(maybeM, logsMonoid)
+    const ret = (a: number) => writerMonad.return(a)
     const m = mkWriterT<ListBox<string>, number>(() => just(tuple2(5, cons('x')(nil()))))
     const f = (x: number) => mkWriterT<ListBox<string>, number>(() => just(tuple2(x + 1, cons('f')(nil()))))
     const g = (x: number) => mkWriterT<ListBox<string>, number>(() => just(tuple2(x * 2, cons('g')(nil()))))
 
     // Left identity
     {
-        const [lv, ll] = fromMaybe(run(Wm['>>='](ret(2), f)))
+        const [lv, ll] = fromMaybe(run(writerMonad['>>='](ret(2), f)))
         const [rv, rl] = fromMaybe(run(f(2)))
         t.equal(lv, rv)
         t.same(toArray(ll as ListBox<string>), toArray(rl as ListBox<string>))
@@ -98,7 +98,7 @@ tap.test('WriterT Monad laws and lift', async (t) => {
 
     // Right identity
     {
-        const [lv, ll] = fromMaybe(run(Wm['>>='](m, Wm.return)))
+        const [lv, ll] = fromMaybe(run(writerMonad['>>='](m, writerMonad.return)))
         const [rv, rl] = fromMaybe(run(m))
         t.equal(lv, rv)
         t.same(toArray(ll as ListBox<string>), toArray(rl as ListBox<string>))
@@ -106,27 +106,27 @@ tap.test('WriterT Monad laws and lift', async (t) => {
 
     // Associativity
     {
-        const [lv, ll] = fromMaybe(run(Wm['>>='](Wm['>>='](m, f), g)))
-        const [rv, rl] = fromMaybe(run(Wm['>>='](m, (x: number) => Wm['>>='](f(x), g))))
+        const [lv, ll] = fromMaybe(run(writerMonad['>>='](writerMonad['>>='](m, f), g)))
+        const [rv, rl] = fromMaybe(run(writerMonad['>>='](m, (x: number) => writerMonad['>>='](f(x), g))))
         t.equal(lv, rv)
         t.same(toArray(ll as ListBox<string>), toArray(rl as ListBox<string>))
     }
 
     // lift wraps mempty
-    const lifted = T.lift(just(9))
+    const lifted = writerTransformer.lift(just(9))
     const [v, logs] = fromMaybe(run(lifted))
     t.equal(v, 9)
     t.same(toArray(logs), [])
 })
 
 tap.test('WriterT practical usage: logging', async (t) => {
-    const Wm = writerTMonad<ListBox<string>>(M, W)
+    const writerMonad2 = writerTMonad<ListBox<string>>(maybeM, logsMonoid)
     const log = (msg: string) =>
         mkWriterT<ListBox<string>, []>(() => just(tuple2([], cons<string>(msg)(nil<string>()))))
-    const pureN = (a: number) => Wm.return(a)
+    const pureN = (a: number) => writerMonad2.return(a)
 
-    const program = Wm['>>='](log('start'), () =>
-        Wm['>>='](pureN(1), (n: number) => Wm['>>='](log('inc'), () => pureN(n + 1))),
+    const program = writerMonad2['>>='](log('start'), () =>
+        writerMonad2['>>='](pureN(1), (n: number) => writerMonad2['>>='](log('inc'), () => pureN(n + 1))),
     )
 
     const [v, logs] = fromMaybe(run(program))

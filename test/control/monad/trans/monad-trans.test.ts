@@ -8,19 +8,19 @@ import {
 } from 'control/monad/trans/monad-trans'
 import { monoid as listMonoid } from 'ghc/base/list/monoid'
 
-const M = maybeMonad
+const maybeM = maybeMonad
 
 tap.test('MonadTrans kind function', async (t) => {
     // argument with the transformer kind: (* -> *) -> * -> *
     const kArg: (_: (_: Type) => Type) => (_: Type) => Type = (_: (_: Type) => Type) => (_: Type) => '*' as Type
 
-    const R = readerTTrans<number>(M)
-    t.equal(R.kind(kArg), 'Constraint')
+    const readerTransformer = readerTTrans<number>(maybeM)
+    t.equal(readerTransformer.kind(kArg), 'Constraint')
 
-    const W = listMonoid<string>()
-    const Wt = writerTTrans(M, W)
-    t.equal(Wt.kind(kArg), 'Constraint')
+    const logsMonoid = listMonoid<string>()
+    const writerTransformer = writerTTrans(maybeM, logsMonoid)
+    t.equal(writerTransformer.kind(kArg), 'Constraint')
 
-    const St = stateTTrans<number>(M)
-    t.equal(St.kind(kArg), 'Constraint')
+    const stateTransformer = stateTTrans<number>(maybeM)
+    t.equal(stateTransformer.kind(kArg), 'Constraint')
 })
