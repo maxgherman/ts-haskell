@@ -54,6 +54,9 @@ npm test
 | Tuple2 a   | ✓       | ✓*    | ✓           |             | ✓     |           | ✓        | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
 | Promise    | ✓       | ✓     | ✓           |             | ✓     |           |          |         |              | ✓        |             | ✓*        | ✓*  |
 | Unit ()    |         |       |             |             |       |           |          |         |              |          |             | ✓         | ✓  |
+| ReaderT r m| ✓*      | ✓*    | ✓*          |             | ✓*    |           |          |         |              |          |             |           |    |
+| WriterT w m| ✓*      | ✓*    | ✓*          |             | ✓*    |           |          |         |              |          |             |           |    |
+| StateT s m | ✓*      | ✓*    | ✓*          |             | ✓*    |           |          |         |              |          |             |           |    |
 
 ## References
 
@@ -83,3 +86,7 @@ npm test
 - [Function arrow `(->)`](src/ghc/prim/function-arrow/index.ts) ([Functor](src/ghc/base/function-arrow/functor.ts), [Apply](src/ghc/base/function-arrow/apply.ts), [Applicative](src/ghc/base/function-arrow/applicative.ts), [Monad](src/ghc/base/function-arrow/monad.ts), [Comonad](src/control/reader/comonad.ts), [ComonadApply](src/control/reader/comonad-apply.ts), [Foldable](src/control/reader/foldable.ts), [Traversable](src/control/reader/traversable.ts))
 - [Tuple2 and Unit](src/ghc/base/tuple/tuple.ts) ([Functor](src/ghc/base/tuple/tuple2-functor.ts), [Apply](src/ghc/base/tuple/tuple2-apply.ts), [Applicative](src/ghc/base/tuple/tuple2-applicative.ts), [Monad](src/ghc/base/tuple/tuple2-monad.ts), [Bifunctor](src/ghc/base/tuple/tuple2-bifunctor.ts), [Comonad](src/ghc/base/tuple/tuple2-comonad.ts), [ComonadApply](src/ghc/base/tuple/tuple2-comonad-apply.ts), [Foldable](src/ghc/base/tuple/foldable.ts), [Traversable](src/ghc/base/tuple/tuple2-traversable.ts), [Semigroup](src/ghc/base/tuple/tuple2-semigroup.ts), [Monoid](src/ghc/base/tuple/tuple2-monoid.ts))
 - [Promise](src/extra/promise/promise.ts) ([Functor](src/extra/promise/functor.ts), [Apply](src/extra/promise/apply.ts), [Applicative](src/extra/promise/applicative.ts), [Monad](src/extra/promise/monad.ts), [Foldable](src/extra/promise/foldable.ts), [Semigroup](src/extra/promise/semigroup.ts), [Monoid](src/extra/promise/monoid.ts))
+- [MonadTrans](src/control/monad/trans/monad-trans.ts)
+- [ReaderT](src/control/monad/trans/reader/reader-t.ts) ([Functor](src/control/monad/trans/reader/functor.ts), [Applicative](src/control/monad/trans/reader/applicative.ts), [Monad](src/control/monad/trans/reader/monad.ts))
+- [WriterT](src/control/monad/trans/writer/writer-t.ts) ([Functor](src/control/monad/trans/writer/functor.ts), [Applicative](src/control/monad/trans/writer/applicative.ts), [Monad](src/control/monad/trans/writer/monad.ts))
+- [StateT](src/control/monad/trans/state/state-t.ts) ([Functor](src/control/monad/trans/state/functor.ts), [Applicative](src/control/monad/trans/state/applicative.ts), [Monad](src/control/monad/trans/state/monad.ts))
