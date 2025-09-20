@@ -10,32 +10,6 @@ npm test
 
 ## Typeclass relationships
 
-```txt
-
-+---------------+   (fix one arg)
-|   BIFUNCTOR   |------ 
-+---------------+     | 
-                      v                        
-                 +-----------+                       +-----------+                                     
-       ----------|  FUNCTOR  |  ...............      | SEMIGROUP |                                 
-       |      |  +-----------+                .      +-----------+                                                               
-       v      |                       ......................|............. (Applicative as a monoidal pattern)
- +---------+  |                       v       ........      v   .
- | COMONAD |  |  +-------+     +-------------+       .  +----------+               
- +---------+  |  | APPLY |---->| APPLICATIVE | ----| .  |  MONOID  |        
-              |  +-------+     +-------------+     | .  +----------+ 
-        ------|                         |          | ..................... (Monad as a monoid in endofunctors)
-        |                               v          |          v
-        |                        +--------------+  |       +-----------+                                  
-        |                        │ ALTERNATIVE  │  |------>│   MONAD   │                           
-        |                        +--------------+          +-----------+   
-        v                                            |                          
-  +-------------+       +--------------+             v
-  | TRAVERSABLE |<------│   FOLDABLE   │         +--------------+
-  +-------------+       +--------------+         |  MONADPLUS   │       
-                                                 +--------------+       
-```
-
 ```mermaid
 flowchart LR
     BIFUNCTOR((Bifunctor))
@@ -44,6 +18,7 @@ flowchart LR
     APPLICATIVE((Applicative))
     ALTERNATIVE((Alternative))
     MONAD((Monad))
+    MONADTRANS((MonadTrans))
     COMONAD((Comonad))
     MONOID((Monoid))
     SEMIGROUP((Semigroup))
@@ -56,6 +31,7 @@ flowchart LR
     APPLY --> APPLICATIVE
     APPLICATIVE --> ALTERNATIVE
     APPLICATIVE --> MONAD
+    MONAD --> MONADTRANS
     MONAD -. monoidal in endofunctors .-> MONOID
     MONOID --> SEMIGROUP
     COMONAD --> FUNCTOR
