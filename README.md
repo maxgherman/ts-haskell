@@ -36,6 +36,35 @@ npm test
                                                  +--------------+       
 ```
 
+```mermaid
+flowchart LR
+    BIFUNCTOR((Bifunctor))
+    FUNCTOR((Functor))
+    APPLY((Apply))
+    APPLICATIVE((Applicative))
+    ALTERNATIVE((Alternative))
+    MONAD((Monad))
+    COMONAD((Comonad))
+    MONOID((Monoid))
+    SEMIGROUP((Semigroup))
+    TRAVERSABLE((Traversable))
+    FOLDABLE((Foldable))
+    MONADPLUS((MonadPlus))
+
+    BIFUNCTOR -- fix one arg --> FUNCTOR
+    FUNCTOR --> APPLY
+    APPLY --> APPLICATIVE
+    APPLICATIVE --> ALTERNATIVE
+    APPLICATIVE --> MONAD
+    MONAD -. monoidal in endofunctors .-> MONOID
+    MONOID --> SEMIGROUP
+    COMONAD --> FUNCTOR
+    FUNCTOR --> TRAVERSABLE
+    FOLDABLE --> TRAVERSABLE
+    FOLDABLE --> MONADPLUS
+    ALTERNATIVE -. applicative pattern .-> MONOID
+```
+
 ## Instances
 
 - `✓` = available instance
