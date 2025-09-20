@@ -60,6 +60,8 @@ npm test
 | MaybeT m   | ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
 | EitherT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
 | ExceptT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| RWST r w s m| ✓*     | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| RWS r w s  | ✓       | ✓*    | ✓*          |             | ✓*    |            |           |          |         |              |          |             |           |    |
 
 ## References
 
@@ -74,6 +76,8 @@ npm test
 - [MaybeT](src/control/monad/trans/maybe/monad.ts)
 - [EitherT](src/control/monad/trans/either/monad.ts)
 - [ExceptT](src/control/monad/trans/except/monad.ts)
+- [RWST](src/control/monad/trans/rws/monad.ts)
+- [RWS](src/control/rws/monad.ts)
 - [Comonad](src/control/comonad.ts)
 - [ComonadApply](src/control/comonad-apply.ts)
 - [Foldable](src/data/foldable.ts)
