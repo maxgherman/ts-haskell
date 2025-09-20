@@ -41,22 +41,25 @@ npm test
 - `✓` = available instance
 - `*` = requires the underlying value type to have the same instance
 
-| Type       | Functor | Apply | Applicative | Alternative | Monad | MonadPlus | Bifunctor | Comonad | ComonadApply | Foldable | Traversable | Semigroup | Monoid |
-| ---------- | :-----: | :---: | :---------: | :---------: | :---: | :-------: | :------: | :-----: | :----------: | :------: | :---------: | :-------: | :----: |
-| Maybe      | ✓       | ✓     | ✓           | ✓           | ✓     | ✓         |          |         |              | ✓        | ✓           | ✓*        | ✓*  |
-| Either e   | ✓       | ✓     | ✓           | ✓*          | ✓     | ✓*        | ✓        |         |              | ✓        | ✓           | ✓*        | ✓*  |
-| List       | ✓       | ✓     | ✓           | ✓           | ✓     | ✓         |          |         |              | ✓        | ✓           | ✓         | ✓  |
-| NonEmpty   | ✓       | ✓     | ✓           |             | ✓     |           |          | ✓       | ✓            | ✓        | ✓           | ✓         |  |
-| Reader r   | ✓       | ✓     | ✓           |             | ✓     |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
-| Writer w   | ✓       | ✓*    | ✓           |             | ✓     |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
-| State s    | ✓       | ✓     | ✓           |             | ✓     |           |          |         |              |          |             |           |  |
-| (->) r     | ✓       | ✓     | ✓           |             | ✓     |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
-| Tuple2 a   | ✓       | ✓*    | ✓           |             | ✓     |           | ✓        | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
-| Promise    | ✓       | ✓     | ✓           |             | ✓     |           |          |         |              | ✓        |             | ✓*        | ✓*  |
-| Unit ()    |         |       |             |             |       |           |          |         |              |          |             | ✓         | ✓  |
-| ReaderT r m| ✓*      | ✓*    | ✓*          |             | ✓*    |           |          |         |              |          |             |           |    |
-| WriterT w m| ✓*      | ✓*    | ✓*          |             | ✓*    |           |          |         |              |          |             |           |    |
-| StateT s m | ✓*      | ✓*    | ✓*          |             | ✓*    |           |          |         |              |          |             |           |    |
+| Type       | Functor | Apply | Applicative | Alternative | Monad | MonadTrans | MonadPlus | Bifunctor | Comonad | ComonadApply | Foldable | Traversable | Semigroup | Monoid |
+| ---------- | :-----: | :---: | :---------: | :---------: | :---: | :--------: | :-------: | :------: | :-----: | :----------: | :------: | :---------: | :-------: | :----: |
+| Maybe      | ✓       | ✓     | ✓           | ✓           | ✓     |            | ✓         |          |         |              | ✓        | ✓           | ✓*        | ✓*  |
+| Either e   | ✓       | ✓     | ✓           | ✓*          | ✓     |            | ✓*        | ✓        |         |              | ✓        | ✓           | ✓*        | ✓*  |
+| List       | ✓       | ✓     | ✓           | ✓           | ✓     |            | ✓         |          |         |              | ✓        | ✓           | ✓         | ✓  |
+| NonEmpty   | ✓       | ✓     | ✓           |             | ✓     |            |           |          | ✓       | ✓            | ✓        | ✓           | ✓         |  |
+| Reader r   | ✓       | ✓     | ✓           |             | ✓     |            |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| Writer w   | ✓       | ✓*    | ✓           |             | ✓     |            |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| State s    | ✓       | ✓     | ✓           |             | ✓     |            |           |          |         |              |          |             |           |  |
+| (->) r     | ✓       | ✓     | ✓           |             | ✓     |            |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| Tuple2 a   | ✓       | ✓*    | ✓           |             | ✓     |            |           | ✓        | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| Promise    | ✓       | ✓     | ✓           |             | ✓     |            |           |          |         |              | ✓        |             | ✓*        | ✓*  |
+| Unit ()    |         |       |             |             |       |            |           |          |         |              |          |             | ✓         | ✓  |
+| ReaderT r m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| WriterT w m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| StateT s m | ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| MaybeT m   | ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| EitherT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| ExceptT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
 
 ## References
 
@@ -67,6 +70,10 @@ npm test
 - [Alternative](src/control/alternative/alternative.ts)
 - [Monad](src/ghc/base/monad/monad.ts)
 - [MonadPlus](src/control/monad-plus/monad-plus.ts)
+- [MonadTrans](src/control/monad/trans/monad-trans.ts)
+- [MaybeT](src/control/monad/trans/maybe/monad.ts)
+- [EitherT](src/control/monad/trans/either/monad.ts)
+- [ExceptT](src/control/monad/trans/except/monad.ts)
 - [Comonad](src/control/comonad.ts)
 - [ComonadApply](src/control/comonad-apply.ts)
 - [Foldable](src/data/foldable.ts)
