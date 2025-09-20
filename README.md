@@ -10,30 +10,35 @@ npm test
 
 ## Typeclass relationships
 
-```txt
+```mermaid
+flowchart LR
+    BIFUNCTOR((Bifunctor))
+    FUNCTOR((Functor))
+    APPLY((Apply))
+    APPLICATIVE((Applicative))
+    ALTERNATIVE((Alternative))
+    MONAD((Monad))
+    MONADTRANS((MonadTrans))
+    COMONAD((Comonad))
+    MONOID((Monoid))
+    SEMIGROUP((Semigroup))
+    TRAVERSABLE((Traversable))
+    FOLDABLE((Foldable))
+    MONADPLUS((MonadPlus))
 
-+---------------+   (fix one arg)
-|   BIFUNCTOR   |------ 
-+---------------+     | 
-                      v                        
-                 +-----------+                       +-----------+                                     
-       ----------|  FUNCTOR  |  ...............      | SEMIGROUP |                                 
-       |      |  +-----------+                .      +-----------+                                                               
-       v      |                       ......................|............. (Applicative as a monoidal pattern)
- +---------+  |                       v       ........      v   .
- | COMONAD |  |  +-------+     +-------------+       .  +----------+               
- +---------+  |  | APPLY |---->| APPLICATIVE | ----| .  |  MONOID  |        
-              |  +-------+     +-------------+     | .  +----------+ 
-        ------|                         |          | ..................... (Monad as a monoid in endofunctors)
-        |                               v          |          v
-        |                        +--------------+  |       +-----------+                                  
-        |                        │ ALTERNATIVE  │  |------>│   MONAD   │                           
-        |                        +--------------+          +-----------+   
-        v                                            |                          
-  +-------------+       +--------------+             v
-  | TRAVERSABLE |<------│   FOLDABLE   │         +--------------+
-  +-------------+       +--------------+         |  MONADPLUS   │       
-                                                 +--------------+       
+    BIFUNCTOR -- fix one arg --> FUNCTOR
+    FUNCTOR --> APPLY
+    APPLY --> APPLICATIVE
+    APPLICATIVE --> ALTERNATIVE
+    APPLICATIVE --> MONAD
+    MONAD --> MONADTRANS
+    MONAD -. monoidal in endofunctors .-> MONOID
+    MONOID --> SEMIGROUP
+    COMONAD --> FUNCTOR
+    FUNCTOR --> TRAVERSABLE
+    FOLDABLE --> TRAVERSABLE
+    FOLDABLE --> MONADPLUS
+    ALTERNATIVE -. applicative pattern .-> MONOID
 ```
 
 ## Instances
@@ -60,6 +65,8 @@ npm test
 | MaybeT m   | ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
 | EitherT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
 | ExceptT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| RWST r w s m| ✓*     | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
+| RWS r w s  | ✓       | ✓*    | ✓*          |             | ✓*    |            |           |          |         |              |          |             |           |    |
 
 ## References
 
@@ -74,6 +81,8 @@ npm test
 - [MaybeT](src/control/monad/trans/maybe/monad.ts)
 - [EitherT](src/control/monad/trans/either/monad.ts)
 - [ExceptT](src/control/monad/trans/except/monad.ts)
+- [RWST](src/control/monad/trans/rws/monad.ts)
+- [RWS](src/control/rws/monad.ts)
 - [Comonad](src/control/comonad.ts)
 - [ComonadApply](src/control/comonad-apply.ts)
 - [Foldable](src/data/foldable.ts)

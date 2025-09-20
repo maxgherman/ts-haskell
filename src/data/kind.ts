@@ -12,6 +12,8 @@ export type Kind2 =
 
 export type Kind3 = (_: Type) => (_: Type) => Type // ex. (,), Either
 
+export type Kind4 = (_: Type) => (_: Type) => (_: Type) => Type // ex. RWS
+
 // Higher-kinded constraint over a binary type constructor, e.g. Bifunctor
 export type KindC3 = (_: (_: '*') => (_: '*') => '*') => Constraint
 
@@ -19,7 +21,7 @@ export type KindC3 = (_: (_: '*') => (_: '*') => '*') => Constraint
 // t :: (* -> *) -> * -> *
 export type KindCTrans = (_: (_: (_: '*') => '*') => (_: '*') => '*') => Constraint
 
-export type Kind = Kind1 | Kind2 | Kind3 | KindC3 | KindCTrans
+export type Kind = Kind1 | Kind2 | Kind3 | Kind4 | KindC3 | KindCTrans
 
 export type Box<K extends Kind, _> = {
     readonly kind: K
@@ -31,7 +33,9 @@ type BuildBox<Ts extends unknown[] = []> = Ts extends { length: 0 }
       ? Box<Kind2, Ts>
       : Ts extends { length: 2 }
         ? Box<Kind3, Ts>
-        : never
+        : Ts extends { length: 3 }
+          ? Box<Kind4, Ts>
+          : never
 
 export type Box0 = BuildBox<[]>
 
@@ -39,6 +43,8 @@ export type Box1<T> = BuildBox<[T]>
 
 export type Box2<T1, T2> = BuildBox<[T1, T2]>
 
-export type MinBox0<T> = Box<Kind1 | Kind2 | Kind3, T>
+export type Box3<T1, T2, T3> = BuildBox<[T1, T2, T3]>
 
-export type MinBox1<T> = Box<Kind2 | Kind3, T>
+export type MinBox0<T> = Box<Kind1 | Kind2 | Kind3 | Kind4, T>
+
+export type MinBox1<T> = Box<Kind2 | Kind3 | Kind4, T>
