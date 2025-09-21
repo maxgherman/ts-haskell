@@ -10,6 +10,7 @@ import {
     lift as liftLocal,
 } from 'control/monad/trans/either/either-t'
 import { eitherT as eitherTTrans } from 'control/monad/trans/monad-trans'
+import { MinBox1 } from 'data/kind'
 
 const promiseMonadInstance = promiseMonad
 
@@ -28,7 +29,7 @@ const fromEither = async <E, A>(pea: unknown): Promise<A> => {
 tap.test('EitherT Functor and derived ops', async (t) => {
     const eitherTFunctorInstance = eitherTFunctor<number>(promiseMonadInstance)
     const eitherSource = mkEitherT<number, number>(
-        () => Promise.resolve(right(2)) as unknown as import('data/kind').MinBox1<EitherBox<number, number>>,
+        () => Promise.resolve(right(2)) as unknown as MinBox1<EitherBox<number, number>>,
     )
 
     // fmap
@@ -60,12 +61,12 @@ tap.test('EitherT Applicative and sequencing', async (t) => {
     // <*> with both Right
     const functionInEitherT = mkEitherT<string, (_: number) => number>(
         () =>
-            Promise.resolve(right((x: number) => x + 1)) as unknown as import('data/kind').MinBox1<
+            Promise.resolve(right((x: number) => x + 1)) as unknown as MinBox1<
                 EitherBox<string, (_: number) => number>
             >,
     )
     const valueInEitherT = mkEitherT<string, number>(
-        () => Promise.resolve(right(10)) as unknown as import('data/kind').MinBox1<EitherBox<string, number>>,
+        () => Promise.resolve(right(10)) as unknown as MinBox1<EitherBox<string, number>>,
     )
     t.equal(
         await fromEither(runEitherTHelper(eitherTApplicativeInstance['<*>'](functionInEitherT, valueInEitherT))),
@@ -74,10 +75,7 @@ tap.test('EitherT Applicative and sequencing', async (t) => {
 
     // <*> with Left function
     const functionLeft = mkEitherT<string, (_: number) => number>(
-        () =>
-            Promise.resolve(left('errF')) as unknown as import('data/kind').MinBox1<
-                EitherBox<string, (_: number) => number>
-            >,
+        () => Promise.resolve(left('errF')) as unknown as MinBox1<EitherBox<string, (_: number) => number>>,
     )
     const resultLeft = await toPromise(
         runEitherTHelper(eitherTApplicativeInstance['<*>'](functionLeft, valueInEitherT)),
@@ -86,10 +84,10 @@ tap.test('EitherT Applicative and sequencing', async (t) => {
 
     // liftA2 and derived ops <* , *>
     const firstEitherValue = mkEitherT<string, number>(
-        () => Promise.resolve(right(2)) as unknown as import('data/kind').MinBox1<EitherBox<string, number>>,
+        () => Promise.resolve(right(2)) as unknown as MinBox1<EitherBox<string, number>>,
     )
     const secondEitherValue = mkEitherT<string, number>(
-        () => Promise.resolve(right(3)) as unknown as import('data/kind').MinBox1<EitherBox<string, number>>,
+        () => Promise.resolve(right(3)) as unknown as MinBox1<EitherBox<string, number>>,
     )
     t.equal(
         await fromEither(
@@ -120,24 +118,22 @@ tap.test('EitherT Monad bind/return/>> and lifts', async (t) => {
 
     // >>= success
     const doubleValue = (x: number) =>
-        mkEitherT<string, number>(
-            () => Promise.resolve(right(x * 2)) as unknown as import('data/kind').MinBox1<EitherBox<string, number>>,
-        )
+        mkEitherT<string, number>(() => Promise.resolve(right(x * 2)) as unknown as MinBox1<EitherBox<string, number>>)
     t.equal(await fromEither(runEitherTHelper(eitherTMonadInstance['>>='](returnValue(5), doubleValue))), 10)
 
     // >>= propagate Left
     const leftValue = mkEitherT<string, number>(
-        () => Promise.resolve(left('oops')) as unknown as import('data/kind').MinBox1<EitherBox<string, number>>,
+        () => Promise.resolve(left('oops')) as unknown as MinBox1<EitherBox<string, number>>,
     )
     const resultFromLeft = await toPromise(runEitherTHelper(eitherTMonadInstance['>>='](leftValue, doubleValue)))
     t.equal($case<string, number, string>({ left: (e) => e })(resultFromLeft as EitherBox<string, number>), 'oops')
 
     // >> sequencing
     const firstAction = mkEitherT<string, number>(
-        () => Promise.resolve(right(1)) as unknown as import('data/kind').MinBox1<EitherBox<string, number>>,
+        () => Promise.resolve(right(1)) as unknown as MinBox1<EitherBox<string, number>>,
     )
     const secondAction = mkEitherT<string, string>(
-        () => Promise.resolve(right('ok')) as unknown as import('data/kind').MinBox1<EitherBox<string, string>>,
+        () => Promise.resolve(right('ok')) as unknown as MinBox1<EitherBox<string, string>>,
     )
     const sequencedResult = eitherTMonadInstance['>>'](firstAction, secondAction)
     t.equal(await fromEither(runEitherTHelper(sequencedResult)), 'ok')
@@ -145,21 +141,19 @@ tap.test('EitherT Monad bind/return/>> and lifts', async (t) => {
     // local lift
     const liftedLocal = liftLocal<string, number>(
         promiseMonadInstance,
-        Promise.resolve(42) as unknown as import('data/kind').MinBox1<number>,
+        Promise.resolve(42) as unknown as MinBox1<number>,
     )
     t.equal(await fromEither(runEitherTHelper(liftedLocal)), 42)
 
     // class lift (MonadTrans.eitherT)
     const eitherTTransformer = eitherTTrans<string>(promiseMonadInstance)
-    const liftedViaTransformer = eitherTTransformer.lift(
-        Promise.resolve(7) as unknown as import('data/kind').MinBox1<number>,
-    )
+    const liftedViaTransformer = eitherTTransformer.lift(Promise.resolve(7) as unknown as MinBox1<number>)
     t.equal(await fromEither(runEitherTHelper(liftedViaTransformer)), 7)
 })
 
 tap.test('EitherT kind function', async (t) => {
     const kindCheckObj = mkEitherT<string, string>(
-        () => Promise.resolve(right('x')) as unknown as import('data/kind').MinBox1<EitherBox<string, string>>,
+        () => Promise.resolve(right('x')) as unknown as MinBox1<EitherBox<string, string>>,
     )
     const kindFn = (kindCheckObj as unknown as { kind: (_: unknown) => (_: unknown) => string }).kind
     t.equal(kindFn('*')('*'), '*')
