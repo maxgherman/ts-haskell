@@ -10,6 +10,7 @@ import {
     lift as liftLocal,
 } from 'control/monad/trans/except/except-t'
 import { exceptT as exceptTTrans } from 'control/monad/trans/monad-trans'
+import { MinBox1 } from 'data/kind'
 
 const promiseMonadInstance = promiseMonad
 
@@ -26,13 +27,13 @@ tap.test('ExceptT behaves as EitherT: Functor/Applicative/Monad and lifts', asyn
     const exceptTMonadInstance = exceptTMonad<string>(promiseMonadInstance)
 
     const sourceExcept = mkExceptT<string, number>(
-        () => Promise.resolve(right(3)) as unknown as import('data/kind').MinBox1<EitherBox<string, number>>,
+        () => Promise.resolve(right(3)) as unknown as MinBox1<EitherBox<string, number>>,
     )
     t.equal(await fromExcept(runExceptTHelper(exceptTFunctorInstance['<$>']((x: number) => x + 1, sourceExcept))), 4)
 
     const functionInExceptT = mkExceptT<string, (_: number) => number>(
         () =>
-            Promise.resolve(right((x: number) => x * 2)) as unknown as import('data/kind').MinBox1<
+            Promise.resolve(right((x: number) => x * 2)) as unknown as MinBox1<
                 EitherBox<string, (_: number) => number>
             >,
     )
@@ -47,14 +48,12 @@ tap.test('ExceptT behaves as EitherT: Functor/Applicative/Monad and lifts', asyn
     // local lift
     const liftedLocal = liftLocal<string, number>(
         promiseMonadInstance,
-        Promise.resolve(9) as unknown as import('data/kind').MinBox1<number>,
+        Promise.resolve(9) as unknown as MinBox1<number>,
     )
     t.equal(await fromExcept(runExceptTHelper(liftedLocal)), 9)
 
     // class lift via MonadTrans
     const exceptTTransformer = exceptTTrans<string>(promiseMonadInstance)
-    const liftedViaTransformer = exceptTTransformer.lift(
-        Promise.resolve(7) as unknown as import('data/kind').MinBox1<number>,
-    )
+    const liftedViaTransformer = exceptTTransformer.lift(Promise.resolve(7) as unknown as MinBox1<number>)
     t.equal(await fromExcept(runExceptTHelper(liftedViaTransformer)), 7)
 })

@@ -13,6 +13,8 @@ npm test
 ```mermaid
 flowchart LR
     BIFUNCTOR((Bifunctor))
+    BIFOLDABLE((BiFoldable))
+    BITRAVERSABLE((BiTraversable))
     FUNCTOR((Functor))
     APPLY((Apply))
     APPLICATIVE((Applicative))
@@ -27,6 +29,9 @@ flowchart LR
     MONADPLUS((MonadPlus))
 
     BIFUNCTOR -- fix one arg --> FUNCTOR
+    BIFUNCTOR --> BIFOLDABLE
+    BIFOLDABLE --> BITRAVERSABLE
+    BIFUNCTOR --> BITRAVERSABLE
     FUNCTOR --> APPLY
     APPLY --> APPLICATIVE
     APPLICATIVE --> ALTERNATIVE
@@ -46,33 +51,35 @@ flowchart LR
 - `✓` = available instance
 - `*` = requires the underlying value type to have the same instance
 
-| Type       | Functor | Apply | Applicative | Alternative | Monad | MonadTrans | MonadPlus | Bifunctor | Comonad | ComonadApply | Foldable | Traversable | Semigroup | Monoid |
-| ---------- | :-----: | :---: | :---------: | :---------: | :---: | :--------: | :-------: | :------: | :-----: | :----------: | :------: | :---------: | :-------: | :----: |
-| Maybe      | ✓       | ✓     | ✓           | ✓           | ✓     |            | ✓         |          |         |              | ✓        | ✓           | ✓*        | ✓*  |
-| Either e   | ✓       | ✓     | ✓           | ✓*          | ✓     |            | ✓*        | ✓        |         |              | ✓        | ✓           | ✓*        | ✓*  |
-| List       | ✓       | ✓     | ✓           | ✓           | ✓     |            | ✓         |          |         |              | ✓        | ✓           | ✓         | ✓  |
-| NonEmpty   | ✓       | ✓     | ✓           |             | ✓     |            |           |          | ✓       | ✓            | ✓        | ✓           | ✓         |  |
-| Reader r   | ✓       | ✓     | ✓           |             | ✓     |            |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
-| Writer w   | ✓       | ✓*    | ✓           |             | ✓     |            |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
-| State s    | ✓       | ✓     | ✓           |             | ✓     |            |           |          |         |              |          |             |           |  |
-| (->) r     | ✓       | ✓     | ✓           |             | ✓     |            |           |          | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
-| Tuple2 a   | ✓       | ✓*    | ✓           |             | ✓     |            |           | ✓        | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
-| Promise    | ✓       | ✓     | ✓           |             | ✓     |            |           |          |         |              | ✓        |             | ✓*        | ✓*  |
-| Unit ()    |         |       |             |             |       |            |           |          |         |              |          |             | ✓         | ✓  |
-| ReaderT r m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
-| WriterT w m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
-| StateT s m | ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
-| MaybeT m   | ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
-| EitherT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
-| ExceptT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
-| RWST r w s m| ✓*     | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |         |              |          |             |           |    |
-| RWS r w s  | ✓       | ✓*    | ✓*          |             | ✓*    |            |           |          |         |              |          |             |           |    |
+| Type       | Functor | Apply | Applicative | Alternative | Monad | MonadTrans | MonadPlus | Bifunctor | BiFoldable | BiTraversable | Comonad | ComonadApply | Foldable | Traversable | Semigroup | Monoid |
+| ---------- | :-----: | :---: | :---------: | :---------: | :---: | :--------: | :-------: | :------: | :--------: | :------------: | :-----: | :----------: | :------: | :---------: | :-------: | :----: |
+| Maybe      | ✓       | ✓     | ✓           | ✓           | ✓     |            | ✓         |          |            |                |         |              | ✓        | ✓           | ✓*        | ✓*  |
+| Either e   | ✓       | ✓     | ✓           | ✓*          | ✓     |            | ✓*        | ✓        | ✓          | ✓              |         |              | ✓        | ✓           | ✓*        | ✓*  |
+| List       | ✓       | ✓     | ✓           | ✓           | ✓     |            | ✓         |          |            |                |         |              | ✓        | ✓           | ✓         | ✓  |
+| NonEmpty   | ✓       | ✓     | ✓           |             | ✓     |            |           |          |            |                | ✓       | ✓            | ✓        | ✓           | ✓         |  |
+| Reader r   | ✓       | ✓     | ✓           |             | ✓     |            |           |          |            |                | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| Writer w   | ✓       | ✓*    | ✓           |             | ✓     |            |           |          |            |                | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| State s    | ✓       | ✓     | ✓           |             | ✓     |            |           |          |            |                |         |              |          |             |           |  |
+| (->) r     | ✓       | ✓     | ✓           |             | ✓     |            |           |          |            |                | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| Tuple2 a   | ✓       | ✓*    | ✓           |             | ✓     |            |           | ✓        | ✓          | ✓              | ✓       | ✓            | ✓        | ✓           | ✓*        | ✓*  |
+| Promise    | ✓       | ✓     | ✓           |             | ✓     |            |           |          |            |                |         |              | ✓        |             | ✓*        | ✓*  |
+| Unit ()    |         |       |             |             |       |            |           |          |            |                |         |              |          |             | ✓         | ✓  |
+| ReaderT r m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |            |                |         |              |          |             |           |    |
+| WriterT w m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           | ✓*       | ✓*         | ✓*             |         |              |          |             |           |    |
+| StateT s m | ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |            |                |         |              |          |             |           |    |
+| MaybeT m   | ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |            |                |         |              |          |             |           |    |
+| EitherT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           | ✓*       | ✓*         | ✓*             |         |              |          |             |           |    |
+| ExceptT e m| ✓*      | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |            |                |         |              |          |             |           |    |
+| RWST r w s m| ✓*     | ✓*    | ✓*          |             | ✓*    |     ✓      |           |          |            |                |         |              |          |             |           |    |
+| RWS r w s  | ✓       | ✓*    | ✓*          |             | ✓*    |            |           |          |            |                |         |              |          |             |           |    |
 
 ## References
 
 - [Functor](src/ghc/base/functor.ts)
 - [Apply](src/data/functor/apply.ts)
 - [Bifunctor](src/data/bifunctor.ts)
+- [BiFoldable](src/data/bifoldable.ts)
+- [BiTraversable](src/data/bitraversable.ts)
 - [Applicative](src/ghc/base/applicative.ts)
 - [Alternative](src/control/alternative/alternative.ts)
 - [Monad](src/ghc/base/monad/monad.ts)

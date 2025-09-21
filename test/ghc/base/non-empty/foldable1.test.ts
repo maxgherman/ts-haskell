@@ -3,6 +3,7 @@ import { foldable1 } from 'ghc/base/non-empty/foldable1'
 import { fromList } from 'ghc/base/non-empty/list'
 import { cons, nil, toArray, ListBox } from 'ghc/base/list/list'
 import { semigroup as listSemigroup } from 'ghc/base/list/semigroup'
+import { MinBox0 } from 'data/kind'
 
 const listOfNumbers = (...xs: number[]): ListBox<number> => xs.reduceRight((acc, x) => cons(x)(acc), nil<number>())
 const listOfLists = (...xs: ListBox<number>[]): ListBox<ListBox<number>> =>
@@ -14,7 +15,7 @@ tap.test('foldMap1 concatenates mapped NonEmpty values', (t) => {
     const semigroup = listSemigroup<number>()
     const result = foldable1.foldMap1(
         semigroup,
-        (n: number) => listOfNumbers(n) as unknown as import('data/kind').MinBox0<ListBox<number>>,
+        (n: number) => listOfNumbers(n) as unknown as MinBox0<ListBox<number>>,
         nonEmptyNumbers,
     )
     t.same(toArray(result as unknown as ListBox<number>), [1, 2, 3])
